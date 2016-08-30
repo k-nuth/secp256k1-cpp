@@ -1,0 +1,295 @@
+cmake_policy(VERSION 3.4)
+
+# secp256k1
+#==============================================================================
+project(secp256k1
+  VERSION 0.1
+  LANGUAGES C)
+cmake_minimum_required(VERSION 3.4)
+
+# Process options.
+#==============================================================================
+option(ENABLE_BENCHMARK "Compile benchmark." OFF)
+option(ENABLE_TESTS "Compile tests." ON)
+option(ENABLE_OPENSSL_TESTS "Enable OpenSSL tests, if OpenSSL is available" OFF)
+option(ENABLE_EXPERIMENTAL "Alloc experimental configure options" OFF)
+option(ENABLE_ENDOMORPHISM "Enable endomorphism" OFF)
+option(ENABLE_ECMULT_STATIC_PRECOMPUTATION "Enable precomputed ecmult table for signing" ON)
+option(ENABLE_MODULE_ECDH "Enable ECDH shared secret computation (experimental)." OFF)
+option(ENABLE_MODULE_SCHNORR "Enable Schnorr signature module (experimental)." OFF)
+option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." OFF)
+
+set(WITH_ASM "auto" CACHE STRING "Specify assembly optimizations to use (x86_64|arm|no|auto).")
+set(WITH_FIELD "auto" CACHE STRING "Specify Field Implementation (64bit|32bit|auto).")
+set(WITH_SCALAR "auto" CACHE STRING "Specify scalar implementation (64bit|32bit|auto).")
+set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|no|auto).")
+
+function(_check_has_64bit_asm)
+  if (DEFINED HAS_64BIT_ASM)
+    return()
+  endif()
+
+  set(_filename "${CMAKE_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/_has_64bit_asm.c")
+  file(WRITE ${_filename}
+    "#include <stdint.h>
+    int main() {
+      uint64_t a = 11, tmp;
+      __asm__ __volatile__(\"movq 0x100000000,%1; mulq %%rsi\" : \"+a\"(a) : \"S\"(tmp) : \"cc\", \"%rdx\");
+    }")
+  try_compile(HAS_64BIT_ASM "${CMAKE_BINARY_DIR}" ${_filename})
+  set(HAS_64BIT_ASM ${HAS_64BIT_ASM} PARENT_SCOPE)
+  file(REMOVE ${_filename})
+endfunction()
+
+function(_check_has_int128)
+  if (DEFINED HAS_INT128)
+    return()
+  endif()
+
+  set(_filename "${CMAKE_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/_has_int128_test.c")
+  file(WRITE ${_filename}
+    "int main() { __int128 x = 0; }")
+  try_compile(HAS_INT128 "${CMAKE_BINARY_DIR}" ${_filename})
+  set(HAS_INT128 ${HAS_INT128} PARENT_SCOPE)
+  file(REMOVE ${_filename})
+endfunction()
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+function(_check_has_gmp)
+  if (DEFINED HAS_GMP)
+    return()
+  endif()
+
+  find_package(GMP)
+  set(HAS_GMP ${GMP_FOUND} PARENT_SCOPE)
+endfunction()
+
+# Implement --with-asm
+#------------------------------------------------------------------------------
+if (WITH_ASM STREQUAL "auto")
+  _check_has_64bit_asm()
+  if (HAS_64BIT_ASM)
+    set(WITH_ASM "x86_64")
+  else()
+    set(WITH_ASM "no")
+  endif()
+elseif (WITH_ASM STREQUAL "x86_64")
+  _check_has_64bit_asm()
+  if (NOT HAS_64BIT_ASM)
+    message(FATAL_ERROR "x86_64 assembly optimization requested but not available")
+  endif()
+elseif (NOT WITH_ASM STREQUAL "arm" AND NOT WITH_ASM STREQUAL "no")
+  message(FATAL_ERROR "Invalid assembly optimization selection: ${WITH_ASM}")
+endif()
+
+# Implement --with-field
+#------------------------------------------------------------------------------
+if (WITH_FIELD STREQUAL "auto")
+  if (WITH_ASM STREQUAL "x86_64")
+    set (WITH_FIELD "64bit")
+  else()
+    _check_has_int128()
+    if (HAS_INT128)
+      set(WITH_FIELD "64bit")
+    else()
+      set(WITH_FIELD "32bit")
+    endif()
+  endif()
+elseif (WITH_FIELD STREQUAL "64bit")
+  if (NOT WITH_ASM STREQUAL "x86_64")
+    _check_has_int128()
+    if (NOT HAS_INT128)
+      message(FATAL_ERROR "64bit field explicitly requested but neither __int128 support or x86_64 assembly available")
+    endif()
+  endif()
+elseif (NOT WITH_FIELD STREQUAL "32bit")
+  message(FATAL_ERROR "Invalid field implementation: ${WITH_FIELD}")
+endif()
+
+# Implement --with-scalar
+#------------------------------------------------------------------------------
+if (WITH_SCALAR STREQUAL "auto")
+  _check_has_int128()
+  if (HAS_INT128)
+    set(WITH_SCALAR "64bit")
+  else()
+    set(WITH_SCALAR "32bit")
+  endif()
+elseif (WITH_FIELD STREQUAL "64bit")
+  _check_has_int128()
+  if (NOT HAS_INT128)
+    message(FATAL_ERROR "64bit scalar explicitly requested but __int128 support not available")
+  endif()
+elseif (NOT WITH_FIELD STREQUAL "32bit")
+  message(FATAL_ERROR "Invalid scalar implementation: ${WITH_SCALAR}")
+endif()
+
+# Implement --with-bignum
+#------------------------------------------------------------------------------
+if (WITH_BIGNUM STREQUAL "auto")
+  _check_has_gmp()
+  if (HAS_GMP)
+    set(WITH_BIGNUM "gmp")
+  else()
+    set(WITH_BIGNUM "no")
+  endif()
+elseif (WITH_BIGNUM STREQUAL "gmp")
+  _check_has_gmp()
+  if (NOT HAS_GMP)
+    message(FATAL_ERROR "gmp bignum explicitly requested but libgmp not available")
+  endif()
+elseif (NOT WITH_BIGNUM STREQUAL "no")
+  message(FATAL_ERROR "Invalid bignum implementation: ${WITH_BIGNUM}")
+endif()
+
+# Build
+#==============================================================================
+add_library(secp256k1 STATIC
+  include/secp256k1.h
+  src/secp256k1.c)
+target_include_directories(secp256k1 PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_include_directories(secp256k1 PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+_check_has_int128()
+if (HAS_INT128)
+  target_compile_definitions(secp256k1 PUBLIC -DHAVE___INT128=1)
+endif()
+
+if (WITH_ASM STREQUAL "x86_64")
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_ASM_X86_64=1)
+elseif (WITH_FIELD STREQUAL "arm")
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_EXTERNAL_ASM=1)
+  target_sources(secp256k1 PRIVATE "src/asm/field_10x26_arm.s")
+endif()
+
+if (WITH_FIELD STREQUAL "64bit")
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_5X52=1)
+elseif (WITH_FIELD STREQUAL "32bit")
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_10X26=1)
+endif()
+
+if (WITH_SCALAR STREQUAL "64bit")
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_4X64=1)
+elseif (WITH_SCALAR STREQUAL "32bit")
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_8X32=1)
+endif()
+
+if (WITH_BIGNUM STREQUAL "gmp")
+  target_compile_definitions(secp256k1 PUBLIC -DHAVE_LIBGMP=1)
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_GMP=1)
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_NUM=1)
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_NUM=1)
+
+  target_include_directories(secp256k1 PUBLIC ${GMP_INCLUDE_DIR})
+  target_link_libraries(secp256k1 ${GMP_LIBRARIES})
+elseif (WITH_BIGNUM STREQUAL "no")
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_NONE=1)
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_BUILTIN=1)
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_BUILTIN=1)
+endif()
+
+if (ENABLE_MODULE_ECDH)
+  target_compile_definitions(secp256k1 PUBLIC -DENABLE_MODULE_ECDH=1)
+endif()
+if (ENABLE_MODULE_SCHNORR)
+  target_compile_definitions(secp256k1 PUBLIC -DENABLE_MODULE_SCHNORR=1)
+endif()
+if (ENABLE_MODULE_RECOVERY)
+  target_compile_definitions(secp256k1 PUBLIC -DENABLE_MODULE_RECOVERY=1)
+endif()
+
+# Benchmark
+#==============================================================================
+if (ENABLE_BENCHMARK)
+  add_executable(bench_verify src/bench_verify.c)
+  target_link_libraries(bench_verify secp256k1)
+
+  add_executable(bench_sign src/bench_sign.c)
+  target_link_libraries(bench_sign secp256k1)
+
+  add_executable(bench_internal src/bench_internal.c)
+  target_link_libraries(bench_internal secp256k1)
+
+  if (ENABLE_MODULE_ECDH)
+    add_executable(bench_ecdh src/bench_ecdh.c)
+    target_link_libraries(bench_ecdh secp256k1)
+  endif()
+
+  if (ENABLE_MODULE_SCHNORR)
+    add_executable(bench_schnorr_verify src/bench_schnorr_verify.c)
+    target_link_libraries(bench_schnorr_verify secp256k1)
+  endif()
+
+  if (ENABLE_MODULE_RECOVERY)
+    add_executable(bench_recover src/bench_recover.c)
+    target_link_libraries(bench_recover secp256k1)
+  endif()
+endif()
+
+# Tests
+if (ENABLE_TESTS)
+  add_executable(tests
+    src/tests.c)
+  target_compile_definitions(tests PRIVATE -DVERIFY)
+  target_include_directories(tests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR})
+  target_link_libraries(tests secp256k1)
+
+  enable_testing()
+  add_test(
+    NAME test
+    COMMAND tests)
+endif()
+
+# Install
+#==============================================================================
+install(TARGETS secp256k1
+  EXPORT secp256k1
+  ARCHIVE DESTINATION lib)
+install(FILES include/secp256k1.h DESTINATION include)
+if (ENABLE_MODULE_ECDH)
+  install(FILES include/secp256k1_ecdh.h DESTINATION include)
+endif()
+if (ENABLE_MODULE_SCHNORR)
+  install(FILES include/secp256k1_schnorr.h DESTINATION include)
+endif()
+if (ENABLE_MODULE_RECOVERY)
+  install(FILES include/secp256k1_recovery.h DESTINATION include)
+endif()
+
+# Export
+#==============================================================================
+include(CMakePackageConfigHelpers)
+
+export(EXPORT secp256k1
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/secp256k1Targets.cmake")
+export(PACKAGE secp256k1)
+
+if (UNIX)
+  set(_config_package_location "lib/cmake")
+elseif (WIN32)
+  set(_config_package_location "cmake")
+endif()
+
+install(EXPORT secp256k1
+  FILE secp256k1Targets.cmake
+  DESTINATION ${_config_package_location})
+
+configure_file(secp256k1Config.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/secp256k1Config.cmake"
+  @ONLY)
+
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/secp256k1ConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY AnyNewerVersion)
+
+install(
+  FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/secp256k1Config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/secp256k1ConfigVersion.cmake"
+  DESTINATION ${_config_package_location})
