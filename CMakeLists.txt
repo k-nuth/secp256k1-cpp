@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.4)
 project(secp256k1
   VERSION 0.1
   LANGUAGES C)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Process options.
 #==============================================================================
@@ -201,35 +202,44 @@ if (ENABLE_MODULE_RECOVERY)
   target_compile_definitions(secp256k1 PUBLIC -DENABLE_MODULE_RECOVERY=1)
 endif()
 
+set_target_properties(secp256k1 PROPERTIES FOLDER "secp256k1")
+
 # Benchmark
 #==============================================================================
 if (ENABLE_BENCHMARK)
   add_executable(bench_verify src/bench_verify.c)
   target_link_libraries(bench_verify secp256k1)
+  set_target_properties(bench_verify PROPERTIES FOLDER "secp256k1")
 
   add_executable(bench_sign src/bench_sign.c)
   target_link_libraries(bench_sign secp256k1)
+  set_target_properties(bench_sign PROPERTIES FOLDER "secp256k1")
 
   add_executable(bench_internal src/bench_internal.c)
   target_link_libraries(bench_internal secp256k1)
+  set_target_properties(bench_internal PROPERTIES FOLDER "secp256k1")
 
   if (ENABLE_MODULE_ECDH)
     add_executable(bench_ecdh src/bench_ecdh.c)
     target_link_libraries(bench_ecdh secp256k1)
+    set_target_properties(bench_ecdh PROPERTIES FOLDER "secp256k1")
   endif()
 
   if (ENABLE_MODULE_SCHNORR)
     add_executable(bench_schnorr_verify src/bench_schnorr_verify.c)
     target_link_libraries(bench_schnorr_verify secp256k1)
+    set_target_properties(bench_schnorr_verify PROPERTIES FOLDER "secp256k1")
   endif()
 
   if (ENABLE_MODULE_RECOVERY)
     add_executable(bench_recover src/bench_recover.c)
     target_link_libraries(bench_recover secp256k1)
+    set_target_properties(bench_recover PROPERTIES FOLDER "secp256k1")
   endif()
 endif()
 
 # Tests
+#==============================================================================
 if (ENABLE_TESTS)
   add_executable(tests
     src/tests.c)
@@ -242,6 +252,8 @@ if (ENABLE_TESTS)
   add_test(
     NAME test
     COMMAND tests)
+
+  set_target_properties(tests PROPERTIES FOLDER "secp256k1")
 endif()
 
 # Install
