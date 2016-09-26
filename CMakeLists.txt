@@ -1,11 +1,10 @@
-cmake_policy(VERSION 3.4)
+cmake_minimum_required(VERSION 3.4)
 
 # secp256k1
 #==============================================================================
 project(secp256k1
   VERSION 0.1
   LANGUAGES C)
-cmake_minimum_required(VERSION 3.4)
 
 # Process options.
 #==============================================================================
