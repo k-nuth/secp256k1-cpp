@@ -51,11 +51,12 @@ Implementation details
 
 Build steps
 -----------
-
-libsecp256k1 is built using autotools:
-
-    $ ./autogen.sh
-    $ ./configure
-    $ make
-    $ ./tests
-    $ sudo make install  # optional
+```
+$ git clone https://github.com/bitprim/secp256k1.git
+$ cd secp256k1
+$ mkdir build
+$ cd build
+$ cmake .. -DENABLE_MODULE_RECOVERY=ON 
+$ make -j2
+$ sudo make install
+```
