@@ -48,3 +48,7 @@ src/stamp-h1
 libsecp256k1.pc
 
 /build
+
+.idea/
+cmake-build-debug/
+CMakeSettings.json
