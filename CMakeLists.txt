@@ -17,7 +17,7 @@ option(ENABLE_ENDOMORPHISM "Enable endomorphism" OFF)
 option(ENABLE_ECMULT_STATIC_PRECOMPUTATION "Enable precomputed ecmult table for signing" ON)
 option(ENABLE_MODULE_ECDH "Enable ECDH shared secret computation (experimental)." OFF)
 option(ENABLE_MODULE_SCHNORR "Enable Schnorr signature module (experimental)." OFF)
-option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." OFF)
+option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." ON)
 
 set(WITH_ASM "auto" CACHE STRING "Specify assembly optimizations to use (x86_64|arm|no|auto).")
 set(WITH_FIELD "auto" CACHE STRING "Specify Field Implementation (64bit|32bit|auto).")
@@ -147,6 +147,9 @@ endif()
 add_library(secp256k1 STATIC
   include/secp256k1.h
   src/secp256k1.c)
+
+set_property(TARGET secp256k1 PROPERTY POSITION_INDEPENDENT_CODE ON)
+  
 target_include_directories(secp256k1 PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR})
 
