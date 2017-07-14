@@ -1,7 +1,8 @@
 libsecp256k1
 ============
 
-[![Build Status](https://travis-ci.org/bitprim/secp256k1.svg?branch=master)](https://travis-ci.org/bitprim/secp256k1)
+[![Build Status](https://travis-ci.org/bitprim/secp256k1.svg?branch=master)](https://travis-ci.org/bitprim/secp256k1) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?branch=c-api&svg=true)](https://ci.appveyor.com/project/hanchon/secp256k1?branch=c-api)
+
 
 Optimized C library for EC operations on curve secp256k1.
 
