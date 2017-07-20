@@ -24,45 +24,10 @@ set(WITH_FIELD "auto" CACHE STRING "Specify Field Implementation (64bit|32bit|au
 set(WITH_SCALAR "auto" CACHE STRING "Specify scalar implementation (64bit|32bit|auto).")
 set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|no|auto).")
 
-function(_check_has_64bit_asm)
-  if (DEFINED HAS_64BIT_ASM)
-    return()
-  endif()
-
-  set(_filename "${CMAKE_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/_has_64bit_asm.c")
-  file(WRITE ${_filename}
-    "#include <stdint.h>
-    int main() {
-      uint64_t a = 11, tmp;
-      __asm__ __volatile__(\"movq 0x100000000,%1; mulq %%rsi\" : \"+a\"(a) : \"S\"(tmp) : \"cc\", \"%rdx\");
-    }")
-  try_compile(HAS_64BIT_ASM "${CMAKE_BINARY_DIR}" ${_filename})
-  set(HAS_64BIT_ASM ${HAS_64BIT_ASM} PARENT_SCOPE)
-  file(REMOVE ${_filename})
-endfunction()
-
-function(_check_has_int128)
-  if (DEFINED HAS_INT128)
-    return()
-  endif()
-
-  set(_filename "${CMAKE_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/_has_int128_test.c")
-  file(WRITE ${_filename}
-    "int main() { __int128 x = 0; }")
-  try_compile(HAS_INT128 "${CMAKE_BINARY_DIR}" ${_filename})
-  set(HAS_INT128 ${HAS_INT128} PARENT_SCOPE)
-  file(REMOVE ${_filename})
-endfunction()
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-function(_check_has_gmp)
-  if (DEFINED HAS_GMP)
-    return()
-  endif()
 
-  find_package(GMP)
-  set(HAS_GMP ${GMP_FOUND} PARENT_SCOPE)
-endfunction()
+include(Secp256k1Tools)
+
 
 # Implement --with-asm
 #------------------------------------------------------------------------------
@@ -211,32 +176,32 @@ set_target_properties(secp256k1 PROPERTIES FOLDER "secp256k1")
 #==============================================================================
 if (ENABLE_BENCHMARK)
   add_executable(bench_verify src/bench_verify.c)
-  target_link_libraries(bench_verify secp256k1)
+  target_link_libraries(bench_verify secp256k1::secp256k1)
   set_target_properties(bench_verify PROPERTIES FOLDER "secp256k1")
 
   add_executable(bench_sign src/bench_sign.c)
-  target_link_libraries(bench_sign secp256k1)
+  target_link_libraries(bench_sign secp256k1::secp256k1)
   set_target_properties(bench_sign PROPERTIES FOLDER "secp256k1")
 
   add_executable(bench_internal src/bench_internal.c)
-  target_link_libraries(bench_internal secp256k1)
+  target_link_libraries(bench_internal secp256k1::secp256k1)
   set_target_properties(bench_internal PROPERTIES FOLDER "secp256k1")
 
   if (ENABLE_MODULE_ECDH)
     add_executable(bench_ecdh src/bench_ecdh.c)
-    target_link_libraries(bench_ecdh secp256k1)
+    target_link_libraries(bench_ecdh secp256k1::secp256k1)
     set_target_properties(bench_ecdh PROPERTIES FOLDER "secp256k1")
   endif()
 
   if (ENABLE_MODULE_SCHNORR)
     add_executable(bench_schnorr_verify src/bench_schnorr_verify.c)
-    target_link_libraries(bench_schnorr_verify secp256k1)
+    target_link_libraries(bench_schnorr_verify secp256k1::secp256k1)
     set_target_properties(bench_schnorr_verify PROPERTIES FOLDER "secp256k1")
   endif()
 
   if (ENABLE_MODULE_RECOVERY)
     add_executable(bench_recover src/bench_recover.c)
-    target_link_libraries(bench_recover secp256k1)
+    target_link_libraries(bench_recover secp256k1::secp256k1)
     set_target_properties(bench_recover PROPERTIES FOLDER "secp256k1")
   endif()
 endif()
@@ -246,10 +211,12 @@ endif()
 if (ENABLE_TESTS)
   add_executable(tests
     src/tests.c)
+
   target_compile_definitions(tests PRIVATE -DVERIFY)
   target_include_directories(tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR})
-  target_link_libraries(tests secp256k1)
+
+  target_link_libraries(tests secp256k1::secp256k1)
 
   enable_testing()
   add_test(
@@ -265,12 +232,15 @@ install(TARGETS secp256k1
   EXPORT secp256k1
   ARCHIVE DESTINATION lib)
 install(FILES include/secp256k1.h DESTINATION include)
+
 if (ENABLE_MODULE_ECDH)
   install(FILES include/secp256k1_ecdh.h DESTINATION include)
 endif()
+
 if (ENABLE_MODULE_SCHNORR)
   install(FILES include/secp256k1_schnorr.h DESTINATION include)
 endif()
+
 if (ENABLE_MODULE_RECOVERY)
   install(FILES include/secp256k1_recovery.h DESTINATION include)
 endif()
