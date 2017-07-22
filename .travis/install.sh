@@ -19,8 +19,9 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
     pyenv activate conan
 fi
 
-pip install conan --upgrade
-pip install conan_package_tools
+sudo pip install --upgrade pip
+sudo pip install conan --upgrade
+sudo pip install conan_package_tools
 
 conan remote add upload_repo "https://api.bintray.com/conan/bitprim/secp256k1"
 conan user
