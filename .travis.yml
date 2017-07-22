@@ -1,3 +1,11 @@
+env:
+   global:
+     - CONAN_REFERENCE: "secp256k1/0.1"
+     - CONAN_USERNAME: "dario-ramos"
+     - CONAN_LOGIN_USERNAME: "dario-ramos"
+     - CONAN_CHANNEL: "stable"
+     - CONAN_UPLOAD: "https://api.bintray.com/conan/bitprim/secp256k1"
+
 language: c
 sudo: required
 addons:
@@ -41,18 +49,21 @@ matrix:
           packages:
             - gcc-multilib
             - libgmp-dev:i386
+      python: "3.6"
     - compiler: clang
       env: HOST=i686-linux-gnu
       addons:
         apt:
           packages:
             - gcc-multilib
+      python: "3.6"
     - compiler: gcc
       env: HOST=i686-linux-gnu ENDOMORPHISM=yes
       addons:
         apt:
           packages:
             - gcc-multilib
+      python: "3.6"
     - compiler: gcc
       env: HOST=i686-linux-gnu
       addons:
@@ -60,6 +71,7 @@ matrix:
           packages:
             - gcc-multilib
             - libgmp-dev:i386
+      python: "3.6"
 before_install: mkdir -p `dirname $GUAVA_JAR`
 install:
   - if [ ! -f $GUAVA_JAR ]; then wget $GUAVA_URL -O $GUAVA_JAR; fi
