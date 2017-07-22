@@ -1,3 +1,4 @@
+dist: precise
 env:
    global:
      - CONAN_REFERENCE: "secp256k1/0.1"
