@@ -20,10 +20,8 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
 fi
 
 
-sudo -H pip install --upgrade pip
-sudo -H pip install setuptools
-sudo -H pip install conan --upgrade
-sudo -H pip install conan_package_tools
+pip install conan --upgrade
+pip install conan_package_tools
 
 conan remote add upload_repo "https://api.bintray.com/conan/bitprim/secp256k1"
 conan user
