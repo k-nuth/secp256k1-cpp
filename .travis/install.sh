@@ -19,6 +19,9 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
     pyenv activate conan
 fi
 
+sudo add-apt-repository ppa:jonathonf/python-3.6
+sudo apt-get update
+sudo apt-get install python3.6
 sudo -H pip install --upgrade pip
 sudo -H pip install conan --upgrade
 sudo -H pip install conan_package_tools
