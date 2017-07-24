@@ -1,7 +1,7 @@
 from conans import ConanFile, CMake
 
 
-class ConantestConan(ConanFile):
+class Secp256k1Conan(ConanFile):
     name = "secp256k1"
     version = "0.1"
     license = "http://www.boost.org/users/license.html"
