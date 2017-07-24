@@ -12,9 +12,6 @@ sudo: required
 addons:
   apt:
     packages: libgmp-dev
-compiler:
-  - clang
-  - gcc
 cache:
   directories:
   - src/java/guava/
