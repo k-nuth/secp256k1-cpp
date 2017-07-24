@@ -1,5 +1,5 @@
 from conans import ConanFile, CMake
-
+from pprint import pprint
 
 class Secp256k1Conan(ConanFile):
     name = "secp256k1"
@@ -14,6 +14,9 @@ class Secp256k1Conan(ConanFile):
     exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*"
 
     def build(self):
+        pprint(vars(self))
+        pprint(vars(self.settings))        
+
         cmake = CMake(self)
         cmake.configure(source_dir=self.conanfile_directory)
         cmake.build()
