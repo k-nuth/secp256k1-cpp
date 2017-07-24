@@ -20,45 +20,37 @@ cache:
   - src/java/guava/
 env:
   global:
-    - FIELD=auto  BIGNUM=auto  SCALAR=auto  ENDOMORPHISM=no  STATICPRECOMPUTATION=yes  ASM=no  BUILD=check  EXTRAFLAGS=  HOST=  ECDH=no  schnorr=no  RECOVERY=no  EXPERIMENTAL=no
+    - FIELD=auto  BIGNUM=auto  SCALAR=auto  ENDOMORPHISM=no  STATICPRECOMPUTATION=yes  ASM=no  BUILD=check  EXTRAFLAGS=  HOST=  ECDH=no  schnorr=no  RECOVERY=yes  EXPERIMENTAL=no
     - GUAVA_URL=https://search.maven.org/remotecontent?filepath=com/google/guava/guava/18.0/guava-18.0.jar GUAVA_JAR=src/java/guava/guava-18.0.jar
-  matrix:
-    - SCALAR=32bit    RECOVERY=yes
-    - SCALAR=32bit    FIELD=32bit       ECDH=yes  EXPERIMENTAL=yes
-    - SCALAR=64bit
-    - FIELD=64bit     RECOVERY=yes
-    - FIELD=64bit     ENDOMORPHISM=yes
-    - FIELD=64bit     ENDOMORPHISM=yes  ECDH=yes EXPERIMENTAL=yes
-    - FIELD=64bit                       ASM=x86_64
-    - FIELD=64bit     ENDOMORPHISM=yes  ASM=x86_64
-    - FIELD=32bit     SCHNORR=yes EXPERIMENTAL=yes
-    - FIELD=32bit     ENDOMORPHISM=yes
-    - BIGNUM=no
-    - BIGNUM=no       ENDOMORPHISM=yes SCHNORR=yes  RECOVERY=yes EXPERIMENTAL=yes
-    - BIGNUM=no       STATICPRECOMPUTATION=no
-    - BUILD=distcheck
-    - EXTRAFLAGS=CPPFLAGS=-DDETERMINISTIC
-    - EXTRAFLAGS=CFLAGS=-O0
-    - BUILD=check-java ECDH=yes SCHNORR=yes EXPERIMENTAL=yes
+#  matrix:
+#    - SCALAR=32bit    RECOVERY=yes
+#    - SCALAR=32bit    FIELD=32bit       ECDH=yes  EXPERIMENTAL=yes
+#    - SCALAR=64bit
+#    - FIELD=64bit     RECOVERY=yes
+#    - FIELD=64bit     ENDOMORPHISM=yes
+#    - FIELD=64bit     ENDOMORPHISM=yes  ECDH=yes EXPERIMENTAL=yes
+#    - FIELD=64bit                       ASM=x86_64
+#    - FIELD=64bit     ENDOMORPHISM=yes  ASM=x86_64
+#    - FIELD=32bit     SCHNORR=yes EXPERIMENTAL=yes
+#    - FIELD=32bit     ENDOMORPHISM=yes
+#    - BIGNUM=no
+#    - BIGNUM=no       ENDOMORPHISM=yes SCHNORR=yes  RECOVERY=yes EXPERIMENTAL=yes
+#    - BIGNUM=no       STATICPRECOMPUTATION=no
+#    - BUILD=distcheck
+#    - EXTRAFLAGS=CPPFLAGS=-DDETERMINISTIC
+#    - EXTRAFLAGS=CFLAGS=-O0
+#    - BUILD=check-java ECDH=yes SCHNORR=yes EXPERIMENTAL=yes
 matrix:
   fast_finish: true
   include:
-    - compiler: clang
-      env: HOST=i686-linux-gnu ENDOMORPHISM=yes
-      addons:
-        apt:
-          packages:
-            - gcc-multilib
-            - libgmp-dev:i386
-    - compiler: clang
-      env: HOST=i686-linux-gnu
-      addons:
-        apt:
-          packages:
-            - gcc-multilib
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-3.8']
-      env: COMPILER=clang++-3.8
-    - compiler: gcc
+    - os: osx
+      osx_image: xcode7.3
+      env: CONAN_CLANG_VERSIONS=8 ENDOMORPHISM=yes
+    - os: osx
+      osx_image: xcode8.2
+      env: CONAN_CLANG_VERSIONS=8
+    - os: linux
+      compiler: gcc
       env: CONAN_GCC_VERSIONS=4.9 HOST=i686-linux-gnu ENDOMORPHISM=yes MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
       addons:
         apt:
@@ -66,7 +58,8 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-4.9
-    - compiler: gcc
+    - os: linux
+      compiler: gcc
       env: CONAN_GCC_VERSIONS=5.0 HOST=i686-linux-gnu MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
       addons:
         apt:
@@ -75,7 +68,9 @@ matrix:
           packages:
             - g++-5
             - libgmp-dev:i386
-before_install: mkdir -p `dirname $GUAVA_JAR`
+before_install:
+  - mkdir -p `dirname $GUAVA_JAR`
+  - eval "${MATRIX_EVAL}"
 install:
   - if [ ! -f $GUAVA_JAR ]; then wget $GUAVA_URL -O $GUAVA_JAR; fi
   - chmod +x .travis/install.sh
