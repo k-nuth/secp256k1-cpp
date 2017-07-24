@@ -206,26 +206,6 @@ if (ENABLE_BENCHMARK)
   endif()
 endif()
 
-# Tests
-#==============================================================================
-if (ENABLE_TESTS)
-  add_executable(tests
-    src/tests.c)
-
-  target_compile_definitions(tests PRIVATE -DVERIFY)
-  target_include_directories(tests PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR})
-
-  target_link_libraries(tests secp256k1::secp256k1)
-
-  enable_testing()
-  add_test(
-    NAME test
-    COMMAND tests)
-
-  set_target_properties(tests PROPERTIES FOLDER "secp256k1")
-endif()
-
 # Install
 #==============================================================================
 install(TARGETS secp256k1
@@ -277,3 +257,23 @@ install(
     "${CMAKE_CURRENT_BINARY_DIR}/secp256k1Config.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/secp256k1ConfigVersion.cmake"
   DESTINATION ${_config_package_location})
+
+# Tests
+#==============================================================================
+if (ENABLE_TESTS)
+  add_executable(tests
+    src/tests.c)
+
+  target_compile_definitions(tests PRIVATE -DVERIFY)
+  target_include_directories(tests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR})
+
+  target_link_libraries(tests secp256k1::secp256k1)
+
+  enable_testing()
+  add_test(
+    NAME test
+    COMMAND tests)
+
+  set_target_properties(tests PROPERTIES FOLDER "secp256k1")
+endif()
