@@ -11,7 +11,7 @@ class ConantestConan(ConanFile):
     options = {"shared": [True, False]}
     default_options = "shared=False"
     generators = "cmake"
-    exports_sources = "src/*;CMakeLists.txt"
+    exports_sources = "src/*", "CMakeLists.txt"
 
     def build(self):
         cmake = CMake(self)
