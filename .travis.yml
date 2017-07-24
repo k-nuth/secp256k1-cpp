@@ -78,7 +78,6 @@ install:
   - if [ ! -f $GUAVA_JAR ]; then wget $GUAVA_URL -O $GUAVA_JAR; fi
   - chmod +x .travis/install.sh
   - ./.travis/install.sh
-before_script: ./autogen.sh
 script:
  - chmod +x .travis/run.sh
  - ./.travis/run.sh
