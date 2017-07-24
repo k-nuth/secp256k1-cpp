@@ -3,12 +3,12 @@ import os
 
 
 channel = os.getenv("CONAN_CHANNEL", "stable")
-username = os.getenv("CONAN_USERNAME", "dario-ramos")
+username = os.getenv("CONAN_USERNAME", "bitprim")
 
 
 class ConantestTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    requires = "secp256k1/0.1@bitprim/%s" % (username, channel)
+    requires = "secp256k1/0.1@%s/%s" % (username, channel)
     generators = "cmake"
 
     def build(self):
