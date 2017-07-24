@@ -1,4 +1,5 @@
 from conans import ConanFile, CMake
+from pprint import pprint
 import os
 
 channel = os.getenv("CONAN_CHANNEL", "stable")
@@ -11,8 +12,12 @@ class Secp256k1TestConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+
+        pprint(vars(self))
+        pprint(vars(cmake))
+
         # Current dir is "test_package/build/<build_id>" and CMakeLists.txt is in "test_package"
-        cmake.configure(source_dir=self.conanfile_directory, build_dir="./", CMAKE_CXX_COMPILER_ID=self.settings["compiler.version"])
+        cmake.configure(source_dir=self.conanfile_directory, build_dir="./")
         cmake.build()
 
     def imports(self):
