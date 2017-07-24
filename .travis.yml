@@ -50,21 +50,20 @@ matrix:
           packages:
             - gcc-multilib
             - libgmp-dev:i386
-      python: "3.6"
     - compiler: clang
       env: HOST=i686-linux-gnu
       addons:
         apt:
           packages:
             - gcc-multilib
-      python: "3.6"
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-3.8']
+      env: COMPILER=clang++-3.5
     - compiler: gcc
       env: HOST=i686-linux-gnu ENDOMORPHISM=yes
       addons:
         apt:
           packages:
             - gcc-multilib
-      python: "3.6"
     - compiler: gcc
       env: HOST=i686-linux-gnu
       addons:
@@ -72,7 +71,6 @@ matrix:
           packages:
             - gcc-multilib
             - libgmp-dev:i386
-      python: "3.6"
 before_install: mkdir -p `dirname $GUAVA_JAR`
 install:
   - if [ ! -f $GUAVA_JAR ]; then wget $GUAVA_URL -O $GUAVA_JAR; fi
