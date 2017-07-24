@@ -18,7 +18,7 @@ cache:
 env:
   global:
     - FIELD=auto  BIGNUM=auto  SCALAR=auto  ENDOMORPHISM=no  STATICPRECOMPUTATION=yes  ASM=no  BUILD=check  EXTRAFLAGS=  HOST=  ECDH=no  schnorr=no  RECOVERY=yes  EXPERIMENTAL=no
-    - GUAVA_URL=https://search.maven.org/remotecontent?filepath=com/google/guava/guava/18.0/guava-18.0.jar GUAVA_JAR=./src/java/guava/guava-18.0.jar
+    - GUAVA_URL=https://search.maven.org/remotecontent?filepath=com/google/guava/guava/18.0/guava-18.0.jar GUAVA_JAR=/src/java/guava/guava-18.0.jar
 #  matrix:
 #    - SCALAR=32bit    RECOVERY=yes
 #    - SCALAR=32bit    FIELD=32bit       ECDH=yes  EXPERIMENTAL=yes
@@ -70,6 +70,10 @@ before_install:
   - eval "${MATRIX_EVAL}"
 install:
   ############################################################################
+  # Install Guava
+  ############################################################################
+  - if [ ! -f $GUAVA_JAR ]; then wget $GUAVA_URL -O $GUAVA_JAR; fi
+  ############################################################################
   # All the dependencies are installed in /home/travis/deps/
   ############################################################################
   - DEPS_DIR="/home/travis/deps"
@@ -81,10 +85,6 @@ install:
   - mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
   - echo 'Cmake 3.9.0 installed';
   - export PATH=${DEPS_DIR}/cmake/bin:${PATH}
-  ############################################################################
-  # Install Guava
-  ############################################################################
-  - if [ ! -f $GUAVA_JAR ]; then wget $GUAVA_URL -O $GUAVA_JAR; fi
   - chmod +x .travis/install.sh
   - ./.travis/install.sh
 script:
