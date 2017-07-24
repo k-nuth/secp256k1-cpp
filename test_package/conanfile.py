@@ -11,13 +11,12 @@ class Secp256k1TestConan(ConanFile):
     generators = "cmake"
 
     def build(self):
+        print "TP-SELF\n"
         pprint(vars(self))
+        print "TP-SELF.SETTINGS\n"
         pprint(vars(self.settings))
 
         cmake = CMake(self)
-
-        
-        pprint(vars(cmake))
 
         # Current dir is "test_package/build/<build_id>" and CMakeLists.txt is in "test_package"
         cmake.configure(source_dir=self.conanfile_directory, build_dir="./")
