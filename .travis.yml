@@ -57,7 +57,7 @@ matrix:
             - g++-4.9
     - os: linux
       compiler: gcc
-      env: CONAN_GCC_VERSIONS=5.0 HOST=i686-linux-gnu MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+      env: CONAN_GCC_VERSIONS=5.4 HOST=i686-linux-gnu MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
       addons:
         apt:
           sources:
