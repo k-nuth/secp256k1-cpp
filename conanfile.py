@@ -15,8 +15,8 @@ class ConantestConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        self.run('cmake %s %s' % (self.source_folder, cmake.command_line))
-        self.run("cmake --build . %s" % cmake.build_config)
+        cmake.configure(source_dir=self.conanfile_directory)
+        cmake.build()
 
     def package(self):
         self.copy("*.h", dst="include", src="src")

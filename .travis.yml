@@ -59,17 +59,21 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-3.8']
       env: COMPILER=clang++-3.8
     - compiler: gcc
-      env: HOST=i686-linux-gnu ENDOMORPHISM=yes
+      env: CONAN_GCC_VERSIONS=4.9 HOST=i686-linux-gnu ENDOMORPHISM=yes MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
       addons:
         apt:
+          sources:
+            - ubuntu-toolchain-r-test
           packages:
-            - gcc-multilib
+            - g++-4.9
     - compiler: gcc
-      env: HOST=i686-linux-gnu
+      env: CONAN_GCC_VERSIONS=5.0 HOST=i686-linux-gnu MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
       addons:
         apt:
+          sources:
+            - ubuntu-toolchain-r-test
           packages:
-            - gcc-multilib
+            - g++-5
             - libgmp-dev:i386
 before_install: mkdir -p `dirname $GUAVA_JAR`
 install:
