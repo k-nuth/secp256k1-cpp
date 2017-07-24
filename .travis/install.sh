@@ -32,7 +32,7 @@ mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
 # Install a recent CMake
 ############################################################################
 CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.0-rc5-Linux-x86_64.tar.gz"
-mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+mkdir cmake && wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
 echo 'Cmake 3.9.0 installed';
 export PATH=${DEPS_DIR}/cmake/bin:${PATH}
 
