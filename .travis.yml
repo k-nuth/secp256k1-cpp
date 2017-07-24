@@ -55,6 +55,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-4.9
+            - g++-4.8
     - os: linux
       compiler: gcc
       env: CONAN_GCC_VERSIONS=5.4 HOST=i686-linux-gnu MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
@@ -64,6 +65,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-5
+            - g++-4.8
             - libgmp-dev:i386
 before_install:
   - mkdir -p `dirname $GUAVA_JAR`
