@@ -14,10 +14,8 @@ class Secp256k1Conan(ConanFile):
     exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*"
 
     def build(self):
-        print "MAIN-SELF\n"
-        pprint(vars(self))
-        print "MAIN-SELF\n"
-        pprint(vars(self.settings))
+        print("MAIN\n")
+        pprint(vars(self.settings.arch))
 
         cmake = CMake(self)
         cmake.configure(source_dir=self.conanfile_directory)

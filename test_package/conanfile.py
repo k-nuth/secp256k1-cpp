@@ -17,6 +17,8 @@ class Secp256k1TestConan(ConanFile):
         #pprint(vars(self.settings))
         #print "TP-SELF.SETTINGS.COMPILER.VERSION\n"
         #pprint(vars(self.settings.compiler.version))
+        print("TP\n")
+        pprint(vars(self.settings.arch))
 
         os.environ["CC"] = "gcc-" + str(self.settings.compiler.version)
         os.environ["CXX"] = "gcc-" + str(self.settings.compiler.version)
