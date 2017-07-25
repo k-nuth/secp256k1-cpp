@@ -23,6 +23,7 @@ class Secp256k1TestConan(ConanFile):
         os.environ["CC"] = "gcc-" + str(self.settings.compiler.version)
         os.environ["CXX"] = "gcc-" + str(self.settings.compiler.version)
         os.environ["CFLAGS"] = "-m32"
+        os.environ["CXXFLAGS"] = "-m32"
         cmake = CMake(self)
 
         # Current dir is "test_package/build/<build_id>" and CMakeLists.txt is in "test_package"
