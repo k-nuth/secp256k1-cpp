@@ -1,5 +1,5 @@
 from conans import ConanFile, CMake
-from pprint import pprint
+import json
 
 class Secp256k1Conan(ConanFile):
     name = "secp256k1"
@@ -15,9 +15,9 @@ class Secp256k1Conan(ConanFile):
 
     def build(self):
         print "MAIN-SELF\n"
-        pprint(vars(self))
-        print "MAIN-SELF\n"
-        pprint(vars(self.settings))        
+        print(json.dumps(self, 
+                 default=lambda obj: vars(obj),
+                 indent=1))
 
         cmake = CMake(self)
         cmake.configure(source_dir=self.conanfile_directory)

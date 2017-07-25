@@ -12,9 +12,10 @@ class Secp256k1TestConan(ConanFile):
 
     def build(self):
         print "TP-SELF\n"
-        pprint(vars(self))
-        print "TP-SELF.SETTINGS\n"
-        pprint(vars(self.settings))
+        print "TP-SELF\n"
+        print(json.dumps(self, 
+                 default=lambda obj: vars(obj),
+                 indent=1))
 
         cmake = CMake(self)
 
