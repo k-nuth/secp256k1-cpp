@@ -1,8 +1,7 @@
-import os
 from conan.packager import ConanMultiPackager
 
+
 if __name__ == "__main__":
-    builder = ConanMultiPackager(username="dario-ramos", channel="stable")
-    builder.password = os.getenv("CONAN_PASSWORD")
-    builder.add_common_builds()
+    builder = ConanMultiPackager(username="bitprim", channel="stable")
+    builder.add_common_builds(shared_option_name="secp256k1:shared")
     builder.run()

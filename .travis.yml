@@ -1,95 +1,38 @@
-dist: trusty
+
 env:
    global:
      - CONAN_REFERENCE: "secp256k1/0.1"
-     - CONAN_USERNAME: "dario-ramos"
-     - CONAN_LOGIN_USERNAME: "dario-ramos"
+     - CONAN_USERNAME: "bitprim"
+     - CONAN_LOGIN_USERNAME: "bitprim"
      - CONAN_CHANNEL: "stable"
      - CONAN_UPLOAD: "https://api.bintray.com/conan/bitprim/secp256k1"
 
-language: c
-sudo: required
-addons:
-  apt:
-    packages: libgmp-dev
-cache:
-  directories:
-  - src/java/guava/
-env:
-  global:
-    - FIELD=auto  BIGNUM=auto  SCALAR=auto  ENDOMORPHISM=no  STATICPRECOMPUTATION=yes  ASM=no  BUILD=check  EXTRAFLAGS=  HOST=  ECDH=no  schnorr=no  RECOVERY=yes  EXPERIMENTAL=no
-    - GUAVA_URL=https://search.maven.org/remotecontent?filepath=com/google/guava/guava/18.0/guava-18.0.jar GUAVA_JAR=src/java/guava/guava-18.0.jar
-#  matrix:
-#    - SCALAR=32bit    RECOVERY=yes
-#    - SCALAR=32bit    FIELD=32bit       ECDH=yes  EXPERIMENTAL=yes
-#    - SCALAR=64bit
-#    - FIELD=64bit     RECOVERY=yes
-#    - FIELD=64bit     ENDOMORPHISM=yes
-#    - FIELD=64bit     ENDOMORPHISM=yes  ECDH=yes EXPERIMENTAL=yes
-#    - FIELD=64bit                       ASM=x86_64
-#    - FIELD=64bit     ENDOMORPHISM=yes  ASM=x86_64
-#    - FIELD=32bit     SCHNORR=yes EXPERIMENTAL=yes
-#    - FIELD=32bit     ENDOMORPHISM=yes
-#    - BIGNUM=no
-#    - BIGNUM=no       ENDOMORPHISM=yes SCHNORR=yes  RECOVERY=yes EXPERIMENTAL=yes
-#    - BIGNUM=no       STATICPRECOMPUTATION=no
-#    - BUILD=distcheck
-#    - EXTRAFLAGS=CPPFLAGS=-DDETERMINISTIC
-#    - EXTRAFLAGS=CFLAGS=-O0
-#    - BUILD=check-java ECDH=yes SCHNORR=yes EXPERIMENTAL=yes
+linux: &linux
+   os: linux
+   sudo: required
+   language: python
+   python: "3.6"
+   services:
+     - docker
+osx: &osx
+   os: osx
+   language: generic
 matrix:
-  fast_finish: true
-  include:
-#    - os: osx
-#      osx_image: xcode7.3
-#      env: CONAN_CLANG_VERSIONS=8 ENDOMORPHISM=yes
-#    - os: osx
-#      osx_image: xcode8.2
-#      env: CONAN_CLANG_VERSIONS=8
-    - os: linux
-      compiler: gcc
-      env: CONAN_GCC_VERSIONS=4.9 HOST=i686-linux-gnu ENDOMORPHISM=yes MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-4.9
-            - g++-4.9-multilib
-    - os: linux
-      compiler: gcc
-      env: CONAN_GCC_VERSIONS=5.4 HOST=i686-linux-gnu MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-            - g++-5-multilib
-            - libgmp-dev:i386
-before_install:
-  - mkdir -p `dirname $GUAVA_JAR`
-  - eval "${MATRIX_EVAL}"
+   include:
+
+      - <<: *linux
+        env: CONAN_GCC_VERSIONS=4.9 CONAN_DOCKER_IMAGE=lasote/conangcc49
+
+      - <<: *linux
+        env: CONAN_GCC_VERSIONS=5.4 CONAN_DOCKER_IMAGE=lasote/conangcc54
+
+      - <<: *linux
+        env: CONAN_GCC_VERSIONS=6.3 CONAN_DOCKER_IMAGE=lasote/conangcc63
+
 install:
-  ############################################################################
-  # Install Guava
-  ############################################################################
-  - if [ ! -f $GUAVA_JAR ]; then wget $GUAVA_URL -O $GUAVA_JAR; fi
-  ############################################################################
-  # All the dependencies are installed in /home/travis/deps/
-  ############################################################################
-  - DEPS_DIR="/home/travis/deps"
-  - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
-  ############################################################################
-  # Install a recent CMake
-  ############################################################################
-  - CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.0-rc5-Linux-x86_64.tar.gz"
-  - mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
-  - export PATH=${DEPS_DIR}/cmake/bin:${PATH}
-  - cmake --version
-  - cd ${TRAVIS_BUILD_DIR}
   - chmod +x .travis/install.sh
   - ./.travis/install.sh
+
 script:
- - chmod +x .travis/run.sh
- - ./.travis/run.sh
+  - chmod +x .travis/run.sh
+  - ./.travis/run.sh
