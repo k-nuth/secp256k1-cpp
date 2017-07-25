@@ -11,15 +11,15 @@ class Secp256k1TestConan(ConanFile):
     generators = "cmake"
 
     def build(self):
-        print "TP-SELF\n"
-        pprint(vars(self))
-        print "TP-SELF.SETTINGS\n"
-        pprint(vars(self.settings))
-        print "TP-SELF.SETTINGS.COMPILER.VERSION\n"
-        pprint(vars(self.settings.compiler.version))
+        #print "TP-SELF\n"
+        #pprint(vars(self))
+        #print "TP-SELF.SETTINGS\n"
+        #pprint(vars(self.settings))
+        #print "TP-SELF.SETTINGS.COMPILER.VERSION\n"
+        #pprint(vars(self.settings.compiler.version))
 
-        os.environ["CC"] = "gcc-4.9"
-        os.environ["CXX"] = "gcc-4.9"
+        os.environ["CC"] = "gcc-" + self.settings.compiler.version
+        os.environ["CXX"] = "gcc-" + self.settings.compiler.version
         cmake = CMake(self)
 
         # Current dir is "test_package/build/<build_id>" and CMakeLists.txt is in "test_package"
