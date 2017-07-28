@@ -15,8 +15,6 @@ class Secp256k1Conan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        #self.run('cmake %s/src %s' % (self.source_folder, cmake.command_line))
-        #self.run("cmake --build . %s" % cmake.build_config)
         cmake.configure(source_dir=self.conanfile_directory)
         cmake.build()
 
