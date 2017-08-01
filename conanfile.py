@@ -28,4 +28,6 @@ class Secp256k1Conan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["secp256k1"]
-        self.env_info.cpath = os.path.join(self.package_folder, "include")
+        self.env_info.CPATH = os.path.join(self.package_folder, "include")
+        self.env_info.C_INCLUDE_PATH = os.path.join(self.package_folder, "include")
+        self.env_info.CPLUS_INCLUDE_PATH = os.path.join(self.package_folder, "include")
