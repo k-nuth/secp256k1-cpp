@@ -5,6 +5,11 @@ cmake_minimum_required(VERSION 3.4)
 project(secp256k1
   VERSION 0.1
   LANGUAGES C)
+
+
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Process options.
