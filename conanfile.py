@@ -27,4 +27,5 @@ class Secp256k1Conan(ConanFile):
         self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
+        self.cpp_info.includedirs = ['include']
         self.cpp_info.libs = ["secp256k1"]
