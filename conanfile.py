@@ -1,5 +1,5 @@
 from conans import ConanFile, CMake
-
+import os
 
 class Secp256k1Conan(ConanFile):
     name = "secp256k1"
