@@ -10,7 +10,7 @@ env:
 linux: &linux
    os: linux
    sudo: required
-   language: python
+   language: cpp
    python: "3.6"
    services:
      - docker
