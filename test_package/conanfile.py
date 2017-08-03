@@ -10,6 +10,7 @@ class Secp256k1TestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = "secp256k1/0.1@%s/%s" % (username, channel)
     generators = "cmake"
+    # build_policy = "missing"
 
     def build(self):
         cmake = CMake(self)
