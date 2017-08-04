@@ -16,7 +16,7 @@ class Secp256k1Conan(ConanFile):
 
     # package_files = "build/lsecp256k1.a"  #TODO!
 
-    requires = (("bitprim-conan-gmp/6.1.2@bitprim/stable"))
+    requires = (("gmp/6.1.2@bitprim/stable"))
 
     def build(self):
         cmake = CMake(self)
