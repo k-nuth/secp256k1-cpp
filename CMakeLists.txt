@@ -169,6 +169,8 @@ endif()
 #  target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_BUILTIN=1)
 #endif()
 
+target_link_libraries(secp256k1 PUBLIC ${CONAN_LIBS})
+
 if (ENABLE_MODULE_ECDH)
   target_compile_definitions(secp256k1 PUBLIC -DENABLE_MODULE_ECDH=1)
 endif()
