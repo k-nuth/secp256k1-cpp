@@ -27,7 +27,9 @@ option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." ON)
 set(WITH_ASM "auto" CACHE STRING "Specify assembly optimizations to use (x86_64|arm|no|auto).")
 set(WITH_FIELD "auto" CACHE STRING "Specify Field Implementation (64bit|32bit|auto).")
 set(WITH_SCALAR "auto" CACHE STRING "Specify scalar implementation (64bit|32bit|auto).")
-set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|no|auto).")
+
+#TODO: add this option to Conan Scripts
+#set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|no|auto).")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -94,23 +96,23 @@ elseif (NOT WITH_FIELD STREQUAL "32bit")
   message(FATAL_ERROR "Invalid scalar implementation: ${WITH_SCALAR}")
 endif()
 
-# Implement --with-bignum
-#------------------------------------------------------------------------------
-if (WITH_BIGNUM STREQUAL "auto")
-  _check_has_gmp()
-  if (HAS_GMP)
-    set(WITH_BIGNUM "gmp")
-  else()
-    set(WITH_BIGNUM "no")
-  endif()
-elseif (WITH_BIGNUM STREQUAL "gmp")
-  _check_has_gmp()
-  if (NOT HAS_GMP)
-    message(FATAL_ERROR "gmp bignum explicitly requested but libgmp not available")
-  endif()
-elseif (NOT WITH_BIGNUM STREQUAL "no")
-  message(FATAL_ERROR "Invalid bignum implementation: ${WITH_BIGNUM}")
-endif()
+## Implement --with-bignum
+##------------------------------------------------------------------------------
+#if (WITH_BIGNUM STREQUAL "auto")
+#  _check_has_gmp()
+#  if (HAS_GMP)
+#    set(WITH_BIGNUM "gmp")
+#  else()
+#    set(WITH_BIGNUM "no")
+#  endif()
+#elseif (WITH_BIGNUM STREQUAL "gmp")
+#  _check_has_gmp()
+#  if (NOT HAS_GMP)
+#    message(FATAL_ERROR "gmp bignum explicitly requested but libgmp not available")
+#  endif()
+#elseif (NOT WITH_BIGNUM STREQUAL "no")
+#  message(FATAL_ERROR "Invalid bignum implementation: ${WITH_BIGNUM}")
+#endif()
 
 # Build
 #==============================================================================
@@ -151,19 +153,21 @@ elseif (WITH_SCALAR STREQUAL "32bit")
   target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_8X32=1)
 endif()
 
-if (WITH_BIGNUM STREQUAL "gmp")
+
+
+#TODO(fernando): See how to add this compile_definitions in the Conan Script
+#if (WITH_BIGNUM STREQUAL "gmp")
   target_compile_definitions(secp256k1 PUBLIC -DHAVE_LIBGMP=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_GMP=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_NUM=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_NUM=1)
-
-  target_include_directories(secp256k1 PUBLIC ${GMP_INCLUDE_DIR})
-  target_link_libraries(secp256k1 ${GMP_LIBRARIES})
-elseif (WITH_BIGNUM STREQUAL "no")
-  target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_NONE=1)
-  target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_BUILTIN=1)
-  target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_BUILTIN=1)
-endif()
+#  target_include_directories(secp256k1 PUBLIC ${GMP_INCLUDE_DIR})
+#  target_link_libraries(secp256k1 ${GMP_LIBRARIES})
+#elseif (WITH_BIGNUM STREQUAL "no")
+#  target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_NONE=1)
+#  target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_BUILTIN=1)
+#  target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_BUILTIN=1)
+#endif()
 
 if (ENABLE_MODULE_ECDH)
   target_compile_definitions(secp256k1 PUBLIC -DENABLE_MODULE_ECDH=1)

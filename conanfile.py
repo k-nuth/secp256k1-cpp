@@ -11,8 +11,12 @@ class Secp256k1Conan(ConanFile):
     options = {"shared": [True, False]}
     default_options = "shared=False"
     generators = "cmake"
-    exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
     build_policy = "missing"
+    exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
+
+    # package_files = "build/lsecp256k1.a"  #TODO!
+
+    requires = (("bitprim-conan-gmp/6.1.2@bitprim/stable"))
 
     def build(self):
         cmake = CMake(self)
