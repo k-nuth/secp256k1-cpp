@@ -22,9 +22,9 @@ class Secp256k1Conan(ConanFile):
         cmake = CMake(self)
         cmake_args = {}
         if self.settings.os == "Windows":
-            cmake_args = {"-DWITHBIGNUM=no"}
+            cmake_args = {"-DWITH_BIGNUM=no"}
         else:
-            cmake_args = {"-DWITHBIGNUM=gmp"}
+            cmake_args = {"-DWITH_BIGNUM=gmp"}
         cmake.configure(source_dir=self.conanfile_directory, args=cmake_args)
         cmake.build()
 
