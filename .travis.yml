@@ -17,6 +17,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+branches:
+  except:
+  - conan-build-win
+
 env:
    global:
      - CONAN_REFERENCE: "secp256k1/0.1"
