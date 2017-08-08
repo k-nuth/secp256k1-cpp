@@ -1,4 +1,4 @@
-libsecp256k1
+libsecp256k1 <a target="_blank" href="https://gitter.im/bitprim/Lobby">![Gitter Chat][badge.Gitter]</a>
 ============
 Optimized C library for EC operations on curve secp256k1.
 This library is a work in progress and is being used to research best practices. Use at your own risk.
@@ -60,3 +60,4 @@ $ cmake .. -DENABLE_MODULE_RECOVERY=ON
 $ make -j2
 $ sudo make install
 ```
+[badge.Gitter]: https://img.shields.io/badge/gitter-join%20chat-blue.svg
