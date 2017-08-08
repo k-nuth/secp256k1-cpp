@@ -24,7 +24,7 @@ class Secp256k1Conan(ConanFile):
             cmake.definitions["WITH_BIGNUM"]="no"
         else:
             cmake.definitions["WITH_BIGNUM"]="gmp"
-        cmake.configure(source_dir=self.conanfile_directory, args=cmake_args)
+        cmake.configure(source_dir=self.conanfile_directory)
         cmake.build()
 
     def package(self):
