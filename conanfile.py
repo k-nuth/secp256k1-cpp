@@ -14,17 +14,18 @@ class Secp256k1Conan(ConanFile):
     build_policy = "missing"
     exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
 
-    # package_files = "build/lsecp256k1.a"  #TODO!
-
-    # requires = (("gmp/6.1.2@bitprim/stable"))
-
     def build_requirements(self):
         if self.settings.os == "Linux" or self.settings.os == "Macos":
             self.build_requires("gmp/6.1.2@bitprim/stable")
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(source_dir=self.conanfile_directory)
+        cmake_args = {}
+        if self.settings.os == "Windos":
+            cmake_args = {"-DWITHBIGNUM=no"}
+        else:
+            cmake_args = {"-DWITHBIGNUM=gmp"}
+        cmake.configure(source_dir=self.conanfile_directory, args=cmake_args)
         cmake.build()
 
     def package(self):
