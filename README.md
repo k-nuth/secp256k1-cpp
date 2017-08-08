@@ -1,13 +1,11 @@
 libsecp256k1
 ============
+Optimized C library for EC operations on curve secp256k1.
+This library is a work in progress and is being used to research best practices. Use at your own risk.
 
 | **master(linux/osx)** | **conan-build-win(linux/osx)**   | **master(windows)**   | **conan-build-win(windows)** |
 |:------:|:-:|:-:|:-:|
 | [![Build Status](https://travis-ci.org/bitprim/secp256k1.svg)](https://travis-ci.org/bitprim/secp256k1)       | [![Build StatusB](https://travis-ci.org/bitprim/secp256k1.svg?branch=conan-build-win)](https://travis-ci.org/bitprim/secp256k1?branch=conan-build-win)  | [![Appveyor Status](https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?svg=true)](https://ci.appveyor.com/project/bitprim/secp256k1)  | [![Appveyor StatusB](https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?branch=conan-build-win&svg=true)](https://ci.appveyor.com/project/bitprim/secp256k1?branch=conan-build-win)  |
-
-Optimized C library for EC operations on curve secp256k1.
-
-This library is a work in progress and is being used to research best practices. Use at your own risk.
 
 Features:
 * secp256k1 ECDSA signing/verification and key generation.
