@@ -3,14 +3,6 @@ libsecp256k1
 
 [![Build Status](https://travis-ci.org/bitprim/secp256k1.svg?branch=conan-build)](https://travis-ci.org/bitprim/secp256k1) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?branch=conan-build&svg=true)](https://ci.appveyor.com/project/bitprim/secp256k1?branch=conan-build)
 
-+------------------------+-------------------------+----------------------+-----------------------+
-| **master (linux/osx)** | **develop (linux/osx)** | **master (windows)** | **develop** (windows) |
-+========================+=========================+======================+=======================+
-| |Build Status|         | |Appveyor Status|       | Test                 | Test2                 |
-+------------------------+-------------------------+----------------------+-----------------------+
-
-
-
 Optimized C library for EC operations on curve secp256k1.
 
 This library is a work in progress and is being used to research best practices. Use at your own risk.
