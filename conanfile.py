@@ -22,6 +22,8 @@ class Secp256k1Conan(ConanFile):
         cmake = CMake(self)
         if self.settings.os == "Windows":
             cmake.definitions["WITH_BIGNUM"]="no"
+            if self.settings.compiler == "Visual Studio" and (self.settings.compiler.version != 12):
+                cmake.definitions["ENABLE_TESTS"] = "OFF"
         else:
             cmake.definitions["WITH_BIGNUM"]="gmp"
         cmake.configure(source_dir=self.conanfile_directory)
@@ -37,6 +39,7 @@ class Secp256k1Conan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["secp256k1"]
-        self.env_info.CPATH = os.path.join(self.package_folder, "include")
-        self.env_info.C_INCLUDE_PATH = os.path.join(self.package_folder, "include")
-        self.env_info.CPLUS_INCLUDE_PATH = os.path.join(self.package_folder, "include")
+        if self.package_folder:
+            self.env_info.CPATH = os.path.join(self.package_folder, "include")
+            self.env_info.C_INCLUDE_PATH = os.path.join(self.package_folder, "include")
+            self.env_info.CPLUS_INCLUDE_PATH = os.path.join(self.package_folder, "include")
