@@ -16,7 +16,7 @@ class Secp256k1Conan(ConanFile):
 
     def requirements(self):
         if self.settings.os == "Linux" or self.settings.os == "Macos":
-            self.build_requires("gmp/6.1.2@bitprim/stable")
+            self.requires("gmp/6.1.2@bitprim/stable")
 
     def build(self):
         cmake = CMake(self)
