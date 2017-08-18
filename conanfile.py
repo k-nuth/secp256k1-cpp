@@ -62,7 +62,7 @@ class Secp256k1Conan(ConanFile):
         "enable_experimental=False", \
         "enable_endomorphism=False", \
         "enable_ecmult_static_precomputation=True", \
-        "enable_module_ecdh='False'", \
+        "enable_module_ecdh=False", \
         "enable_module_schnorr=False", \
         "enable_module_recovery=True"
 
