@@ -1,3 +1,22 @@
+#
+# Copyright (c) 2017 Bitprim developers (see AUTHORS)
+#
+# This file is part of Bitprim.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 cmake_minimum_required(VERSION 3.4)
 
 # secp256k1
@@ -6,9 +25,13 @@ project(secp256k1
   VERSION 0.1
   LANGUAGES C)
 
+if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+else()
+    message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
+endif()
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -24,6 +47,7 @@ option(ENABLE_MODULE_ECDH "Enable ECDH shared secret computation (experimental).
 option(ENABLE_MODULE_SCHNORR "Enable Schnorr signature module (experimental)." OFF)
 option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." ON)
 
+#TODO(fernando): Implement the following with_... as options
 set(WITH_ASM "auto" CACHE STRING "Specify assembly optimizations to use (x86_64|arm|no|auto).")
 set(WITH_FIELD "auto" CACHE STRING "Specify Field Implementation (64bit|32bit|auto).")
 set(WITH_SCALAR "auto" CACHE STRING "Specify scalar implementation (64bit|32bit|auto).")
@@ -131,6 +155,9 @@ if (WITH_SCALAR STREQUAL "64bit")
 elseif (WITH_SCALAR STREQUAL "32bit")
   target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_8X32=1)
 endif()
+
+message("fer WITH_BIGNUM: ")
+message(WITH_BIGNUM)
 
 
 if (WITH_BIGNUM STREQUAL "gmp")
