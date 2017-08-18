@@ -36,8 +36,9 @@ class Secp256k1Conan(ConanFile):
     # default_options = "shared=False"
 
     #TODO(fernando): See what to do with shared/static option... (not supported yet in Cmake)
-    # "shared": [True, False],
-    options = {"fPIC": [True, False],
+    
+    options = {"shared": [True, False],
+               "fPIC": [True, False],
                "enable_benchmark": [True, False],
                "enable_tests": [True, False],
                "enable_openssl_tests": [True, False],
@@ -54,8 +55,9 @@ class Secp256k1Conan(ConanFile):
             #    "with_bignum": ['gmp', 'no', 'auto'],
     }
 
-    # "shared=False", \
-    default_options = "fPIC=True", \
+    
+    default_options = "shared=False", \
+        "fPIC=True", \
         "enable_benchmark=False", \
         "enable_tests=True", \
         "enable_openssl_tests=False", \
