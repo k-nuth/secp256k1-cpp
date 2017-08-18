@@ -10,7 +10,8 @@ if __name__ == "__main__":
     filtered_builds = []
     for settings, options, env_vars, build_requires in builder.builds:
         if settings["build_type"] == "Release" \
-                and not("secp256k1:shared" in options and options["secp256k1:shared"]):
+                and not("secp256k1:shared" in options and options["secp256k1:shared"]) \
+                and (not "compiler.runtime" in settings or not settings["compiler.runtime"] == "MD"):
             filtered_builds.append([settings, options, env_vars, build_requires])
 
     builder.builds = filtered_builds
