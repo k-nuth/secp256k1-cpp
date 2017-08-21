@@ -85,7 +85,9 @@ class Secp256k1Conan(ConanFile):
         cmake = CMake(self)
 
         cmake.definitions["USE_CONAN"] = "ON"
+        cmake.definitions["NO_CONAN_AT_ALL"] = "OFF"
         cmake.definitions["CMAKE_VERBOSE_MAKEFILE"] = "ON"
+
         cmake.definitions["ENABLE_POSITION_INDEPENDENT_CODE"] = option_on_off(self.options.fPIC)
         cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.enable_benchmark)
         cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.enable_tests)
@@ -97,16 +99,18 @@ class Secp256k1Conan(ConanFile):
         cmake.definitions["ENABLE_MODULE_SCHNORR"] = option_on_off(self.options.enable_module_schnorr)
         cmake.definitions["ENABLE_MODULE_RECOVERY"] = option_on_off(self.options.enable_module_recovery)
 
-        # cmake.definitions["WITH_ASM"] = option_on_off(self.options.with_asm)
-        # cmake.definitions["WITH_FIELD"] = option_on_off(self.options.with_field)
-        # cmake.definitions["WITH_SCALAR"] = option_on_off(self.options.with_scalar)
-
         if self.settings.os == "Windows":
             cmake.definitions["WITH_BIGNUM"] = "no"
             if self.settings.compiler == "Visual Studio" and (self.settings.compiler.version != 12):
-                cmake.definitions["ENABLE_TESTS"] = "OFF"
+                cmake.definitions["ENABLE_TESTS"] = "OFF"   #Workaround. test broke MSVC
         else:
             cmake.definitions["WITH_BIGNUM"] = "gmp"
+
+        # cmake.definitions["WITH_ASM"] = option_on_off(self.options.with_asm)
+        # cmake.definitions["WITH_FIELD"] = option_on_off(self.options.with_field)
+        # cmake.definitions["WITH_SCALAR"] = option_on_off(self.options.with_scalar)
+        # cmake.definitions["WITH_BIGNUM"] = option_on_off(self.options.with_bignum)
+
 
         cmake.configure(source_dir=self.conanfile_directory)
         cmake.build()

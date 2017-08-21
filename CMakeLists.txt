@@ -25,18 +25,20 @@ project(secp256k1
   VERSION 0.1
   LANGUAGES C)
 
-if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
-else()
-    message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
-endif()
-
-
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Process options.
 #==============================================================================
+# Implement --use-conan
+#------------------------------------------------------------------------------
+option(USE_CONAN "Use Conan Build Tool." OFF)
+option(NO_CONAN_AT_ALL "Conan totally disabled." OFF)
+
+if (NO_CONAN_AT_ALL)
+  set(USE_CONAN OFF)
+endif()
+
+
 option(ENABLE_BENCHMARK "Compile benchmark." OFF)
 option(ENABLE_TESTS "Compile tests." ON)
 option(ENABLE_OPENSSL_TESTS "Enable OpenSSL tests, if OpenSSL is available" OFF)
@@ -47,10 +49,29 @@ option(ENABLE_MODULE_ECDH "Enable ECDH shared secret computation (experimental).
 option(ENABLE_MODULE_SCHNORR "Enable Schnorr signature module (experimental)." OFF)
 option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." ON)
 
+message(${ENABLE_TESTS})
+
+
+
+# option(WITH_BIGNUM "")
+
 #TODO(fernando): Implement the following with_... as options
 set(WITH_ASM "auto" CACHE STRING "Specify assembly optimizations to use (x86_64|arm|no|auto).")
 set(WITH_FIELD "auto" CACHE STRING "Specify Field Implementation (64bit|32bit|auto).")
 set(WITH_SCALAR "auto" CACHE STRING "Specify scalar implementation (64bit|32bit|auto).")
+set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|no|auto).")
+
+message(${WITH_BIGNUM})
+
+if (NOT NO_CONAN_AT_ALL)
+  if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+      include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+      conan_basic_setup()
+  else()
+      message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
+  endif()
+endif()
+
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -117,6 +138,28 @@ elseif (NOT WITH_FIELD STREQUAL "32bit")
   message(FATAL_ERROR "Invalid scalar implementation: ${WITH_SCALAR}")
 endif()
 
+#TODO(fernando): Bignum for Windows. See MPR (or something like this) that is a GMP for Windows.
+# Implement --with-bignum
+#------------------------------------------------------------------------------
+if (NOT USE_CONAN)
+  if (${WITH_BIGNUM} STREQUAL "auto")
+    _check_has_gmp()
+    if (HAS_GMP)
+      set(WITH_BIGNUM "gmp")
+    else()
+      set(WITH_BIGNUM "no")
+    endif()
+  elseif (WITH_BIGNUM STREQUAL "gmp")
+    _check_has_gmp()
+    if (NOT HAS_GMP)
+      message(FATAL_ERROR "gmp bignum explicitly requested but libgmp not available")
+    endif()
+  elseif (NOT ${WITH_BIGNUM} STREQUAL "no")
+    message(FATAL_ERROR "Invalid bignum implementation: ${WITH_BIGNUM}")
+  endif()
+endif()
+
+
 # Build
 #==============================================================================
 add_library(secp256k1 STATIC
@@ -157,7 +200,16 @@ elseif (WITH_SCALAR STREQUAL "32bit")
 endif()
 
 message("fer WITH_BIGNUM: ")
-message(WITH_BIGNUM)
+message(WITH_ASM)
+message(WITH_FIELD)
+message(WITH_SCALAR)
+message(${WITH_BIGNUM})
+
+if (${WITH_BIGNUM} STREQUAL "auto")
+  message("fer WITH_BIGNUM auto")
+else()
+  message("fer WITH_BIGNUM auto - FALSE")
+endif()
 
 
 if (WITH_BIGNUM STREQUAL "gmp")
@@ -165,11 +217,18 @@ if (WITH_BIGNUM STREQUAL "gmp")
   target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_GMP=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_NUM=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_NUM=1)
-elseif (WITH_BIGNUM STREQUAL "no")
+
+  if (NOT USE_CONAN)
+    target_include_directories(secp256k1 PUBLIC ${GMP_INCLUDE_DIR})
+    target_link_libraries(secp256k1 ${GMP_LIBRARIES})
+  endif()
+elseif (${WITH_BIGNUM} STREQUAL "no")
   target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_NONE=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_BUILTIN=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_BUILTIN=1)
 endif()
+
+
 
 target_link_libraries(secp256k1 PUBLIC ${CONAN_LIBS})
 
