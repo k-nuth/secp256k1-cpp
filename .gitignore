@@ -47,8 +47,13 @@ build-aux/test-driver
 src/stamp-h1
 libsecp256k1.pc
 
+__pycache__/
 /build
 
 .idea/
 cmake-build-debug/
 CMakeSettings.json
+/.vs/secp256k1/v15/Browse.VC.db
+/.vs/secp256k1/v15/Browse.VC.opendb
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite

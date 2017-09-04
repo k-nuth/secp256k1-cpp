@@ -1,12 +1,11 @@
-libsecp256k1
+libsecp256k1 <a target="_blank" href="https://gitter.im/bitprim/Lobby">![Gitter Chat][badge.Gitter]</a>
 ============
-
-[![Build Status](https://travis-ci.org/bitprim/secp256k1.svg?branch=master)](https://travis-ci.org/bitprim/secp256k1) [![Appveyor Status](https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?branch=c-api&svg=true)](https://ci.appveyor.com/project/hanchon/secp256k1?branch=c-api)
-
-
 Optimized C library for EC operations on curve secp256k1.
-
 This library is a work in progress and is being used to research best practices. Use at your own risk.
+
+| **master(linux/osx)** | **conan-build-win(linux/osx)**   | **master(windows)**   | **conan-build-win(windows)** |
+|:------:|:-:|:-:|:-:|
+| [![Build Status](https://travis-ci.org/bitprim/secp256k1.svg)](https://travis-ci.org/bitprim/secp256k1)       | [![Build StatusB](https://travis-ci.org/bitprim/secp256k1.svg?branch=conan-build-win)](https://travis-ci.org/bitprim/secp256k1?branch=conan-build-win)  | [![Appveyor Status](https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?svg=true)](https://ci.appveyor.com/project/bitprim/secp256k1)  | [![Appveyor StatusB](https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?branch=conan-build-win&svg=true)](https://ci.appveyor.com/project/bitprim/secp256k1?branch=conan-build-win)  |
 
 Features:
 * secp256k1 ECDSA signing/verification and key generation.
@@ -61,3 +60,4 @@ $ cmake .. -DENABLE_MODULE_RECOVERY=ON
 $ make -j2
 $ sudo make install
 ```
+[badge.Gitter]: https://img.shields.io/badge/gitter-join%20chat-blue.svg
