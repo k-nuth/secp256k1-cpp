@@ -141,7 +141,7 @@ endif()
 #TODO(fernando): Bignum for Windows. See MPR (or something like this) that is a GMP for Windows.
 # Implement --with-bignum
 #------------------------------------------------------------------------------
-if (NOT USE_CONAN)
+if (NO_CONAN_AT_ALL)
   if (${WITH_BIGNUM} STREQUAL "auto")
     _check_has_gmp()
     if (HAS_GMP)
@@ -218,7 +218,7 @@ if (WITH_BIGNUM STREQUAL "gmp")
   target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_NUM=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_NUM=1)
 
-  if (NOT USE_CONAN)
+  if (NO_CONAN_AT_ALL)
     target_include_directories(secp256k1 PUBLIC ${GMP_INCLUDE_DIR})
     target_link_libraries(secp256k1 ${GMP_LIBRARIES})
   endif()
@@ -229,8 +229,12 @@ elseif (${WITH_BIGNUM} STREQUAL "no")
 endif()
 
 
+# message(CONAN_LIBS)
+# message(${CONAN_LIBS})
 
-target_link_libraries(secp256k1 PUBLIC ${CONAN_LIBS})
+if (NOT NO_CONAN_AT_ALL)
+  target_link_libraries(secp256k1 PUBLIC ${CONAN_LIBS})
+endif()
 
 if (ENABLE_MODULE_ECDH)
   target_compile_definitions(secp256k1 PUBLIC -DENABLE_MODULE_ECDH=1)
