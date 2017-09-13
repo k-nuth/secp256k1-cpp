@@ -211,8 +211,9 @@ else()
   message("fer WITH_BIGNUM auto - FALSE")
 endif()
 
-
-if (WITH_BIGNUM STREQUAL "gmp")
+message(WITH_BIGNUM)
+message(${WITH_BIGNUM})
+if (${WITH_BIGNUM} STREQUAL "gmp")
   target_compile_definitions(secp256k1 PUBLIC -DHAVE_LIBGMP=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_GMP=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_NUM=1)
