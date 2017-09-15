@@ -49,7 +49,7 @@ option(ENABLE_MODULE_ECDH "Enable ECDH shared secret computation (experimental).
 option(ENABLE_MODULE_SCHNORR "Enable Schnorr signature module (experimental)." OFF)
 option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." ON)
 
-message(${ENABLE_TESTS})
+# message(${ENABLE_TESTS})
 
 
 
@@ -211,8 +211,9 @@ else()
   message("fer WITH_BIGNUM auto - FALSE")
 endif()
 
-message(WITH_BIGNUM)
+message("WITH_BIGNUM--FER-FER")
 message(${WITH_BIGNUM})
+
 if (${WITH_BIGNUM} STREQUAL "gmp")
   target_compile_definitions(secp256k1 PUBLIC -DHAVE_LIBGMP=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_GMP=1)
