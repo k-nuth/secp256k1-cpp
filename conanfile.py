@@ -78,7 +78,8 @@ class Secp256k1Conan(ConanFile):
     exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
 
     def requirements(self):
-        if self.settings.os == "Linux" or self.settings.os == "Macos":
+        # if self.settings.os == "Linux" or self.settings.os == "Macos":
+        if self.settings.os != "Windows":
             self.requires("gmp/6.1.2@bitprim/stable")
 
     def build(self):
