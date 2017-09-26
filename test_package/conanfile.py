@@ -2,13 +2,13 @@ from conans import ConanFile, CMake
 import os
 
 
-channel = os.getenv("CONAN_CHANNEL", "stable")
+channel = os.getenv("CONAN_CHANNEL", "testing")
 username = os.getenv("CONAN_USERNAME", "bitprim")
 
 
 class Secp256k1TestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    requires = "secp256k1/0.1@%s/%s" % (username, channel)
+    requires = "secp256k1/0.2@%s/%s" % (username, channel)
     generators = "cmake"
     # build_policy = "missing"
 
