@@ -78,8 +78,16 @@ class Secp256k1Conan(ConanFile):
     exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
 
     def requirements(self):
-        if self.settings.os == "Linux" or self.settings.os == "Macos":
+        # if self.settings.os == "Linux" or self.settings.os == "Macos":
+        #     self.requires("gmp/6.1.2@bitprim/stable")
+        
+        
+        if self.settings.os == "Windows":
+            self.requires("mpir/3.0.0@bitprim/stable")
+        else:
             self.requires("gmp/6.1.2@bitprim/stable")
+            
+        #TODO(fernando): What happend with FreeBSD?
 
     def build(self):
         cmake = CMake(self)
@@ -100,7 +108,9 @@ class Secp256k1Conan(ConanFile):
         cmake.definitions["ENABLE_MODULE_RECOVERY"] = option_on_off(self.options.enable_module_recovery)
 
         if self.settings.os == "Windows":
-            cmake.definitions["WITH_BIGNUM"] = "no"
+            # cmake.definitions["WITH_BIGNUM"] = "no"
+            cmake.definitions["WITH_BIGNUM"] = "mpir"
+
             if self.settings.compiler == "Visual Studio" and (self.settings.compiler.version != 12):
                 cmake.definitions["ENABLE_TESTS"] = "OFF"   #Workaround. test broke MSVC
         else:
