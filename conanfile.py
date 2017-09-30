@@ -39,9 +39,6 @@ class Secp256k1Conan(ConanFile):
     
     options = {"shared": [True, False],
                "fPIC": [True, False],
-               "enable_benchmark": [True, False],
-               "enable_tests": [True, False],
-               "enable_openssl_tests": [True, False],
                "enable_experimental": [True, False],
                "enable_endomorphism": [True, False],
                "enable_ecmult_static_precomputation": [True, False],
@@ -49,6 +46,9 @@ class Secp256k1Conan(ConanFile):
                "enable_module_schnorr": [True, False],
                "enable_module_recovery": [True, False],
 
+            #    "enable_benchmark": [True, False],
+            #    "enable_tests": [True, False],
+            #    "enable_openssl_tests": [True, False],
             #    "with_asm": ['x86_64', 'arm', 'no', 'auto'],
             #    "with_field": ['64bit', '32bit', 'auto'],
             #    "with_scalar": ['64bit', '32bit', 'auto'],
@@ -58,16 +58,16 @@ class Secp256k1Conan(ConanFile):
     
     default_options = "shared=False", \
         "fPIC=True", \
-        "enable_benchmark=False", \
-        "enable_tests=False", \
-        "enable_openssl_tests=False", \
         "enable_experimental=False", \
         "enable_endomorphism=False", \
-        "enable_ecmult_static_precomputation=True", \
+        "enable_ecmult_static_precomputation=False", \
         "enable_module_ecdh=False", \
         "enable_module_schnorr=False", \
         "enable_module_recovery=True"
 
+        # "enable_benchmark=False", \
+        # "enable_tests=False", \
+        # "enable_openssl_tests=False", \
         # "with_asm='auto'", \
         # "with_field='auto'", \
         # "with_scalar='auto'"
@@ -76,6 +76,11 @@ class Secp256k1Conan(ConanFile):
     generators = "cmake"
     build_policy = "missing"
     exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
+
+
+    enable_benchmark = False
+    enable_tests = False
+    enable_openssl_tests = False
 
     def requirements(self):
         # if self.settings.os == "Linux" or self.settings.os == "Macos":
@@ -92,14 +97,20 @@ class Secp256k1Conan(ConanFile):
     def build(self):
         cmake = CMake(self)
 
-        cmake.definitions["USE_CONAN"] = "ON"
-        cmake.definitions["NO_CONAN_AT_ALL"] = "OFF"
-        cmake.definitions["CMAKE_VERBOSE_MAKEFILE"] = "ON"
+        cmake.definitions["USE_CONAN"] = option_on_off(True)
+        cmake.definitions["NO_CONAN_AT_ALL"] = option_on_off(False)
+        cmake.definitions["CMAKE_VERBOSE_MAKEFILE"] = option_on_off(False)
 
+        cmake.definitions["ENABLE_SHARED"] = option_on_off(self.options.shared)
         cmake.definitions["ENABLE_POSITION_INDEPENDENT_CODE"] = option_on_off(self.options.fPIC)
-        cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.enable_benchmark)
-        cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.enable_tests)
-        cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.enable_openssl_tests)
+
+        # cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.enable_benchmark)
+        # cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.enable_tests)
+        # cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.enable_openssl_tests)
+        cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.enable_benchmark)
+        cmake.definitions["ENABLE_TESTS"] = option_on_off(self.enable_tests)
+        cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.enable_openssl_tests)
+
         cmake.definitions["ENABLE_EXPERIMENTAL"] = option_on_off(self.options.enable_experimental)
         cmake.definitions["ENABLE_ENDOMORPHISM"] = option_on_off(self.options.enable_endomorphism)
         cmake.definitions["ENABLE_ECMULT_STATIC_PRECOMPUTATION"] = option_on_off(self.options.enable_ecmult_static_precomputation)
@@ -112,7 +123,7 @@ class Secp256k1Conan(ConanFile):
             cmake.definitions["WITH_BIGNUM"] = "mpir"
 
             if self.settings.compiler == "Visual Studio" and (self.settings.compiler.version != 12):
-                cmake.definitions["ENABLE_TESTS"] = "OFF"   #Workaround. test broke MSVC
+                cmake.definitions["ENABLE_TESTS"] = option_on_off(False)   #Workaround. test broke MSVC
         else:
             cmake.definitions["WITH_BIGNUM"] = "gmp"
 
