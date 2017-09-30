@@ -57,3 +57,5 @@ CMakeSettings.json
 /.vs/secp256k1/v15/Browse.VC.opendb
 /.vs/ProjectSettings.json
 /.vs/slnx.sqlite
+
+.vscode/

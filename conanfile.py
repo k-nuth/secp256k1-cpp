@@ -25,7 +25,7 @@ def option_on_off(option):
 
 class Secp256k1Conan(ConanFile):
     name = "secp256k1"
-    version = "0.2"
+    version = "0.3"
     license = "http://www.boost.org/users/license.html"
     url = "https://github.com/bitprim/secp256k1"
     description = "Optimized C library for EC operations on curve secp256k1"
