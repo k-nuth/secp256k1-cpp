@@ -48,6 +48,7 @@ class Secp256k1Conan(ConanFile):
                "enable_module_ecdh": [True, False],
                "enable_module_schnorr": [True, False],
                "enable_module_recovery": [True, False],
+               "with_bignum": ["conan", "auto", "system", "no"]
 
             #    "with_asm": ['x86_64', 'arm', 'no', 'auto'],
             #    "with_field": ['64bit', '32bit', 'auto'],
@@ -66,7 +67,8 @@ class Secp256k1Conan(ConanFile):
         "enable_ecmult_static_precomputation=True", \
         "enable_module_ecdh=False", \
         "enable_module_schnorr=False", \
-        "enable_module_recovery=True"
+        "enable_module_recovery=True", \
+        "with_bignum=conan"
 
         # "with_asm='auto'", \
         # "with_field='auto'", \
@@ -78,9 +80,9 @@ class Secp256k1Conan(ConanFile):
     exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
 
     def requirements(self):
-        # if self.settings.os == "Linux" or self.settings.os == "Macos":
-        if self.settings.os != "Windows":
-            self.requires("gmp/6.1.2@bitprim/stable")
+        if self.options.with_bignum == 'conan':
+            if self.settings.os != "Windows":
+                self.requires("gmp/6.1.2@bitprim/stable")
 
     def build(self):
         cmake = CMake(self)
@@ -105,7 +107,19 @@ class Secp256k1Conan(ConanFile):
             if self.settings.compiler == "Visual Studio" and (self.settings.compiler.version != 12):
                 cmake.definitions["ENABLE_TESTS"] = "OFF"   #Workaround. test broke MSVC
         else:
-            cmake.definitions["WITH_BIGNUM"] = "gmp"
+            if self.options.with_bignum == 'conan':
+                cmake.definitions["WITH_BIGNUM"] = "gmp"
+            elif self.options.with_bignum == 'auto':
+                cmake.definitions["NO_CONAN_AT_ALL"] = "ON"
+                cmake.definitions["WITH_BIGNUM"] = "auto"
+            elif self.options.with_bignum == 'system':
+                cmake.definitions["NO_CONAN_AT_ALL"] = "ON"
+                cmake.definitions["WITH_BIGNUM"] = "gmp"
+            elif self.options.with_bignum == 'no':
+                cmake.definitions["NO_CONAN_AT_ALL"] = "ON"
+                cmake.definitions["WITH_BIGNUM"] = "no"
+
+
 
         # cmake.definitions["WITH_ASM"] = option_on_off(self.options.with_asm)
         # cmake.definitions["WITH_FIELD"] = option_on_off(self.options.with_field)
