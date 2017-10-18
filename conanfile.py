@@ -27,6 +27,7 @@ try:
     cpuid = importlib.import_module('cpuid')
     cpuid_installed = True
 except ImportError:
+    self.output.warn("*** ImportError")
     cpuid_installed = False
 
 def option_on_off(option):
@@ -99,7 +100,16 @@ class Secp256k1Conan(ConanFile):
                 self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
                 
                 if cpuid_installed:
-                    self.default_options += "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
+                    # self.default_options += "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
+                    gmp_opt = "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
+                    self.output.warn("*** gmp_opt: %s" % (gmp_opt))
+                    self.default_options = self.default_options + (gmp_opt,)
+
+                self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+                # self.output.warn("*** self.default_options: %s" % (self.default_options))
+                print(self.default_options)
+                self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+
 
     def build(self):
         cmake = CMake(self)
