@@ -24,7 +24,7 @@ from conans import ConanFile, CMake
 cpuid_installed = False
 import importlib
 try:
-    importlib.import_module('cpuid')
+    cpuid = importlib.import_module('cpuid')
     cpuid_installed = True
 except ImportError:
     cpuid_installed = False
@@ -94,7 +94,8 @@ class Secp256k1Conan(ConanFile):
                 self.requires("gmp/6.1.2@bitprim/stable")
 
                 self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-                self.output.warn("*** self.default_options: %s" % (self.default_options))
+                # self.output.warn("*** self.default_options: %s" % (self.default_options))
+                print(self.default_options)
                 self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
                 
                 if cpuid_installed:
