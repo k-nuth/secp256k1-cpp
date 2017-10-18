@@ -34,11 +34,33 @@ def option_on_off(option):
     return "ON" if option else "OFF"
 
 
-def gmp_microarchitecture():
+# def gmp_microarchitecture():
+#     if cpuid_installed:
+#         gmp_opt = "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
+#         return gmp_opt
+#     return "none=none"
+
+def make_default_options_method():
+    defs = "shared=False", \
+        "fPIC=True", \
+        "enable_benchmark=False", \
+        "enable_tests=True", \
+        "enable_openssl_tests=False", \
+        "enable_experimental=False", \
+        "enable_endomorphism=False", \
+        "enable_ecmult_static_precomputation=True", \
+        "enable_module_ecdh=False", \
+        "enable_module_schnorr=False", \
+        "enable_module_recovery=True", \
+        "with_bignum=conan"
+
     if cpuid_installed:
         gmp_opt = "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
-        return gmp_opt
-    return ''
+        new_defs = defs + (gmp_opt,)
+        return new_defs
+
+    return defs
+    
 
 class Secp256k1Conan(ConanFile):
     name = "secp256k1"
@@ -73,56 +95,24 @@ class Secp256k1Conan(ConanFile):
             #    "with_bignum": ['gmp', 'no', 'auto'],
     }
 
-    # @classmethod
-    # def default_options_method(cls):
-    #     defs = "shared=False", \
-    #         "fPIC=True", \
-    #         "enable_benchmark=False", \
-    #         "enable_tests=True", \
-    #         "enable_openssl_tests=False", \
-    #         "enable_experimental=False", \
-    #         "enable_endomorphism=False", \
-    #         "enable_ecmult_static_precomputation=True", \
-    #         "enable_module_ecdh=False", \
-    #         "enable_module_schnorr=False", \
-    #         "enable_module_recovery=True", \
-    #         "with_bignum=conan"
-
-    #     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-    #     print(defs)
-    #     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-        
-    #     if cls.options.with_bignum == 'conan':
-    #         if cls.settings.os != "Windows":
-    #             if cpuid_installed:
-    #                 gmp_opt = "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
-    #                 cls.output.warn("*** gmp_opt: %s" % (gmp_opt))
-    #                 new_defs = defs + (gmp_opt,)
-
-    #                 cls.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-    #                 print(new_defs)
-    #                 cls.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-    #                 return new_defs
-
-    #     return defs
-    
-
-    # default_options = Secp256k1Conan.default_options_method()
 
 
-    default_options = "shared=False", \
-        "fPIC=True", \
-        "enable_benchmark=False", \
-        "enable_tests=True", \
-        "enable_openssl_tests=False", \
-        "enable_experimental=False", \
-        "enable_endomorphism=False", \
-        "enable_ecmult_static_precomputation=True", \
-        "enable_module_ecdh=False", \
-        "enable_module_schnorr=False", \
-        "enable_module_recovery=True", \
-        "with_bignum=conan", \
-        gmp_microarchitecture()
+    default_options = make_default_options_method()
+
+
+    # default_options = "shared=False", \
+    #     "fPIC=True", \
+    #     "enable_benchmark=False", \
+    #     "enable_tests=True", \
+    #     "enable_openssl_tests=False", \
+    #     "enable_experimental=False", \
+    #     "enable_endomorphism=False", \
+    #     "enable_ecmult_static_precomputation=True", \
+    #     "enable_module_ecdh=False", \
+    #     "enable_module_schnorr=False", \
+    #     "enable_module_recovery=True", \
+    #     "with_bignum=conan", \
+    #     gmp_microarchitecture()
 
         # "with_asm='auto'", \
         # "with_field='auto'", \
