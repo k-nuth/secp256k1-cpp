@@ -33,6 +33,13 @@ except ImportError:
 def option_on_off(option):
     return "ON" if option else "OFF"
 
+
+def gmp_microarchitecture():
+    if cpuid_installed:
+        gmp_opt = "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
+        return gmp_opt
+    return ''
+
 class Secp256k1Conan(ConanFile):
     name = "secp256k1"
     version = "0.2"
@@ -66,7 +73,43 @@ class Secp256k1Conan(ConanFile):
             #    "with_bignum": ['gmp', 'no', 'auto'],
     }
 
+    # @classmethod
+    # def default_options_method(cls):
+    #     defs = "shared=False", \
+    #         "fPIC=True", \
+    #         "enable_benchmark=False", \
+    #         "enable_tests=True", \
+    #         "enable_openssl_tests=False", \
+    #         "enable_experimental=False", \
+    #         "enable_endomorphism=False", \
+    #         "enable_ecmult_static_precomputation=True", \
+    #         "enable_module_ecdh=False", \
+    #         "enable_module_schnorr=False", \
+    #         "enable_module_recovery=True", \
+    #         "with_bignum=conan"
+
+    #     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+    #     print(defs)
+    #     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+        
+    #     if cls.options.with_bignum == 'conan':
+    #         if cls.settings.os != "Windows":
+    #             if cpuid_installed:
+    #                 gmp_opt = "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
+    #                 cls.output.warn("*** gmp_opt: %s" % (gmp_opt))
+    #                 new_defs = defs + (gmp_opt,)
+
+    #                 cls.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+    #                 print(new_defs)
+    #                 cls.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+    #                 return new_defs
+
+    #     return defs
     
+
+    # default_options = Secp256k1Conan.default_options_method()
+
+
     default_options = "shared=False", \
         "fPIC=True", \
         "enable_benchmark=False", \
@@ -78,7 +121,8 @@ class Secp256k1Conan(ConanFile):
         "enable_module_ecdh=False", \
         "enable_module_schnorr=False", \
         "enable_module_recovery=True", \
-        "with_bignum=conan"
+        "with_bignum=conan", \
+        gmp_microarchitecture()
 
         # "with_asm='auto'", \
         # "with_field='auto'", \
@@ -99,16 +143,16 @@ class Secp256k1Conan(ConanFile):
                 print(self.default_options)
                 self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
                 
-                if cpuid_installed:
-                    # self.default_options += "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
-                    gmp_opt = "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
-                    self.output.warn("*** gmp_opt: %s" % (gmp_opt))
-                    self.default_options = self.default_options + (gmp_opt,)
+                # if cpuid_installed:
+                #     # self.default_options += "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
+                #     gmp_opt = "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
+                #     self.output.warn("*** gmp_opt: %s" % (gmp_opt))
+                #     self.default_options = self.default_options + (gmp_opt,)
 
-                self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-                # self.output.warn("*** self.default_options: %s" % (self.default_options))
-                print(self.default_options)
-                self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+                # self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+                # # self.output.warn("*** self.default_options: %s" % (self.default_options))
+                # print(self.default_options)
+                # self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 
 
     def build(self):
