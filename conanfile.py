@@ -27,7 +27,7 @@ try:
     cpuid = importlib.import_module('cpuid')
     cpuid_installed = True
 except ImportError:
-    self.output.warn("*** ImportError")
+    print("*** ImportError")
     cpuid_installed = False
 
 def option_on_off(option):
