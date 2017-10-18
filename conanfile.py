@@ -20,6 +20,15 @@
 import os
 from conans import ConanFile, CMake
 
+# import cpuid
+cpuid_installed = False
+import importlib
+try:
+    importlib.import_module('cpuid')
+    cpuid_installed = True
+except ImportError:
+    cpuid_installed = False
+
 def option_on_off(option):
     return "ON" if option else "OFF"
 
@@ -83,6 +92,13 @@ class Secp256k1Conan(ConanFile):
         if self.options.with_bignum == 'conan':
             if self.settings.os != "Windows":
                 self.requires("gmp/6.1.2@bitprim/stable")
+
+                self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+                self.output.warn("*** self.default_options: %s" % (self.default_options))
+                self.output.warn("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+                
+                if cpuid_installed:
+                    self.default_options += "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
 
     def build(self):
         cmake = CMake(self)
