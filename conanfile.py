@@ -133,6 +133,7 @@ class Secp256k1Conan(ConanFile):
         # cmake.definitions["WITH_BIGNUM"] = option_on_off(self.options.with_bignum)
 
 
+        cmake.definitions["BITPRIM_BUILD_NUMBER"] = os.getenv('BITPRIM_BUILD_NUMBER', '-')
         cmake.configure(source_dir=self.conanfile_directory)
         cmake.build()
 

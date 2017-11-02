@@ -72,7 +72,10 @@ set(WITH_FIELD "auto" CACHE STRING "Specify Field Implementation (64bit|32bit|au
 set(WITH_SCALAR "auto" CACHE STRING "Specify scalar implementation (64bit|32bit|auto).")
 set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|mpir|no|auto).")
 
-# message(${WITH_BIGNUM})
+
+set(BITPRIM_BUILD_NUMBER "-" CACHE STRING "Specify the Bitprim Build Number.")
+# message(${BITPRIM_BUILD_NUMBER})
+
 
 if (NOT NO_CONAN_AT_ALL)
   if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
