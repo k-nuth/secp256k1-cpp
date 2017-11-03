@@ -17,6 +17,22 @@ function replace_versions {
     fi
 }  
 
+function increment_py_version {
+    while read p; do
+        if [[ $p == "__version__ ="* ]]; then
+            # echo "$1: $2" >> version.py.t
+            # echo "__version__ = '1.1.9'" | perl -pe 's/\b(\d+)(?=\D*$)/$1+1/e'
+            echo $p | perl -pe 's/\b(\d+)(?=\D*$)/$1+1/e' >> version.py.t
+        else
+            echo $p >> version.py.t
+        fi
+    done <version.py
+    mv version.py{.t,}
+}  
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
 set -e
 set -x
 
@@ -25,6 +41,11 @@ git config --global user.name "Bitprim CI"
 
 mkdir temp
 cd temp
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# bitprim-node-exe
+# --------------------------------------------------------------------------------------------------------------------
 
 # git clone https://github.com/bitprim/bitprim-node-exe.git --depth 1
 git clone https://github.com/bitprim/bitprim-node-exe.git
@@ -44,6 +65,8 @@ git push --quiet --set-upstream origin-commit ${TRAVIS_BRANCH}  || true
 cd ..
 
 # --------------------------------------------------------------------------------------------------------------------
+# bitprim-py-native
+# --------------------------------------------------------------------------------------------------------------------
 git clone https://github.com/bitprim/bitprim-py-native.git
 
 cd bitprim-py-native
@@ -51,9 +74,13 @@ echo "Travis branch: ${TRAVIS_BRANCH}"
 git checkout ${TRAVIS_BRANCH}
 
 replace_versions secp256k1 $BITPRIM_BUILD_NUMBER
+increment_py_version
 
 cat versions.txt
+cat version.py
+
 git add . versions.txt
+git add . version.py
 git commit --message "Travis secp256k1 build: $BITPRIM_BUILD_NUMBER, $TRAVIS_BUILD_NUMBER" || true
 git remote add origin-commit https://${GH_TOKEN}@github.com/bitprim/bitprim-py-native.git > /dev/null 2>&1
 git push --quiet --set-upstream origin-commit ${TRAVIS_BRANCH}  || true
