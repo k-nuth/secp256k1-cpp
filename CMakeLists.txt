@@ -22,7 +22,7 @@ cmake_minimum_required(VERSION 3.4)
 # secp256k1
 #==============================================================================
 project(secp256k1
-  VERSION 0.2
+  VERSION 0.3
   LANGUAGES C)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -39,12 +39,23 @@ if (NO_CONAN_AT_ALL)
 endif()
 
 
+# Inherit --enable-shared
+#------------------------------------------------------------------------------
+option(ENABLE_SHARED "" OFF)
+
+# Implement POSITION_INDEPENDENT_CODE
+#------------------------------------------------------------------------------
+option(ENABLE_POSITION_INDEPENDENT_CODE "Enable POSITION_INDEPENDENT_CODE property" ON)
+
+
+# TODO(Bitprim): This options are not reflected on code... Se old Makefiles
 option(ENABLE_BENCHMARK "Compile benchmark." OFF)
 option(ENABLE_TESTS "Compile tests." ON)
 option(ENABLE_OPENSSL_TESTS "Enable OpenSSL tests, if OpenSSL is available" OFF)
+
 option(ENABLE_EXPERIMENTAL "Alloc experimental configure options" OFF)
 option(ENABLE_ENDOMORPHISM "Enable endomorphism" OFF)
-option(ENABLE_ECMULT_STATIC_PRECOMPUTATION "Enable precomputed ecmult table for signing" ON)
+option(ENABLE_ECMULT_STATIC_PRECOMPUTATION "Enable precomputed ecmult table for signing" OFF)
 option(ENABLE_MODULE_ECDH "Enable ECDH shared secret computation (experimental)." OFF)
 option(ENABLE_MODULE_SCHNORR "Enable Schnorr signature module (experimental)." OFF)
 option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." ON)
@@ -59,9 +70,12 @@ option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." ON)
 set(WITH_ASM "auto" CACHE STRING "Specify assembly optimizations to use (x86_64|arm|no|auto).")
 set(WITH_FIELD "auto" CACHE STRING "Specify Field Implementation (64bit|32bit|auto).")
 set(WITH_SCALAR "auto" CACHE STRING "Specify scalar implementation (64bit|32bit|auto).")
-set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|no|auto).")
+set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|mpir|no|auto).")
 
-message(${WITH_BIGNUM})
+
+set(BITPRIM_BUILD_NUMBER "-" CACHE STRING "Specify the Bitprim Build Number.")
+# message(${BITPRIM_BUILD_NUMBER})
+
 
 if (NOT NO_CONAN_AT_ALL)
   if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -76,6 +90,17 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(Secp256k1Tools)
+
+
+#------------------------------------------------------------------------------
+if (ENABLE_ENDOMORPHISM)
+  add_definitions(-DUSE_ENDOMORPHISM)
+endif()
+
+if (ENABLE_ECMULT_STATIC_PRECOMPUTATION)
+  add_definitions(-DUSE_ECMULT_STATIC_PRECOMPUTATION)
+endif()
+
 
 
 # Implement --with-asm
@@ -160,14 +185,25 @@ if (NO_CONAN_AT_ALL)
 endif()
 
 
+if (ENABLE_SHARED)
+  set(MODE SHARED)
+else()
+  set(MODE STATIC)
+endif()
+
+
 # Build
 #==============================================================================
-add_library(secp256k1 STATIC
+add_library(secp256k1 ${MODE}
   include/secp256k1.h
   src/secp256k1.c)
 
-set_property(TARGET secp256k1 PROPERTY POSITION_INDEPENDENT_CODE ON)
   
+if (ENABLE_POSITION_INDEPENDENT_CODE) 
+  set_property(TARGET secp256k1 PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif(ENABLE_POSITION_INDEPENDENT_CODE)
+
+
 target_include_directories(secp256k1 PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -199,20 +235,20 @@ elseif (WITH_SCALAR STREQUAL "32bit")
   target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_8X32=1)
 endif()
 
-message("fer WITH_BIGNUM: ")
-message(WITH_ASM)
-message(WITH_FIELD)
-message(WITH_SCALAR)
-message(${WITH_BIGNUM})
+# message("fer WITH_BIGNUM: ")
+# message(WITH_ASM)
+# message(WITH_FIELD)
+# message(WITH_SCALAR)
+# message(${WITH_BIGNUM})
 
-if (${WITH_BIGNUM} STREQUAL "auto")
-  message("fer WITH_BIGNUM auto")
-else()
-  message("fer WITH_BIGNUM auto - FALSE")
-endif()
+# if (${WITH_BIGNUM} STREQUAL "auto")
+#   message("fer WITH_BIGNUM auto")
+# else()
+#   message("fer WITH_BIGNUM auto - FALSE")
+# endif()
 
-message("WITH_BIGNUM--FER-FER")
-message(${WITH_BIGNUM})
+# message("WITH_BIGNUM--FER-FER")
+# message(${WITH_BIGNUM})
 
 if (${WITH_BIGNUM} STREQUAL "gmp")
   target_compile_definitions(secp256k1 PUBLIC -DHAVE_LIBGMP=1)
@@ -224,6 +260,16 @@ if (${WITH_BIGNUM} STREQUAL "gmp")
     target_include_directories(secp256k1 PUBLIC ${GMP_INCLUDE_DIR})
     target_link_libraries(secp256k1 ${GMP_LIBRARIES})
   endif()
+elseif (${WITH_BIGNUM} STREQUAL "mpir")
+  target_compile_definitions(secp256k1 PUBLIC -DHAVE_LIBGMP=1)
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_GMP=1)
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_NUM=1)
+  target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_NUM=1)
+
+  # if (NO_CONAN_AT_ALL)
+  #   target_include_directories(secp256k1 PUBLIC ${GMP_INCLUDE_DIR})
+  #   target_link_libraries(secp256k1 ${GMP_LIBRARIES})
+  # endif()
 elseif (${WITH_BIGNUM} STREQUAL "no")
   target_compile_definitions(secp256k1 PUBLIC -DUSE_NUM_NONE=1)
   target_compile_definitions(secp256k1 PUBLIC -DUSE_FIELD_INV_BUILTIN=1)
@@ -241,9 +287,11 @@ endif()
 if (ENABLE_MODULE_ECDH)
   target_compile_definitions(secp256k1 PUBLIC -DENABLE_MODULE_ECDH=1)
 endif()
+
 if (ENABLE_MODULE_SCHNORR)
   target_compile_definitions(secp256k1 PUBLIC -DENABLE_MODULE_SCHNORR=1)
 endif()
+
 if (ENABLE_MODULE_RECOVERY)
   target_compile_definitions(secp256k1 PUBLIC -DENABLE_MODULE_RECOVERY=1)
 endif()
@@ -256,6 +304,12 @@ if (ENABLE_BENCHMARK)
   add_executable(bench_verify src/bench_verify.c)
   target_link_libraries(bench_verify secp256k1)
   set_target_properties(bench_verify PROPERTIES FOLDER "secp256k1")
+
+  if (ENABLE_OPENSSL_TESTS)
+    target_compile_definitions(bench_verify PRIVATE -DENABLE_OPENSSL_TESTS)
+  endif()
+
+
 
   add_executable(bench_sign src/bench_sign.c)
   target_link_libraries(bench_sign secp256k1)
@@ -290,6 +344,10 @@ if (ENABLE_TESTS)
   add_executable(tests
     src/tests.c)
 
+  if (ENABLE_OPENSSL_TESTS)
+    target_compile_definitions(tests PRIVATE -DENABLE_OPENSSL_TESTS)
+  endif()
+  
   target_compile_definitions(tests PRIVATE -DVERIFY)
   target_include_directories(tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR})

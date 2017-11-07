@@ -8,7 +8,7 @@ username = os.getenv("CONAN_USERNAME", "bitprim")
 
 class Secp256k1TestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    requires = "secp256k1/0.2@%s/%s" % (username, channel)
+    requires = "secp256k1/0.3@%s/%s" % (username, channel)
     generators = "cmake"
     # build_policy = "missing"
 
