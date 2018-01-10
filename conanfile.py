@@ -68,7 +68,8 @@ class Secp256k1Conan(ConanFile):
     url = "https://github.com/bitprim/secp256k1"
     description = "Optimized C library for EC operations on curve secp256k1"
     
-    settings = "os", "compiler", "build_type", "arch"
+    # settings = "os", "compiler", "build_type", "arch"
+    settings = "os", "compiler", "build_type", "arch", "os_build", "arch_build"
 
     # options = {"shared": [True, False]}
     # default_options = "shared=False"
@@ -86,7 +87,6 @@ class Secp256k1Conan(ConanFile):
 
                
             #    "with_bignum": ["conan", "auto", "system", "no"]
-
             #    "enable_benchmark": [True, False],
             #    "enable_tests": [True, False],
             #    "enable_openssl_tests": [True, False],
@@ -171,7 +171,8 @@ class Secp256k1Conan(ConanFile):
 
 
         cmake.definitions["BITPRIM_BUILD_NUMBER"] = os.getenv('BITPRIM_BUILD_NUMBER', '-')
-        cmake.configure(source_dir=self.conanfile_directory)
+        # cmake.configure(source_dir=self.conanfile_directory)
+        cmake.configure(source_dir=self.source_folder)
         cmake.build()
 
     def package(self):
