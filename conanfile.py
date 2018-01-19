@@ -68,8 +68,8 @@ class Secp256k1Conan(ConanFile):
     url = "https://github.com/bitprim/secp256k1"
     description = "Optimized C library for EC operations on curve secp256k1"
     
-    # settings = "os", "compiler", "build_type", "arch"
-    settings = "os", "compiler", "build_type", "arch", "os_build", "arch_build"
+    settings = "os", "compiler", "build_type", "arch"
+    # settings = "os", "compiler", "build_type", "arch", "os_build", "arch_build"
 
     # options = {"shared": [True, False]}
     # default_options = "shared=False"
