@@ -45,10 +45,10 @@ class Secp256k1Conan(ConanFile):
                "enable_module_ecdh": [True, False],
                "enable_module_schnorr": [True, False],
                "enable_module_recovery": [True, False],
+               "enable_benchmark": [True, False],
+               "enable_tests": [True, False],
+               "enable_openssl_tests": [True, False],
 
-            #    "enable_benchmark": [True, False],
-            #    "enable_tests": [True, False],
-            #    "enable_openssl_tests": [True, False],
             #    "with_asm": ['x86_64', 'arm', 'no', 'auto'],
             #    "with_field": ['64bit', '32bit', 'auto'],
             #    "with_scalar": ['64bit', '32bit', 'auto'],
@@ -63,11 +63,11 @@ class Secp256k1Conan(ConanFile):
         "enable_ecmult_static_precomputation=False", \
         "enable_module_ecdh=False", \
         "enable_module_schnorr=False", \
-        "enable_module_recovery=True"
+        "enable_module_recovery=True", \
+        "enable_benchmark=False", \
+        "enable_tests=False", \
+        "enable_openssl_tests=False"
 
-        # "enable_benchmark=False", \
-        # "enable_tests=False", \
-        # "enable_openssl_tests=False", \
         # "with_asm='auto'", \
         # "with_field='auto'", \
         # "with_scalar='auto'"
@@ -78,21 +78,23 @@ class Secp256k1Conan(ConanFile):
     exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
 
 
-    enable_benchmark = False
-    enable_tests = False
-    enable_openssl_tests = False
+    # enable_benchmark = False
+    # enable_tests = False
+    # enable_openssl_tests = False
 
     def requirements(self):
-        # if self.settings.os == "Linux" or self.settings.os == "Macos":
-        #     self.requires("gmp/6.1.2@bitprim/stable")
-        
-        
         if self.settings.os == "Windows":
             self.requires("mpir/3.0.0@bitprim/stable")
         else:
             self.requires("gmp/6.1.2@bitprim/stable")
             
         #TODO(fernando): What happend with FreeBSD?
+
+
+    def package_id(self):
+        self.info.output.enable_benchmark = "ANY"
+        self.info.output.enable_tests = "ANY"
+        self.info.output.enable_openssl_tests = "ANY"
 
     def build(self):
         cmake = CMake(self)
@@ -104,12 +106,12 @@ class Secp256k1Conan(ConanFile):
         cmake.definitions["ENABLE_SHARED"] = option_on_off(self.options.shared)
         cmake.definitions["ENABLE_POSITION_INDEPENDENT_CODE"] = option_on_off(self.options.fPIC)
 
-        # cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.enable_benchmark)
-        # cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.enable_tests)
-        # cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.enable_openssl_tests)
-        cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.enable_benchmark)
-        cmake.definitions["ENABLE_TESTS"] = option_on_off(self.enable_tests)
-        cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.enable_openssl_tests)
+        cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.enable_benchmark)
+        cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.enable_tests)
+        cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.enable_openssl_tests)
+        # cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.enable_benchmark)
+        # cmake.definitions["ENABLE_TESTS"] = option_on_off(self.enable_tests)
+        # cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.enable_openssl_tests)
 
         cmake.definitions["ENABLE_EXPERIMENTAL"] = option_on_off(self.options.enable_experimental)
         cmake.definitions["ENABLE_ENDOMORPHISM"] = option_on_off(self.options.enable_endomorphism)
