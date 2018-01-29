@@ -92,9 +92,9 @@ class Secp256k1Conan(ConanFile):
 
 
     def package_id(self):
-        self.info.output.enable_benchmark = "ANY"
-        self.info.output.enable_tests = "ANY"
-        self.info.output.enable_openssl_tests = "ANY"
+        self.info.options.enable_benchmark = "ANY"
+        self.info.options.enable_tests = "ANY"
+        self.info.options.enable_openssl_tests = "ANY"
 
     def build(self):
         cmake = CMake(self)
