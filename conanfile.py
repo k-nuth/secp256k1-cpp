@@ -23,6 +23,34 @@ from conans import ConanFile, CMake
 def option_on_off(option):
     return "ON" if option else "OFF"
 
+# def make_default_options_method():
+#     defs = "shared=False", \
+#         "fPIC=True", \
+#         "with_benchmark=False", \
+#         "with_tests=True", \
+#         "with_openssl_tests=False", \
+#         "enable_experimental=False", \
+#         "enable_endomorphism=False", \
+#         "enable_ecmult_static_precomputation=True", \
+#         "enable_module_ecdh=False", \
+#         "enable_module_schnorr=False", \
+#         "enable_module_recovery=True", \
+#         "with_bignum=conan"
+
+#         # "with_asm='auto'", \
+#         # "with_field='auto'", \
+#         # "with_scalar='auto'"
+#         # "with_bignum='auto'"
+
+
+#     if cpuid_installed:
+#         gmp_opt = "gmp:microarchitecture=%s" % (''.join(cpuid.cpu_microarchitecture()))
+#         new_defs = defs + (gmp_opt,)
+#         return new_defs
+
+#     return defs
+    
+
 class Secp256k1Conan(ConanFile):
     name = "secp256k1"
     version = "0.3"
@@ -32,8 +60,6 @@ class Secp256k1Conan(ConanFile):
     
     settings = "os", "compiler", "build_type", "arch"
 
-    # options = {"shared": [True, False]}
-    # default_options = "shared=False"
 
     #TODO(fernando): See what to do with shared/static option... (not supported yet in Cmake)
     
@@ -45,9 +71,16 @@ class Secp256k1Conan(ConanFile):
                "enable_module_ecdh": [True, False],
                "enable_module_schnorr": [True, False],
                "enable_module_recovery": [True, False],
-               "enable_benchmark": [True, False],
-               "enable_tests": [True, False],
-               "enable_openssl_tests": [True, False],
+               "with_benchmark": [True, False],
+               "with_tests": [True, False],
+               "with_openssl_tests": [True, False],
+               "with_bignum_lib": [True, False],
+
+               
+            #    "with_bignum": ["conan", "auto", "system", "no"]
+
+            #TODO(fernando): check what to do with with_asm, with_field and with_scalar 
+            # Check CMake files and libbitcoin and bitcoin core makefiles
 
             #    "with_asm": ['x86_64', 'arm', 'no', 'auto'],
             #    "with_field": ['64bit', '32bit', 'auto'],
@@ -64,10 +97,14 @@ class Secp256k1Conan(ConanFile):
         "enable_module_ecdh=False", \
         "enable_module_schnorr=False", \
         "enable_module_recovery=True", \
-        "enable_benchmark=False", \
-        "enable_tests=False", \
-        "enable_openssl_tests=False"
+        "with_benchmark=False", \
+        "with_tests=False", \
+        "with_openssl_tests=False", \
+        "with_bignum_lib=True"
 
+        
+
+        # "with_bignum=conan"
         # "with_asm='auto'", \
         # "with_field='auto'", \
         # "with_scalar='auto'"
@@ -75,43 +112,80 @@ class Secp256k1Conan(ConanFile):
 
     generators = "cmake"
     build_policy = "missing"
-    exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
+    exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "bitprimbuildinfo.cmake", "contrib/*", "test/*"
 
 
-    # enable_benchmark = False
-    # enable_tests = False
-    # enable_openssl_tests = False
+    # with_benchmark = False
+    # with_tests = True
+    # with_openssl_tests = False
+
+
+    @property
+    def msvc_mt_build(self):
+        return "MT" in str(self.settings.compiler.runtime)
+
+    @property
+    def fPIC_enabled(self):
+        if self.settings.compiler == "Visual Studio":
+            return False
+        else:
+            return self.options.fPIC
+
+    @property
+    def is_shared(self):
+        if self.options.shared and self.msvc_mt_build:
+            return False
+        else:
+            return self.options.shared
+
+    @property
+    def bignum_lib_name(self):
+        if self.options.with_bignum_lib:
+            if self.settings.os == "Windows":
+                return "mpir"
+            else:
+                return "gmp"
+        else:
+            return "no"
 
     def requirements(self):
-        if self.settings.os == "Windows":
-            self.requires("mpir/3.0.0@bitprim/stable")
-        else:
-            self.requires("gmp/6.1.2@bitprim/stable")
-            
-        #TODO(fernando): What happend with FreeBSD?
+        if self.options.with_bignum_lib:
+            if self.settings.os == "Windows":
+                self.requires("mpir/3.0.0@bitprim/stable")
+            else:
+                self.requires("gmp/6.1.2@bitprim/stable")
 
+    def config_options(self):
+        if self.settings.compiler == "Visual Studio":
+            self.options.remove("fPIC")
+            if self.options.shared and self.msvc_mt_build:
+                self.options.remove("shared")
+
+    def configure(self):
+        del self.settings.compiler.libcxx       #Pure-C Library
 
     def package_id(self):
-        self.info.options.enable_benchmark = "ANY"
-        self.info.options.enable_tests = "ANY"
-        self.info.options.enable_openssl_tests = "ANY"
+        self.info.options.with_benchmark = "ANY"
+        self.info.options.with_tests = "ANY"
+        self.info.options.with_openssl_tests = "ANY"
 
     def build(self):
         cmake = CMake(self)
 
         cmake.definitions["USE_CONAN"] = option_on_off(True)
         cmake.definitions["NO_CONAN_AT_ALL"] = option_on_off(False)
-        cmake.definitions["CMAKE_VERBOSE_MAKEFILE"] = option_on_off(False)
+        # cmake.definitions["CMAKE_VERBOSE_MAKEFILE"] = option_on_off(False)
+        cmake.verbose = True
 
-        cmake.definitions["ENABLE_SHARED"] = option_on_off(self.options.shared)
-        cmake.definitions["ENABLE_POSITION_INDEPENDENT_CODE"] = option_on_off(self.options.fPIC)
+        cmake.definitions["ENABLE_SHARED"] = option_on_off(self.is_shared)
+        cmake.definitions["ENABLE_POSITION_INDEPENDENT_CODE"] = option_on_off(self.fPIC_enabled)
 
-        cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.enable_benchmark)
-        cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.enable_tests)
-        cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.enable_openssl_tests)
-        # cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.enable_benchmark)
-        # cmake.definitions["ENABLE_TESTS"] = option_on_off(self.enable_tests)
-        # cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.enable_openssl_tests)
+        cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.with_benchmark)
+        cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.with_tests)
+        cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.with_openssl_tests)
+        # cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.with_benchmark)
+        # cmake.definitions["ENABLE_TESTS"] = option_on_off(self.with_tests)
+        # cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.with_openssl_tests)
 
         cmake.definitions["ENABLE_EXPERIMENTAL"] = option_on_off(self.options.enable_experimental)
         cmake.definitions["ENABLE_ENDOMORPHISM"] = option_on_off(self.options.enable_endomorphism)
@@ -120,14 +194,27 @@ class Secp256k1Conan(ConanFile):
         cmake.definitions["ENABLE_MODULE_SCHNORR"] = option_on_off(self.options.enable_module_schnorr)
         cmake.definitions["ENABLE_MODULE_RECOVERY"] = option_on_off(self.options.enable_module_recovery)
 
-        if self.settings.os == "Windows":
-            # cmake.definitions["WITH_BIGNUM"] = "no"
-            cmake.definitions["WITH_BIGNUM"] = "mpir"
+        # if self.settings.os == "Windows":
+        #     cmake.definitions["WITH_BIGNUM"] = "mpir"
+        # else:
+        #     cmake.definitions["WITH_BIGNUM"] = "gmp"
 
+        cmake.definitions["WITH_BIGNUM"] = self.bignum_lib_name
+
+        if self.settings.os == "Windows":
             if self.settings.compiler == "Visual Studio" and (self.settings.compiler.version != 12):
                 cmake.definitions["ENABLE_TESTS"] = option_on_off(False)   #Workaround. test broke MSVC
-        else:
-            cmake.definitions["WITH_BIGNUM"] = "gmp"
+
+        # Pure-C Library, No CXX11 ABI
+        # if self.settings.compiler == "gcc":
+        #     if float(str(self.settings.compiler.version)) >= 5:
+        #         cmake.definitions["NOT_USE_CPP11_ABI"] = option_on_off(False)
+        #     else:
+        #         cmake.definitions["NOT_USE_CPP11_ABI"] = option_on_off(True)
+        # elif self.settings.compiler == "clang":
+        #     if str(self.settings.compiler.libcxx) == "libstdc++" or str(self.settings.compiler.libcxx) == "libstdc++11":
+        #         cmake.definitions["NOT_USE_CPP11_ABI"] = option_on_off(False)
+
 
         # cmake.definitions["WITH_ASM"] = option_on_off(self.options.with_asm)
         # cmake.definitions["WITH_FIELD"] = option_on_off(self.options.with_field)
