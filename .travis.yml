@@ -78,6 +78,8 @@ matrix:
       - <<: *osx
         osx_image: xcode9
         env: CONAN_APPLE_CLANG_VERSIONS=9.0
+             BITPRIM_RUN_TESTS=true
+        
 
 install:
   - cd ${TRAVIS_BUILD_DIR}
