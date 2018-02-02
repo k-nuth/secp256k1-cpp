@@ -226,6 +226,13 @@ class Secp256k1Conan(ConanFile):
         cmake.configure(source_dir=self.source_folder)
         cmake.build()
 
+
+        #TODO(fernando): Cmake Tests and Visual Studio doesn't work
+        #TODO(fernando): Secp256k1 segfaults al least on Windows
+        # if self.options.with_tests:
+        #     cmake.test()
+        #     # cmake.test(target="tests")
+
     def package(self):
         self.copy("*.h", dst="include", src="include", keep_path=True)
         self.copy("*.lib", dst="lib", keep_path=False)
