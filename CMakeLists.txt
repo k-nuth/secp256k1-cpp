@@ -77,14 +77,22 @@ set(BITPRIM_BUILD_NUMBER "-" CACHE STRING "Specify the Bitprim Build Number.")
 # message(${BITPRIM_BUILD_NUMBER})
 
 
-if (NOT NO_CONAN_AT_ALL)
-  if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-      include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-      conan_basic_setup()
-  else()
-      message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
-  endif()
+# if (NOT NO_CONAN_AT_ALL)
+#   if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+#       include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+#       conan_basic_setup()
+#   else()
+#       message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
+#   endif()
+# endif()
+
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/bitprimbuildinfo.cmake)
+    include(${CMAKE_SOURCE_DIR}/bitprimbuildinfo.cmake)
+else()
+    message( STATUS "bitprimbuildinfo doent exists")
 endif()
+
 
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
