@@ -21,14 +21,17 @@ branches:
   only:
   - master
   - dev
+  - /^v\d+\.\d+\.\d+$/
+  - feature_compile_time_currencies
+  
 
-env:
-   global:
-     - CONAN_REFERENCE: "secp256k1/0.3"
-     - CONAN_USERNAME: "bitprim"
-     - CONAN_LOGIN_USERNAME: "bitprim-bintray"
-     - CONAN_CHANNEL: "testing"
-     - CONAN_UPLOAD: "https://api.bintray.com/conan/bitprim/bitprim"
+# env:
+#    global:
+#      - CONAN_REFERENCE: "secp256k1/0.3"
+#      - CONAN_USERNAME: "bitprim"
+#      - CONAN_LOGIN_USERNAME: "bitprim-bintray"
+#      - CONAN_CHANNEL: "testing"
+#      - CONAN_UPLOAD: "https://api.bintray.com/conan/bitprim/bitprim"
 
 linux: &linux
    os: linux
