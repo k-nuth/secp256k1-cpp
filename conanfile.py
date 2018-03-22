@@ -90,8 +90,8 @@ class Secp256k1Conan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     # settings = "os", "compiler", "build_type", "arch", "os_build", "arch_build"
 
-    if conan_version < Version(get_conan_req_version()):
-        raise Exception ("Conan version should be greater or equal than %s" % (get_conan_req_version(), ))
+    if Version(conan_version) < Version(get_conan_req_version()):
+        raise Exception ("Conan version should be greater or equal than %s. Detected: %s." % (get_conan_req_version(), conan_version))
 
 
     #TODO(fernando): See what to do with shared/static option... (not supported yet in Cmake)
