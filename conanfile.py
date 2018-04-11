@@ -269,7 +269,7 @@ class Secp256k1Conan(ConanFile):
         else:
             return "no"
 
-    def fix_march(self, march):
+    # def fix_march(self, march):
         # marchs = ["x86_64", ''.join(cpuid.cpu_microarchitecture()), "haswell", "skylake", "skylake-avx512"]
         
 
@@ -320,6 +320,9 @@ class Secp256k1Conan(ConanFile):
         self.info.options.with_tests = "ANY"
         self.info.options.with_openssl_tests = "ANY"
         self.info.options.verbose = "ANY"
+
+        # if self.settings.compiler == "Visual Studio":
+        #     self.info.options.microarchitecture = "ANY"
 
     def build(self):
         cmake = CMake(self)
