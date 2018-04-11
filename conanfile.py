@@ -257,8 +257,9 @@ class Secp256k1Conan(ConanFile):
         # cmake.definitions["WITH_BIGNUM"] = option_on_off(self.options.with_bignum)
 
         if self.settings.compiler != "Visual Studio":
-            cmake.definitions["CONAN_CXX_FLAGS"] = cmake.definitions.get("CONAN_CXX_FLAGS", "") + " -march=" + str(self.options.microarchitecture)
-            cmake.definitions["CONAN_C_FLAGS"] = cmake.definitions.get("CONAN_C_FLAGS", "") + " -march=" + str(self.options.microarchitecture)
+            gcc_march = str(self.options.microarchitecture).replace('_', '-')
+            cmake.definitions["CONAN_CXX_FLAGS"] = cmake.definitions.get("CONAN_CXX_FLAGS", "") + " -march=" + gcc_march
+            cmake.definitions["CONAN_C_FLAGS"] = cmake.definitions.get("CONAN_C_FLAGS", "") + " -march=" + gcc_march
 
         # microarchitecture_default
 
