@@ -104,8 +104,8 @@ if __name__ == "__main__":
     filtered_builds = []
     for settings, options, env_vars, build_requires in builder.builds:
 
-        print(settings)
-        print(options)
+        # print(settings)
+        # print(options)
 
 
         if settings["build_type"] == "Release" \
