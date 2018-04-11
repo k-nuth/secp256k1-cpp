@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 Bitprim developers (see AUTHORS)
+# Copyright (c) 2017-2018 Bitprim developers (see AUTHORS)
 #
 # This file is part of Bitprim.
 #
@@ -22,7 +22,7 @@ cmake_minimum_required(VERSION 3.4)
 # secp256k1
 #==============================================================================
 project(secp256k1
-  VERSION 0.3
+  VERSION 0.4
   LANGUAGES C)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -61,9 +61,6 @@ option(ENABLE_MODULE_SCHNORR "Enable Schnorr signature module (experimental)." O
 option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." ON)
 
 # message(${ENABLE_TESTS})
-
-
-
 # option(WITH_BIGNUM "")
 
 #TODO(fernando): Implement the following with_... as options
@@ -75,6 +72,13 @@ set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|mpir|no|
 
 set(BITPRIM_BUILD_NUMBER "-" CACHE STRING "Specify the Bitprim Build Number.")
 # message(${BITPRIM_BUILD_NUMBER})
+
+
+set(MICROARCHITECTURE "x86_64" CACHE STRING "Specify the Cryptocurrency (x86_64|...).")
+message( STATUS "Bitprim: Compiling for ${MICROARCHITECTURE}")
+# add_definitions(-DBITPRIM_MICROARCHITECTURE=${MICROARCHITECTURE})
+# add_definitions(-DBITPRIM_MICROARCHITECTURE_STR="${MICROARCHITECTURE}")
+
 
 
 # if (NOT NO_CONAN_AT_ALL)
