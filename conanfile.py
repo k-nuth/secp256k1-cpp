@@ -192,7 +192,7 @@ class Secp256k1Conan(ConanFile):
         else:
             march_from = 'user defined'
         
-        # self.options["*"].microarchitecture = self.options.microarchitecture
+        self.options["*"].microarchitecture = self.options.microarchitecture
         self.output.info("Compiling for microarchitecture (%s): %s" % (march_from, self.options.microarchitecture))
         
 
@@ -257,7 +257,8 @@ class Secp256k1Conan(ConanFile):
         # cmake.definitions["WITH_BIGNUM"] = option_on_off(self.options.with_bignum)
 
         if self.settings.compiler != "Visual Studio":
-            cmake.definitions["CONAN_CXX_FLAGS"] = cmake.definitions.get("CONAN_CXX_FLAGS", "") + " -march=" + self.options.microarchitecture
+            cmake.definitions["CONAN_CXX_FLAGS"] = cmake.definitions.get("CONAN_CXX_FLAGS", "") + " -march=" + str(self.options.microarchitecture)
+            cmake.definitions["CONAN_C_FLAGS"] = cmake.definitions.get("CONAN_C_FLAGS", "") + " -march=" + str(self.options.microarchitecture)
 
         # microarchitecture_default
 
