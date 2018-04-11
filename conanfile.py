@@ -311,6 +311,10 @@ class Secp256k1Conan(ConanFile):
             self.output.info("'skylake-avx512' microarchitecture is not supported by this compiler, fall back to 'skylake'")
             self.options.microarchitecture = 'skylake'
 
+        if self.options.microarchitecture == 'skylake' and self.settings.compiler == "apple-clang" and float(str(self.settings.compiler.version)) < 8:
+            self.output.info("'skylake' microarchitecture is not supported by this compiler, fall back to 'haswell'")
+            self.options.microarchitecture = 'haswell'
+
         if self.options.microarchitecture == 'skylake-avx512' and self.settings.compiler == "gcc" and float(str(self.settings.compiler.version)) < 6:
             self.output.info("'skylake-avx512' microarchitecture is not supported by this compiler, fall back to 'skylake'")
             self.options.microarchitecture = 'skylake'
