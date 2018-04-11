@@ -100,6 +100,9 @@ if __name__ == "__main__":
     builder, name = get_builder()
     builder.add_common_builds(shared_option_name="%s:shared" % name, pure_c=True)
 
+    print(settings)
+    print(options)
+
     filtered_builds = []
     for settings, options, env_vars, build_requires in builder.builds:
 
