@@ -301,13 +301,15 @@ class Secp256k1Conan(ConanFile):
         # Temporary fix for GCC march. 
         # TODO(fernando): Do it better!
 
-        self.output.info("********* CLANG Version: %s" % (str(self.settings.compiler.version)))
+        # self.output.info("********* CLANG Version: %s" % (str(self.settings.compiler.version)))
+        # if self.settings.compiler == "clang":
+        #     self.output.info("********* CLANG Version: %s" % (str(self.settings.compiler.version)))
+        # if self.settings.compiler == "apple-clang":
+        #     self.output.info("********* APPLE-CLANG Version: %s" % (str(self.settings.compiler.version)))
 
-        if self.settings.compiler == "clang":
-            self.output.info("********* CLANG Version: %s" % (str(self.settings.compiler.version)))
-
-        if self.settings.compiler == "apple-clang":
-            self.output.info("********* APPLE-CLANG Version: %s" % (str(self.settings.compiler.version)))
+        if self.options.microarchitecture == 'skylake-avx512' and self.settings.compiler == "apple-clang" and float(str(self.settings.compiler.version)) < 8:
+            self.output.info("'skylake-avx512' microarchitecture is not supported by this compiler, fall back to 'skylake'")
+            self.options.microarchitecture = 'skylake'
 
         if self.options.microarchitecture == 'skylake-avx512' and self.settings.compiler == "gcc" and float(str(self.settings.compiler.version)) < 6:
             self.output.info("'skylake-avx512' microarchitecture is not supported by this compiler, fall back to 'skylake'")
