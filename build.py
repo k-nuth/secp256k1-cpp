@@ -3,7 +3,7 @@ import os
 import copy
 import re
 import platform
-
+import cpuid
 
 def get_content(path):
     with open(path, 'r') as f:
@@ -16,16 +16,6 @@ def get_channel():
     return get_content('conan_channel')
 
 def get_conan_vars():
-    # CONAN_REFERENCE: "bitprim-core/0.7"
-    # CONAN_USERNAME: "bitprim"
-    # CONAN_LOGIN_USERNAME: "bitprim-bintray"
-    # CONAN_CHANNEL: "experimental"
-    # CONAN_UPLOAD: "https://api.bintray.com/conan/bitprim/bitprim"
-
-    # username = os.getenv("CONAN_USERNAME", get_username_from_ci() or "bitprim")
-    # channel = os.getenv("CONAN_CHANNEL", get_channel_from_ci())
-    # version = os.getenv("CONAN_VERSION", get_version())
-    
     login_username = os.getenv("CONAN_LOGIN_USERNAME", "bitprim-bintray")
     username = os.getenv("CONAN_USERNAME", "bitprim")
     channel = os.getenv("CONAN_CHANNEL", get_channel())
@@ -97,21 +87,26 @@ def get_builder(args=None):
 
     return builder, name
 
+def handle_microarchs(opt_name, microarchs, filtered_builds, settings, options, env_vars, build_requires):
+    microarchs = list(set(microarchs))
+
+    for ma in microarchs:
+        opts_copy = copy.deepcopy(options)
+        opts_copy[opt_name] = ma
+        filtered_builds.append([settings, opts_copy, env_vars, build_requires])
+
+
 if __name__ == "__main__":
-    # builder = ConanMultiPackager(username="bitprim", channel="testing",
-    #                              remotes="https://api.bintray.com/conan/bitprim/bitprim",
-    #                              archs=["x86_64"])
-
     builder, name = get_builder()
-
     builder.add_common_builds(shared_option_name="%s:shared" % name, pure_c=True)
+
 
     filtered_builds = []
     for settings, options, env_vars, build_requires in builder.builds:
 
-        # if settings["build_type"] == "Release" \
-        #         and not("%s:shared"  % name in options and options["%s:shared" % name]) \
-        #         and (not "compiler.runtime" in settings or not settings["compiler.runtime"] == "MT"):
+        # print(settings)
+        # print(options)
+
 
         if settings["build_type"] == "Release" \
                 and not("%s:shared"  % name in options and options["%s:shared" % name]):
@@ -122,8 +117,11 @@ if __name__ == "__main__":
                 # options["%s:with_benchmark" % name] = "True"
                 options["%s:with_tests" % name] = "True"
                 # options["%s:with_openssl_tests" % name] = "True"
-   
-            filtered_builds.append([settings, options, env_vars, build_requires])
+
+            marchs = ["x86_64", ''.join(cpuid.cpu_microarchitecture()), "haswell", "skylake", "skylake-avx512"]
+            handle_microarchs("%s:microarchitecture" % name, marchs, filtered_builds, settings, options, env_vars, build_requires)
+  
+            # filtered_builds.append([settings, options, env_vars, build_requires])
 
     builder.builds = filtered_builds
     builder.run()
