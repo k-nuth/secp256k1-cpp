@@ -23,17 +23,6 @@ from conans import __version__ as conan_version
 from conans.model.version import Version
 import importlib
 
-
-# import cpuid
-cpuid_installed = False
-import importlib
-try:
-    cpuid = importlib.import_module('cpuid')
-    cpuid_installed = True
-except ImportError:
-    # print("*** cpuid could not be imported")
-    cpuid_installed = False
-
 def option_on_off(option):
     return "ON" if option else "OFF"
     
@@ -81,11 +70,9 @@ class Secp256k1Conan(ConanFile):
     url = "https://github.com/bitprim/secp256k1"
     description = "Optimized C library for EC operations on curve secp256k1"
     settings = "os", "compiler", "build_type", "arch"
-    # settings = "os", "compiler", "build_type", "arch", "os_build", "arch_build"
 
     if Version(conan_version) < Version(get_conan_req_version()):
         raise Exception ("Conan version should be greater or equal than %s. Detected: %s." % (get_conan_req_version(), conan_version))
-
 
     #TODO(fernando): See what to do with shared/static option... (not supported yet in Cmake)
     
