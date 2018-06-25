@@ -1,3 +1,0 @@
-C:/development/secp256k1/test_package/build/c265314c65ea0a82af8baac081d81ff070128716/CMakeFiles/example.dir
-C:/development/secp256k1/test_package/build/c265314c65ea0a82af8baac081d81ff070128716/CMakeFiles/edit_cache.dir
-C:/development/secp256k1/test_package/build/c265314c65ea0a82af8baac081d81ff070128716/CMakeFiles/rebuild_cache.dir

@@ -1,1 +1,0 @@
- -LC:/Users/Fernando/.conan/data/secp256k1/0.3/bitprim/testing/package/36d75bfd961f9ace23ac4c81fd8204eb3a6d5711/lib  -LC:/Users/Fernando/.conan/data/mpir/3.0.0/bitprim/stable/package/525ced2b3b29056b362a3731113b0e5e2f7ca729/lib -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
