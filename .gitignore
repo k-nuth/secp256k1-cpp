@@ -59,3 +59,5 @@ CMakeSettings.json
 /.vs/slnx.sqlite
 
 .vscode/
+
+get_branch.py

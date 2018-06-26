@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 Bitprim developers (see AUTHORS)
+# Copyright (c) 2017-2018 Bitprim Inc.
 #
 # This file is part of Bitprim.
 #
@@ -21,47 +21,7 @@ import os
 from conans import ConanFile, CMake
 from conans import __version__ as conan_version
 from conans.model.version import Version
-import importlib
-
-def option_on_off(option):
-    return "ON" if option else "OFF"
-    
-def get_content(file_name):
-    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), file_name)
-    with open(file_path, 'r') as f:
-        return f.read()
-
-def get_version():
-    return get_content('conan_version')
-
-def get_channel():
-    return get_content('conan_channel')
-
-def get_conan_req_version():
-    return get_content('conan_req_version')
-
-microarchitecture_default = 'x86_64'
-
-def get_cpuid():
-    try:
-        # print("*** cpuid OK")
-        cpuid = importlib.import_module('cpuid')
-        return cpuid
-    except ImportError:
-        # print("*** cpuid could not be imported")
-        return None
-
-def get_cpu_microarchitecture_or_default(default):
-    cpuid = get_cpuid()
-    if cpuid != None:
-        # return '%s%s' % cpuid.cpu_microarchitecture()
-        return '%s' % (''.join(cpuid.cpu_microarchitecture()))
-    else:
-        return default
-
-def get_cpu_microarchitecture():
-    return get_cpu_microarchitecture_or_default(microarchitecture_default)
-
+from ci_utils.utils import option_on_off, get_version, get_conan_req_version, get_cpu_microarchitecture, get_cpuid
 
 class Secp256k1Conan(ConanFile):
     name = "secp256k1"
@@ -70,7 +30,6 @@ class Secp256k1Conan(ConanFile):
     url = "https://github.com/bitprim/secp256k1"
     description = "Optimized C library for EC operations on curve secp256k1"
     settings = "os", "compiler", "build_type", "arch"
-    # settings = "os", "compiler", "build_type", "arch", "os_build", "arch_build"
 
     if Version(conan_version) < Version(get_conan_req_version()):
         raise Exception ("Conan version should be greater or equal than %s. Detected: %s." % (get_conan_req_version(), conan_version))
@@ -129,16 +88,13 @@ class Secp256k1Conan(ConanFile):
     generators = "cmake"
     build_policy = "missing"
 
-    exports = "conan_channel", "conan_version", "conan_req_version"
-    exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "bitprimbuildinfo.cmake", "contrib/*", "test/*"
-
+    exports = "conan_version", "conan_req_version", "conan_user", "ci_utils/*"      #"conan_channel"
+    exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
+    #, "bitprimbuildinfo.cmake"
 
     # with_benchmark = False
     # with_tests = True
     # with_openssl_tests = False
-
-
-
 
 
     # https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
@@ -273,6 +229,9 @@ class Secp256k1Conan(ConanFile):
         
 
     def requirements(self):
+        self.output.info("********************* self.channel: %s" % (self.channel,))
+        # self.requires("Say/0.1@%s/%s" % (self.user, self.channel))
+
         if self.options.with_bignum_lib:
             if self.settings.os == "Windows":
                 self.requires("mpir/3.0.0@bitprim/stable")
