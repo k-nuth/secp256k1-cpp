@@ -21,6 +21,7 @@ branches:
   only:
   # - master
   - dev
+  - feature_ci_test
   - /^v\d+\.\d+\.\d+$/
   - /^release-\d+\.\d+\.\d+$/
   - /^feature-ci-.+$/
