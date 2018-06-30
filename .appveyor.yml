@@ -25,6 +25,8 @@ branches:
     - /^release-\d+\.\d+\.\d+$/
     - /^feature-ci-.+$/
     - /^feature_ci_.+$/
+    - /^feature-appveyor-.+$/
+    - /^feature_appveyor_.+$/
 
 build: false
 
