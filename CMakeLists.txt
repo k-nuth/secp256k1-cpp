@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2018 Bitprim developers (see AUTHORS)
+# Copyright (c) 2017-2018 Bitprim Inc.
 #
 # This file is part of Bitprim.
 #
@@ -17,14 +17,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
 cmake_minimum_required(VERSION 3.4)
 
 # secp256k1
 #==============================================================================
 project(secp256k1
-  VERSION 0.4.0
+  VERSION 0
   LANGUAGES C)
+  # VERSION 0.4.0
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -73,24 +73,14 @@ set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|mpir|no|
 
 set(BITPRIM_BUILD_NUMBER "-" CACHE STRING "Specify the Bitprim Build Number.")
 # message(${BITPRIM_BUILD_NUMBER})
+set(BITPRIM_PROJECT_VERSION "-" CACHE STRING "Specify the Bitprim Project Version.")
+# message(${BITPRIM_PROJECT_VERSION})
 
 
 set(MICROARCHITECTURE "x86_64" CACHE STRING "Specify the Cryptocurrency (x86_64|...).")
 message( STATUS "Bitprim: Compiling for ${MICROARCHITECTURE}")
 # add_definitions(-DBITPRIM_MICROARCHITECTURE=${MICROARCHITECTURE})
 # add_definitions(-DBITPRIM_MICROARCHITECTURE_STR="${MICROARCHITECTURE}")
-
-
-
-# if (NOT NO_CONAN_AT_ALL)
-#   if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-#       include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-#       conan_basic_setup()
-#   else()
-#       message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
-#   endif()
-# endif()
-
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/ci_utils/cmake/bitprimbuildinfo.cmake)
     include(${CMAKE_SOURCE_DIR}/ci_utils/cmake/bitprimbuildinfo.cmake)
@@ -288,6 +278,8 @@ elseif (${WITH_BIGNUM} STREQUAL "no")
   target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_BUILTIN=1)
 endif()
 
+target_compile_definitions(secp256k1 PUBLIC -DBITPRIM_BUILD_NUMBER="\\"${BITPRIM_BUILD_NUMBER}\\"") #TODO(fernando): manage with Conan????
+target_compile_definitions(secp256k1 PUBLIC -DBITPRIM_PROJECT_VERSION="\\"${BITPRIM_PROJECT_VERSION}\\"") #TODO(fernando): manage with Conan????
 
 # message(CONAN_LIBS)
 # message(${CONAN_LIBS})

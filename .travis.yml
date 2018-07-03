@@ -19,7 +19,7 @@
 
 branches:
   only:
-  # - master
+  - master
   # - /^v\d+\.\d+\.\d+$/
   - dev
   - /^release-\d+\.\d+\.\d+$/
@@ -58,18 +58,10 @@ install:
     fi    
 
 script:
-  # - python ci_utils/print_version.py
   - export BITPRIM_BRANCH="${TRAVIS_BRANCH}"
   - git fetch --unshallow
-  # - export BITPRIM_BUILD_NUMBER="$(git describe)"
-  # - export BITPRIM_BUILD_NUMBER="$(python ci_utils/print_version.py)"
-  # - export BITPRIM_CONAN_VERSION="${BITPRIM_BUILD_NUMBER}"
-  # - echo "${BITPRIM_BUILD_NUMBER}"
-  # - echo "${BITPRIM_CONAN_VERSION}"
-
 
   - |
-    echo "${TRAVIS_BRANCH}"
     if [[ "${TRAVIS_BRANCH}" = "dev" ]]; then
       export BITPRIM_CONAN_CHANNEL="testing"
       export BITPRIM_FULL_BUILD=0
@@ -86,8 +78,6 @@ script:
       export BITPRIM_CONAN_CHANNEL="stable"
       export BITPRIM_FULL_BUILD=1
     fi
-    # echo "${BITPRIM_CONAN_CHANNEL}"
-    # echo "${BITPRIM_FULL_BUILD}"
 
     # if [ ! -f conan_version ]; then
     #   echo "Creating conan_version file"
@@ -101,6 +91,7 @@ script:
       ./.travis/push_other_repo.sh
     else
       cd ${TRAVIS_BUILD_DIR}
+      ls -ltra ci_utils
       chmod +x ci_utils/.travis/run.sh
       ./ci_utils/.travis/run.sh
     fi  
@@ -114,25 +105,19 @@ jobs:
       # script:
       #     - chmod +x .travis/push_other_repo.sh
       #     - ./.travis/push_other_repo.sh
-
       script: echo "Running checks (1)"
-      # script:
-      #   - export BITPRIM_BRANCH="${TRAVIS_BRANCH}"
-      #   - git fetch --unshallow
-      #   # - export BITPRIM_BUILD_NUMBER="$(git describe)"
-      #   - export BITPRIM_BUILD_NUMBER="$(python ci_utils/print_version.py)"
-      #   - echo "${BITPRIM_BUILD_NUMBER}"
 
-# Unit Tests ------------------------------------------------------
-    - stage: unit tests
+# Unit Tests and upload binaries -------------------------------
+    - stage: unit tests and upload binaries
       os: linux
       sudo: required
       language: python
       python: "3.6"
       services:
         - docker
-      env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=lasote/conangcc7 CONAN_UPLOAD="" 
+      env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=lasote/conangcc7 
            BITPRIM_RUN_TESTS=true
+           # CONAN_UPLOAD="" 
 
 # Builds ------------------------------------------------------
     # Linux, GCC, libstdc++ ------------------------------------------------------
@@ -146,14 +131,14 @@ jobs:
       env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=lasote/conangcc8
       if: branch =~ /^(release|hotfix).+$/
 
-    - stage: build and upload binaries
-      os: linux
-      sudo: required
-      language: python
-      python: "3.6"
-      services:
-        - docker
-      env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=lasote/conangcc7
+    # - stage: build and upload binaries
+    #   os: linux
+    #   sudo: required
+    #   language: python
+    #   python: "3.6"
+    #   services:
+    #     - docker
+    #   env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=lasote/conangcc7
 
     - stage: build and upload binaries
       os: linux
@@ -231,7 +216,16 @@ jobs:
       os: osx
       language: generic
       osx_image: xcode9
-      env: CONAN_APPLE_CLANG_VERSIONS=9.0 BITPRIM_RUN_TESTS=true
+      env: CONAN_APPLE_CLANG_VERSIONS=9.0 
+           BITPRIM_RUN_TESTS=true
+      if: branch =~ /^(release|hotfix).+$/           
+
+    - stage: build and upload binaries
+      os: osx
+      language: generic
+      osx_image: xcode9
+      env: CONAN_APPLE_CLANG_VERSIONS=9.0 
+      if: branch =~ /^(feature|dev).*$/
 
     - stage: build and upload binaries
       os: osx
@@ -247,14 +241,57 @@ jobs:
       env: CONAN_APPLE_CLANG_VERSIONS=7.3
       if: branch =~ /^(release|hotfix).+$/
 
+# Upload Aliases -----------------------------------------------------
+    - stage: upload aliases
+      os: linux
+      sudo: required
+      language: python
+      python: "3.6"
+      # install: skip
+      script:
+        - |
+          cd ${TRAVIS_BUILD_DIR}
+          export BITPRIM_BRANCH="${TRAVIS_BRANCH}"
+          git fetch --unshallow
+
+          if [[ "${TRAVIS_BRANCH}" = "dev" ]]; then
+            export BITPRIM_CONAN_CHANNEL="testing"
+          elif  [[ "${TRAVIS_BRANCH}" = "release"* ]]; then
+            export BITPRIM_CONAN_CHANNEL="stable"
+          elif  [[ "${TRAVIS_BRANCH}" = "hotfix"* ]]; then
+            export BITPRIM_CONAN_CHANNEL="stable"
+          elif  [[ "${TRAVIS_BRANCH}" = "feature"* ]]; then
+            export BITPRIM_CONAN_CHANNEL="${TRAVIS_BRANCH}"
+          else
+            export BITPRIM_CONAN_CHANNEL="stable"
+          fi      
+          export BITPRIM_CONAN_VERSION="$(python ci_utils/print_version.py)"
+          
+        - echo $BITPRIM_CONAN_VERSION
+        - echo $BITPRIM_CONAN_CHANNEL
+
+        - conan remote add bitprim_temp https://api.bintray.com/conan/bitprim/bitprim
+        - conan user
+        - conan user ${CONAN_LOGIN_USERNAME} -r bitprim_temp -p ${CONAN_PASSWORD}
+        - conan user
+        - conan alias "secp256k1/0.X@bitprim/${BITPRIM_CONAN_CHANNEL}" "secp256k1/${BITPRIM_CONAN_VERSION}@bitprim/${BITPRIM_CONAN_CHANNEL}"
+        - conan upload "secp256k1/0.X@bitprim/${BITPRIM_CONAN_CHANNEL}" --all -r bitprim_temp
 
 # Push to repos ------------------------------------------------------
     - stage: push to repos
       install: skip
-      # script: echo "Running push to repos"
       script:
           - chmod +x .travis/push_other_repo.sh
           - ./.travis/push_other_repo.sh
+      if: branch =~ /^(dev|feature).+$/
+
+# Dummy for master ------------------------------------------------------
+    - stage: build and upload binaries
+      install: 
+        - echo "Stable packages are published in Release branches"
+      script:
+        - echo "Stable packages are published in Release branches"
+      if: branch =~ /^master$/
 
 
 # # Integration Tests ------------------------------------------------------
@@ -275,7 +312,6 @@ jobs:
     # - stage: test production
     #   install: skip
     #   script: 'curl http://sf-stages-production.herokuapp.com'
-
 
 notifications:
   email: false

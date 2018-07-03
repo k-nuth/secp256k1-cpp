@@ -1,12 +1,8 @@
-libsecp256k1 <a target="_blank" href="https://gitter.im/bitprim/Lobby">![Gitter Chat][badge.Gitter]</a>
-============
-Optimized C library for EC operations on curve secp256k1.
+# secp256k1 <a target="_blank" href="http://semver.org">![Version][badge.version]</a> <a target="_blank" href="https://travis-ci.org/bitprim/secp256k1">![Travis status][badge.Travis]</a> <a target="_blank" href="https://ci.appveyor.com/projects/bitprim/secp256k1">![Appveyor Status][badge.Appveyor]</a> <a target="_blank" href="https://gitter.im/bitprim/Lobby">![Gitter Chat][badge.Gitter]</a>
+
+> Optimized C library for EC operations on curve secp256k1.
+
 This library is a work in progress and is being used to research best practices. Use at your own risk.
-
-| **master(linux/osx)** | **dev(linux/osx)**   | **master(windows)**   | **dev(windows)** |
-|:------:|:-:|:-:|:-:|
-| [![Build Status](https://travis-ci.org/bitprim/secp256k1.svg)](https://travis-ci.org/bitprim/secp256k1)       | [![Build StatusB](https://travis-ci.org/bitprim/secp256k1.svg?branch=dev)](https://travis-ci.org/bitprim/secp256k1?branch=dev)  | [![Appveyor Status](https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?svg=true)](https://ci.appveyor.com/project/bitprim/secp256k1)  | [![Appveyor StatusB](https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?branch=dev&svg=true)](https://ci.appveyor.com/project/bitprim/secp256k1?branch=dev)  |
-
 
 Features:
 * secp256k1 ECDSA signing/verification and key generation.
@@ -61,4 +57,9 @@ $ cmake .. -DENABLE_MODULE_RECOVERY=ON
 $ make -j2
 $ sudo make install
 ```
+
+<!-- Links -->
+[badge.Appveyor]: https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?svg=true&branch=master
 [badge.Gitter]: https://img.shields.io/badge/gitter-join%20chat-blue.svg
+[badge.Travis]: https://travis-ci.org/bitprim/secp256k1.svg?branch=master
+[badge.version]: https://badge.fury.io/gh/bitprim%2Fsecp256k1.svg
