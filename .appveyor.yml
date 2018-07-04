@@ -63,42 +63,12 @@ test_script:
   - git submodule init
   # - git submodule update --remote
   - git submodule update
-
   # - git fetch --unshallow
-  # - for /f %%i in ('git describe') do set BITPRIM_BUILD_NUMBER=%%i
-  # - echo %BITPRIM_BUILD_NUMBER%
-  
+
   - ps: |
-      $Env:BITPRIM_BRANCH = $Env:APPVEYOR_REPO_BRANCH
-
-      if ($Env:APPVEYOR_REPO_BRANCH -ceq "dev") {
-        $Env:BITPRIM_CONAN_CHANNEL = "testing"
-        $Env:BITPRIM_FULL_BUILD = 0
-      }
-      elseif ($Env:APPVEYOR_REPO_BRANCH.StartsWith("release")) {
-        $Env:BITPRIM_CONAN_CHANNEL = "stable"
-        $Env:BITPRIM_FULL_BUILD = 1
-      }
-      elseif ($Env:APPVEYOR_REPO_BRANCH.StartsWith("hotfix")) {
-        $Env:BITPRIM_CONAN_CHANNEL = "stable"
-        $Env:BITPRIM_FULL_BUILD = 1
-      }
-      elseif ($Env:APPVEYOR_REPO_BRANCH.StartsWith("feature")) {
-        $Env:BITPRIM_CONAN_CHANNEL = $Env:APPVEYOR_REPO_BRANCH
-        $Env:BITPRIM_FULL_BUILD = 0
-      }
-      else {
-        $Env:BITPRIM_CONAN_CHANNEL = "stable"
-        $Env:BITPRIM_FULL_BUILD = 1
-      }
-      
-      # if ([System.IO.File]::Exists("conan_channel")) {
-      #   Write-Host "Creating conan_channel file"
-      #   $Env:BITPRIM_CONAN_CHANNEL | Out-File conan_channel
-      # }
-
-  # - dir *.*
-  # - echo %BITPRIM_CONAN_CHANNEL%
+      $a = python ci_utils/set_envvars_and_files.py
+      Write-Host $a
+      Invoke-Expression $a
 
   - python ci_utils/print_version.py
 
@@ -165,24 +135,6 @@ for:
 
 
 # MINGW_CONFIGURATIONS: "4.9@x86_64@seh@posix" 
-
-#     matrix:
-#         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-#           CONAN_VISUAL_VERSIONS: 15
-#           VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
-
-#         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-#           CONAN_VISUAL_VERSIONS: 14
-
-#         - MINGW_CONFIGURATIONS: "8@x86_64@seh@posix"
-#         - MINGW_CONFIGURATIONS: "7@x86_64@seh@posix"
-#         - MINGW_CONFIGURATIONS: "6@x86_64@seh@posix"
-#         - MINGW_CONFIGURATIONS: "5@x86_64@seh@posix"
-#         # - MINGW_CONFIGURATIONS: "4.9@x86_64@seh@posix"     
-
-#         # - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-#         #   CONAN_VISUAL_VERSIONS: 12
-#         # - MINGW_CONFIGURATIONS: "7@x86_64@seh@posix, 6@x86_64@seh@posix, 5@x86_64@seh@posix, 4.9@x86_64@seh@posix"
 
 # matrix:
 #   fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
