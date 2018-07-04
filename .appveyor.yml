@@ -70,20 +70,6 @@ test_script:
       Write-Host $a
       Invoke-Expression $a
 
-  - python ci_utils/print_version.py
-
-  - for /f %%i in ('python ci_utils/print_version.py') do set BITPRIM_BUILD_NUMBER=%%i
-  - set BITPRIM_CONAN_VERSION=%BITPRIM_BUILD_NUMBER%
-  - echo %BITPRIM_BUILD_NUMBER%
-  - echo %BITPRIM_CONAN_VERSION%
-
-  - ps: |
-      if ([System.IO.File]::Exists("conan_version")) {
-        Write-Host "Creating conan_version file"
-        $Env:BITPRIM_BUILD_NUMBER | Out-File conan_version
-      }
-
-
   - python build.py
 
 

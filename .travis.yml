@@ -75,7 +75,6 @@ script:
   - |
     if [[ "${CHECK_FORMATTING}" != "true" ]]; then
       cd ${TRAVIS_BUILD_DIR}
-      ls -ltra ci_utils
       chmod +x ci_utils/.travis/run.sh
       ./ci_utils/.travis/run.sh
     fi

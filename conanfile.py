@@ -90,11 +90,9 @@ class Secp256k1Conan(ConanFile):
         # "with_bignum='auto'"
 
     generators = "cmake"
-    build_policy = "missing"
-
-    exports = "conan_*", "ci_utils/*"      #"conan_channel", "conan_user", "conan_version", "conan_req_version"
+    exports = "conan_*", "ci_utils/*"
     exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
-    #, "bitprimbuildinfo.cmake"
+    build_policy = "missing"
 
     # with_benchmark = False
     # with_tests = True
@@ -174,7 +172,6 @@ class Secp256k1Conan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-
         cmake.definitions["USE_CONAN"] = option_on_off(True)
         cmake.definitions["NO_CONAN_AT_ALL"] = option_on_off(False)
         cmake.verbose = self.options.verbose
@@ -209,6 +206,7 @@ class Secp256k1Conan(ConanFile):
 
 
         cmake.definitions["MICROARCHITECTURE"] = self.options.microarchitecture
+        cmake.definitions["BITPRIM_PROJECT_VERSION"] = self.version
 
         if self.settings.os == "Windows":
             if self.settings.compiler == "Visual Studio" and (self.settings.compiler.version != 12):
@@ -228,7 +226,6 @@ class Secp256k1Conan(ConanFile):
 
         pass_march_to_compiler(self, cmake)
 
-        cmake.definitions["BITPRIM_BUILD_NUMBER"] = os.getenv('BITPRIM_BUILD_NUMBER', '-')
         cmake.configure(source_dir=self.source_folder)
         cmake.build()
 
