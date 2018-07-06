@@ -75,39 +75,54 @@ test_script:
 
 for:
   -
+    branches:
+      only:
+        - /^(release|hotfix|dev|feature).*$/    #Avoid master
     environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       CONAN_VISUAL_VERSIONS: 15
+      CONAN_VISUAL_RUNTIMES: MT
+      BITPRIM_RUN_TESTS: true
       VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
   -
     branches:
       only:
-        - /^(release|hotfix).+$/
+        - /^(release|hotfix).+$/    #Just releases
+    environment:
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      CONAN_VISUAL_VERSIONS: 15
+      CONAN_VISUAL_RUNTIMES: MD
+      BITPRIM_RUN_TESTS: true
+      VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
+  -
+    branches:
+      only:
+        - /^(release|hotfix).+$/    #Just releases
     environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       CONAN_VISUAL_VERSIONS: 14
   -
     branches:
       only:
-        - /^(release|hotfix).+$/
+        - /^(release|hotfix).+$/    #Just releases
     environment:
       MINGW_CONFIGURATIONS: "8@x86_64@seh@posix"
   -
     branches:
       only:
-        - /^(release|hotfix).+$/
+        - /^(release|hotfix).+$/    #Just releases
     environment:
       MINGW_CONFIGURATIONS: "7@x86_64@seh@posix"
   -
     branches:
       only:
-        - /^(release|hotfix).+$/
+        - /^(release|hotfix).+$/    #Just releases
     environment:
       MINGW_CONFIGURATIONS: "6@x86_64@seh@posix"
   -
     branches:
       only:
-        - /^(release|hotfix).+$/
+        - /^(release|hotfix).+$/    #Just releases
     environment:
       MINGW_CONFIGURATIONS: "5@x86_64@seh@posix"
   -

@@ -18,23 +18,20 @@
 #
 
 import os
-# import sys
-from conans import ConanFile, CMake
-from conans import __version__ as conan_version
-from conans.model.version import Version
+from conans import CMake
 from ci_utils import option_on_off, get_version, get_conan_req_version, march_conan_manip, pass_march_to_compiler
+from ci_utils import BitprimConanFile
 
 class Secp256k1Conan(ConanFile):
     name = "secp256k1"
-    
-    version = get_version()
+    # version = get_version()
     license = "http://www.boost.org/users/license.html"
     url = "https://github.com/bitprim/secp256k1"
     description = "Optimized C library for EC operations on curve secp256k1"
     settings = "os", "compiler", "build_type", "arch"
 
-    if Version(conan_version) < Version(get_conan_req_version()):
-        raise Exception ("Conan version should be greater or equal than %s. Detected: %s." % (get_conan_req_version(), conan_version))
+    # if Version(conan_version) < Version(get_conan_req_version()):
+    #     raise Exception ("Conan version should be greater or equal than %s. Detected: %s." % (get_conan_req_version(), conan_version))
 
     #TODO(fernando): See what to do with shared/static option... (not supported yet in Cmake)
     
@@ -99,24 +96,6 @@ class Secp256k1Conan(ConanFile):
     # with_openssl_tests = False
 
     @property
-    def msvc_mt_build(self):
-        return "MT" in str(self.settings.compiler.runtime)
-
-    @property
-    def fPIC_enabled(self):
-        if self.settings.compiler == "Visual Studio":
-            return False
-        else:
-            return self.options.fPIC
-
-    @property
-    def is_shared(self):
-        if self.options.shared and self.msvc_mt_build:
-            return False
-        else:
-            return self.options.shared
-
-    @property
     def bignum_lib_name(self):
         if self.options.with_bignum_lib:
             if self.settings.os == "Windows":
@@ -125,10 +104,6 @@ class Secp256k1Conan(ConanFile):
                 return "gmp"
         else:
             return "no"
-
-    # def fix_march(self, march):
-        # marchs = ["x86_64", ''.join(cpuid.cpu_microarchitecture()), "haswell", "skylake", "skylake-avx512"]
-        
 
     def requirements(self):
         if self.options.with_bignum_lib:
