@@ -78,7 +78,8 @@ for:
   -
     branches:
       only:
-        - /^(release|hotfix|dev|feature).*$/    #Avoid master
+        # - /dev-.*/ #regular expressions can also be used to match several branches
+        - /(release|hotfix|dev|feature).*/    #Avoid master
     environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       CONAN_VISUAL_VERSIONS: 15
@@ -88,8 +89,8 @@ for:
   -
     branches:
       only:
-        - /^(release|hotfix|dev|feature).*$/    #Avoid master
-        # - /^(release|hotfix).*$/    #Just releases
+        - /(release|hotfix|dev|feature).*/    #Avoid master
+        # - /(release|hotfix).*/    #Just releases
     environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       CONAN_VISUAL_VERSIONS: 15
@@ -99,32 +100,32 @@ for:
   -
     branches:
       only:
-        - /^(release|hotfix).*$/    #Just releases
+        - /(release|hotfix).*/    #Just releases
     environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       CONAN_VISUAL_VERSIONS: 14
   -
     branches:
       only:
-        - /^(release|hotfix).*$/    #Just releases
+        - /(release|hotfix).*/    #Just releases
     environment:
       MINGW_CONFIGURATIONS: "8@x86_64@seh@posix"
   -
     branches:
       only:
-        - /^(release|hotfix).*$/    #Just releases
+        - /(release|hotfix).*/    #Just releases
     environment:
       MINGW_CONFIGURATIONS: "7@x86_64@seh@posix"
   -
     branches:
       only:
-        - /^(release|hotfix).*$/    #Just releases
+        - /(release|hotfix).*/    #Just releases
     environment:
       MINGW_CONFIGURATIONS: "6@x86_64@seh@posix"
   -
     branches:
       only:
-        - /^(release|hotfix).*$/    #Just releases
+        - /(release|hotfix).*/    #Just releases
     environment:
       MINGW_CONFIGURATIONS: "5@x86_64@seh@posix"
   -
