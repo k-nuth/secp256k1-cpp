@@ -23,7 +23,9 @@ branches:
     # - /^v\d+\.\d+\.\d+$/
     - dev
     - /^release-\d+\.\d+\.\d+$/
+    - /^release_\d+\.\d+\.\d+$/
     - /^hotfix-\d+\.\d+\.\d+$/
+    - /^hotfix_\d+\.\d+\.\d+$/
     - /^feature-ci-.+$/
     - /^feature_ci_.+$/
     - /^feature-appveyor-.+$/
@@ -75,7 +77,6 @@ for:
         - /(release|hotfix).+/    #Just releases
     environment:
       matrix:
-
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           CONAN_VISUAL_VERSIONS: 15
           CONAN_VISUAL_RUNTIMES: MT
@@ -100,82 +101,6 @@ for:
       - echo "Stable packages are published in Release branches"
     install: 
       - echo "Stable packages are published in Release branches"
-
-
-# for:
-#   -
-#     matrix:
-#       only:
-#         - configuration: Release
-#           my_var3: value3
-#     environment:
-#       my_var1: overriden-value1
-#     platform: Any CPU # this setting is ignored
-#     test_script:
-#       - ps: write-host "for-matrix override test script 1"
-
-# for:
-#   -
-#     branches:
-#       only:
-#         # - /dev-.*/ #regular expressions can also be used to match several branches
-#         - /(release|hotfix|dev|feature).*/    #Avoid master
-#     environment:
-#       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-#       CONAN_VISUAL_VERSIONS: 15
-#       CONAN_VISUAL_RUNTIMES: MT
-#       BITPRIM_RUN_TESTS: true
-#       VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
-#   -
-#     branches:
-#       only:
-#         - /(release|hotfix|dev|feature).*/    #Avoid master
-#         # - /(release|hotfix).*/    #Just releases
-#     environment:
-#       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-#       CONAN_VISUAL_VERSIONS: 15
-#       CONAN_VISUAL_RUNTIMES: MD
-#       BITPRIM_RUN_TESTS: true
-#       VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
-#   -
-#     branches:
-#       only:
-#         - /(release|hotfix).*/    #Just releases
-#     environment:
-#       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-#       CONAN_VISUAL_VERSIONS: 14
-#   -
-#     branches:
-#       only:
-#         - /(release|hotfix).*/    #Just releases
-#     environment:
-#       MINGW_CONFIGURATIONS: "8@x86_64@seh@posix"
-#   -
-#     branches:
-#       only:
-#         - /(release|hotfix).*/    #Just releases
-#     environment:
-#       MINGW_CONFIGURATIONS: "7@x86_64@seh@posix"
-#   -
-#     branches:
-#       only:
-#         - /(release|hotfix).*/    #Just releases
-#     environment:
-#       MINGW_CONFIGURATIONS: "6@x86_64@seh@posix"
-#   -
-#     branches:
-#       only:
-#         - /(release|hotfix).*/    #Just releases
-#     environment:
-#       MINGW_CONFIGURATIONS: "5@x86_64@seh@posix"
-#   -
-#     branches:
-#       only:
-#         - master
-#     test_script:
-#       - echo "Stable packages are published in Release branches"
-#     install: 
-#       - echo "Stable packages are published in Release branches"
 
 
 # MINGW_CONFIGURATIONS: "4.9@x86_64@seh@posix" 
