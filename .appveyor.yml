@@ -73,6 +73,17 @@ test_script:
 
   - python build.py
 
+# for:
+#   -
+#     matrix:
+#       only:
+#         - configuration: Release
+#           my_var3: value3
+#     environment:
+#       my_var1: overriden-value1
+#     platform: Any CPU # this setting is ignored
+#     test_script:
+#       - ps: write-host "for-matrix override test script 1"
 
 for:
   -
@@ -83,7 +94,7 @@ for:
     environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       CONAN_VISUAL_VERSIONS: 15
-      CONAN_VISUAL_RUNTIMES: MT
+      CONAN_VISUAL_RUNTIMES: MX
       BITPRIM_RUN_TESTS: true
       VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
   -
