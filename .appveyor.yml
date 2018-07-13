@@ -37,21 +37,6 @@ environment:
     PYTHON_ARCH: "32"
     CONAN_STABLE_BRANCH_PATTERN: "master$" #"release/*"
 
-# init:
-#   - ps: Write-Host "common init script"
-
-#   - ps: |
-#       if ($Env:APPVEYOR_REPO_BRANCH -ceq "master" -And [string]::IsNullOrEmpty($Env:APPVEYOR_REPO_TAG_NAME)) {
-#         Write-Host "branch is master without tags, exiting"
-#         Exit-AppveyorBuild
-#       }
-
-#       Note(fernando): It is implemented natively in Appveyor...
-#       if ($Env:APPVEYOR_REPO_COMMIT_MESSAGE -like "*\[skip appveyor\]*") {
-#         Write-Host "[skip appveyor] detected in commit message, exiting"
-#         Exit-AppveyorBuild
-#       }
-
 install:
   - set PATH=%PATH%;%PYTHON%/Scripts/
   - pip.exe install conan --upgrade
@@ -94,7 +79,7 @@ for:
     environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       CONAN_VISUAL_VERSIONS: 15
-      CONAN_VISUAL_RUNTIMES: MX
+      CONAN_VISUAL_RUNTIMES: MT
       BITPRIM_RUN_TESTS: true
       VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
   -
