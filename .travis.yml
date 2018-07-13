@@ -29,6 +29,10 @@ branches:
   - /^feature-travis-.+$/
   - /^feature_travis_.+$/
 
+env:
+   global:
+     - CONAN_STABLE_BRANCH_PATTERN: "master$" #"release/*"
+
 linux: &linux
    os: linux
    sudo: required
@@ -74,6 +78,7 @@ script:
 
   - |
     if [[ "${CHECK_FORMATTING}" != "true" ]]; then
+      echo ${CONAN_STABLE_BRANCH_PATTERN}
       cd ${TRAVIS_BUILD_DIR}
       chmod +x ci_utils/.travis/run.sh
       ./ci_utils/.travis/run.sh

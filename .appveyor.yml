@@ -35,6 +35,7 @@ environment:
     PYTHON: "C:\\Python27"
     PYTHON_VERSION: "2.7.8"
     PYTHON_ARCH: "32"
+    CONAN_STABLE_BRANCH_PATTERN: "master$" #"release/*"
 
 # init:
 #   - ps: Write-Host "common init script"
