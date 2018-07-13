@@ -88,7 +88,8 @@ for:
   -
     branches:
       only:
-        - /^(release|hotfix).*$/    #Just releases
+        - /^(release|hotfix|dev|feature).*$/    #Avoid master
+        # - /^(release|hotfix).*$/    #Just releases
     environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       CONAN_VISUAL_VERSIONS: 15
