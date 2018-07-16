@@ -79,7 +79,7 @@ class Secp256k1Conan(BitprimConanFile):
         "with_bignum_lib=True", \
         "microarchitecture=_DUMMY_",  \
         "fix_march=False", \
-        "verbose=True"
+        "verbose=False"
 
         # "with_bignum=conan"
         # "with_asm='auto'", \
