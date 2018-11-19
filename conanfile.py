@@ -126,6 +126,7 @@ class Secp256k1Conan(BitprimConanFile):
 
     def configure(self):
         del self.settings.compiler.libcxx       #Pure-C Library
+        BitprimConanFile.configure(self)
 
         if self.settings.arch == "x86_64" and self.options.microarchitecture == "_DUMMY_":
             del self.options.fix_march
@@ -137,6 +138,7 @@ class Secp256k1Conan(BitprimConanFile):
             self.options["*"].microarchitecture = self.options.microarchitecture
 
     def package_id(self):
+        BitprimConanFile.package_id(self)
         self.info.options.with_benchmark = "ANY"
         self.info.options.with_tests = "ANY"
         self.info.options.with_openssl_tests = "ANY"
