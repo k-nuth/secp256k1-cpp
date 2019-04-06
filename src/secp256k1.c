@@ -17,7 +17,6 @@
 #include "ecdsa_impl.h"
 #include "eckey_impl.h"
 #include "hash_impl.h"
-#include "scratch_impl.h"
 
 #define ARG_CHECK(cond) do { \
     if (EXPECT(!(cond), 0)) { \
@@ -56,14 +55,6 @@ struct secp256k1_context_struct {
     secp256k1_callback error_callback;
 };
 
-static const secp256k1_context secp256k1_context_no_precomp_ = {
-    { 0 },
-    { 0 },
-    { default_illegal_callback_fn, 0 },
-    { default_error_callback_fn, 0 }
-};
-const secp256k1_context *secp256k1_context_no_precomp = &secp256k1_context_no_precomp_;
-
 secp256k1_context* secp256k1_context_create(unsigned int flags) {
     secp256k1_context* ret = (secp256k1_context*)checked_malloc(&default_error_callback, sizeof(secp256k1_context));
     ret->illegal_callback = default_illegal_callback;
@@ -99,7 +90,6 @@ secp256k1_context* secp256k1_context_clone(const secp256k1_context* ctx) {
 }
 
 void secp256k1_context_destroy(secp256k1_context* ctx) {
-    CHECK(ctx != secp256k1_context_no_precomp);
     if (ctx != NULL) {
         secp256k1_ecmult_context_clear(&ctx->ecmult_ctx);
         secp256k1_ecmult_gen_context_clear(&ctx->ecmult_gen_ctx);
@@ -109,7 +99,6 @@ void secp256k1_context_destroy(secp256k1_context* ctx) {
 }
 
 void secp256k1_context_set_illegal_callback(secp256k1_context* ctx, void (*fun)(const char* message, void* data), const void* data) {
-    CHECK(ctx != secp256k1_context_no_precomp);
     if (fun == NULL) {
         fun = default_illegal_callback_fn;
     }
@@ -118,21 +107,11 @@ void secp256k1_context_set_illegal_callback(secp256k1_context* ctx, void (*fun)(
 }
 
 void secp256k1_context_set_error_callback(secp256k1_context* ctx, void (*fun)(const char* message, void* data), const void* data) {
-    CHECK(ctx != secp256k1_context_no_precomp);
     if (fun == NULL) {
         fun = default_error_callback_fn;
     }
     ctx->error_callback.fn = fun;
     ctx->error_callback.data = data;
-}
-
-secp256k1_scratch_space* secp256k1_scratch_space_create(const secp256k1_context* ctx, size_t max_size) {
-    VERIFY_CHECK(ctx != NULL);
-    return secp256k1_scratch_create(&ctx->error_callback, max_size);
-}
-
-void secp256k1_scratch_space_destroy(secp256k1_scratch_space* scratch) {
-    secp256k1_scratch_destroy(scratch);
 }
 
 static int secp256k1_pubkey_load(const secp256k1_context* ctx, secp256k1_ge* ge, const secp256k1_pubkey* pubkey) {
@@ -371,6 +350,7 @@ int secp256k1_ecdsa_sign(const secp256k1_context* ctx, secp256k1_ecdsa_signature
     secp256k1_scalar sec, non, msg;
     int ret = 0;
     int overflow = 0;
+    const unsigned char secp256k1_ecdsa_der_algo16[17] = "ECDSA+DER       ";
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(secp256k1_ecmult_gen_context_is_built(&ctx->ecmult_gen_ctx));
     ARG_CHECK(msg32 != NULL);
@@ -387,7 +367,7 @@ int secp256k1_ecdsa_sign(const secp256k1_context* ctx, secp256k1_ecdsa_signature
         unsigned int count = 0;
         secp256k1_scalar_set_b32(&msg, msg32, NULL);
         while (1) {
-            ret = noncefp(nonce32, msg32, seckey, NULL, (void*)noncedata, count);
+            ret = noncefp(nonce32, msg32, seckey, secp256k1_ecdsa_der_algo16, (void*)noncedata, count);
             if (!ret) {
                 break;
             }
@@ -570,9 +550,8 @@ int secp256k1_ec_pubkey_tweak_mul(const secp256k1_context* ctx, secp256k1_pubkey
 
 int secp256k1_context_randomize(secp256k1_context* ctx, const unsigned char *seed32) {
     VERIFY_CHECK(ctx != NULL);
-    if (secp256k1_ecmult_gen_context_is_built(&ctx->ecmult_gen_ctx)) {
-        secp256k1_ecmult_gen_blind(&ctx->ecmult_gen_ctx, seed32);
-    }
+    ARG_CHECK(secp256k1_ecmult_gen_context_is_built(&ctx->ecmult_gen_ctx));
+    secp256k1_ecmult_gen_blind(&ctx->ecmult_gen_ctx, seed32);
     return 1;
 }
 
@@ -604,6 +583,14 @@ int secp256k1_ec_pubkey_combine(const secp256k1_context* ctx, secp256k1_pubkey *
 # include "modules/ecdh/main_impl.h"
 #endif
 
+#ifdef ENABLE_MODULE_MULTISET
+# include "modules/multiset/main_impl.h"
+#endif
+
 #ifdef ENABLE_MODULE_RECOVERY
 # include "modules/recovery/main_impl.h"
+#endif
+
+#ifdef ENABLE_MODULE_SCHNORR
+# include "modules/schnorr/main_impl.h"
 #endif
