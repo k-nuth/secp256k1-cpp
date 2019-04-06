@@ -8,9 +8,9 @@ SOURCE_PATH = '/Users/fernando/dev/bitcoin-abc/src/secp256k1/src/'
 
 # result = [os.path.join(dp, f) for dp, dn, filenames in os.walk(PATH) for f in filenames if os.path.splitext(f)[1] == '.txt']
 # result = [os.path.join(dp, f) for dp, dn, filenames in os.walk(PATH) for f in filenames]
-result = [(dp, f) for dp, dn, filenames in os.walk(PATH) for f in filenames]
+result1 = [(dp, f) for dp, dn, filenames in os.walk(PATH) for f in filenames]
 
-for dp, f in result:
+for dp, f in result1:
     x = os.path.join(dp, f)
 
     # print(dp)
@@ -23,6 +23,31 @@ for dp, f in result:
 
     # print(x)
 
+    try:
+        copyfile(source_file, x)
+    except IOError as identifier:
+        pass
 
+print('------------------------------------------------')
 
-    copyfile(source_file, x)
+result2 = [(dp, f) for dp, dn, filenames in os.walk(SOURCE_PATH) for f in filenames]
+
+for dp, f in result2:
+    x = os.path.join(dp, f)
+
+    # print(dp)
+    # print(x)
+    # print(x[len(PATH):])
+
+    target_file = os.path.join(PATH, x[len(SOURCE_PATH):])   
+    print(target_file)
+    # print(os.path.isfile(source_file))
+
+    # print(x)
+
+    try:
+        copyfile(x, target_file)
+    except IOError as identifier:
+        pass
+
+    
