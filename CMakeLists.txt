@@ -56,10 +56,12 @@ option(ENABLE_OPENSSL_TESTS "Enable OpenSSL tests, if OpenSSL is available" OFF)
 
 option(ENABLE_EXPERIMENTAL "Alloc experimental configure options" OFF)
 option(ENABLE_ENDOMORPHISM "Enable endomorphism" OFF)
-option(ENABLE_ECMULT_STATIC_PRECOMPUTATION "Enable precomputed ecmult table for signing" OFF)
+option(ENABLE_ECMULT_STATIC_PRECOMPUTATION "Enable precomputed ecmult table for signing" ON)
 option(ENABLE_MODULE_ECDH "Enable ECDH shared secret computation (experimental)." OFF)
-option(ENABLE_MODULE_SCHNORR "Enable Schnorr signature module (experimental)." OFF)
+option(ENABLE_MODULE_SCHNORR "Enable Schnorr signature module (experimental)." ON)
 option(ENABLE_MODULE_RECOVERY "Enable ECDSA pubkey recovery module." ON)
+option(ENABLE_MODULE_MULTISET "Enable multiset operations (experimental)." ON)
+
 
 # message(${ENABLE_TESTS})
 # option(WITH_BIGNUM "")
@@ -336,6 +338,12 @@ if (ENABLE_BENCHMARK)
     add_executable(bench_recover src/bench_recover.c)
     target_link_libraries(bench_recover secp256k1)
     set_target_properties(bench_recover PROPERTIES FOLDER "secp256k1")
+  endif()
+
+  if (ENABLE_MODULE_MULTISET)
+    add_executable(bench_multiset src/bench_multiset.c)
+    target_link_libraries(bench_multiset secp256k1)
+    set_target_properties(bench_multiset PROPERTIES FOLDER "secp256k1")
   endif()
 endif()
 

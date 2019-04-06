@@ -44,6 +44,7 @@ class Secp256k1Conan(BitprimConanFile):
                "enable_module_ecdh": [True, False],
                "enable_module_schnorr": [True, False],
                "enable_module_recovery": [True, False],
+               "enable_module_multiset": [True, False],
                "with_benchmark": [True, False],
                "with_tests": [True, False],
                "with_openssl_tests": [True, False],
@@ -69,10 +70,11 @@ class Secp256k1Conan(BitprimConanFile):
         "fPIC=True", \
         "enable_experimental=False", \
         "enable_endomorphism=False", \
-        "enable_ecmult_static_precomputation=False", \
+        "enable_ecmult_static_precomputation=True", \
         "enable_module_ecdh=False", \
-        "enable_module_schnorr=False", \
+        "enable_module_schnorr=True", \
         "enable_module_recovery=True", \
+        "enable_module_multiset=True", \
         "with_benchmark=False", \
         "with_tests=False", \
         "with_openssl_tests=False", \
@@ -169,6 +171,7 @@ class Secp256k1Conan(BitprimConanFile):
         cmake.definitions["ENABLE_MODULE_ECDH"] = option_on_off(self.options.enable_module_ecdh)
         cmake.definitions["ENABLE_MODULE_SCHNORR"] = option_on_off(self.options.enable_module_schnorr)
         cmake.definitions["ENABLE_MODULE_RECOVERY"] = option_on_off(self.options.enable_module_recovery)
+        cmake.definitions["ENABLE_MODULE_MULTISET"] = option_on_off(self.options.enable_module_multiset)
 
         # if self.settings.os == "Windows":
         #     cmake.definitions["WITH_BIGNUM"] = "mpir"
