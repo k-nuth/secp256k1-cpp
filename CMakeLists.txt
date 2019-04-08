@@ -100,8 +100,39 @@ if (ENABLE_ENDOMORPHISM)
 endif()
 
 if (ENABLE_ECMULT_STATIC_PRECOMPUTATION)
-  add_definitions(-DUSE_ECMULT_STATIC_PRECOMPUTATION)
+  # add_definitions(-DUSE_ECMULT_STATIC_PRECOMPUTATION)
+
+	set(USE_ECMULT_STATIC_PRECOMPUTATION 1)
+
+  if(EXISTS ${CMAKE_SOURCE_DIR}/ci_utils/cmake/NativeExecutable.cmake)
+    include(${CMAKE_SOURCE_DIR}/ci_utils/cmake/NativeExecutable.cmake)
+  else()
+    message( STATUS "NativeExecutable.cmake doent exists")
+  endif()
+
+	# # include(NativeExecutable)
+	add_native_executable(gen_context src/gen_context.c)
+
+  target_include_directories(gen_context PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR})
+
+  # target_include_directories(gen_context PUBLIC
+  # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  # $<INSTALL_INTERFACE:include>)
+
+	add_custom_command(
+		OUTPUT ecmult_static_context.h
+		COMMAND gen_context
+	)
+
+	# target_sources(secp256k1 PRIVATE ecmult_static_context.h)
+
 endif()
+
+
+
+
+
 
 
 
@@ -279,6 +310,14 @@ elseif (${WITH_BIGNUM} STREQUAL "no")
 endif()
 
 target_compile_definitions(secp256k1 PUBLIC -DBITPRIM_PROJECT_VERSION="\\"${BITPRIM_PROJECT_VERSION}\\"") #TODO(fernando): manage with Conan????
+
+
+
+if (ENABLE_ECMULT_STATIC_PRECOMPUTATION)
+	target_sources(secp256k1 PRIVATE ecmult_static_context.h)
+endif()
+
+
 
 # message(CONAN_LIBS)
 # message(${CONAN_LIBS})
