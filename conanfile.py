@@ -70,7 +70,7 @@ class Secp256k1Conan(BitprimConanFile):
         "fPIC=True", \
         "enable_experimental=False", \
         "enable_endomorphism=False", \
-        "enable_ecmult_static_precomputation=True", \
+        "enable_ecmult_static_precomputation=False", \
         "enable_module_ecdh=False", \
         "enable_module_schnorr=True", \
         "enable_module_recovery=True", \
