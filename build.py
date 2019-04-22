@@ -1,3 +1,4 @@
+import copy
 import os
 import cpuid
 import platform
@@ -22,12 +23,17 @@ if __name__ == "__main__":
                 options["%s:with_tests" % name] = "True"
                 # options["%s:with_openssl_tests" % name] = "True"
 
+            opts_no_schnorr = copy.deepcopy(options)
+            opts_no_schnorr["%s:enable_module_schnorr" % name] = "False"
+
             if full_build:
                 marchs = filter_valid_exts(str(platform.system()), str(settings["compiler"]), float(str(settings["compiler.version"])), ['x86-64', 'haswell', 'skylake'])
             else:
                 marchs = ["x86-64"]
 
             handle_microarchs("%s:microarchitecture" % name, marchs, filtered_builds, settings, options, env_vars, build_requires)
+            handle_microarchs("%s:microarchitecture" % name, marchs, filtered_builds, settings, opts_no_schnorr, env_vars, build_requires)
+
             filter_marchs_tests(name, filtered_builds, ["%s:with_tests" % name])
 
     builder.builds = filtered_builds
