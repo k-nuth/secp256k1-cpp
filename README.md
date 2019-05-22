@@ -1,4 +1,4 @@
-# secp256k1 <a target="_blank" href="http://semver.org">![Version][badge.version]</a> <a target="_blank" href="https://travis-ci.org/bitprim/secp256k1">![Travis status][badge.Travis]</a> <a target="_blank" href="https://ci.appveyor.com/projects/bitprim/secp256k1">![Appveyor Status][badge.Appveyor]</a> <a target="_blank" href="https://gitter.im/bitprim/Lobby">![Gitter Chat][badge.Gitter]</a>
+# secp256k1 <a target="_blank" href="http://semver.org">![Version][badge.version]</a> <a target="_blank" href="https://travis-ci.org/k-nuth/secp256k1">![Travis status][badge.Travis]</a> <a target="_blank" href="https://ci.appveyor.com/projects/k-nuth/secp256k1">![Appveyor Status][badge.Appveyor]</a> <a target="_blank" href="https://gitter.im/k-nuth/Lobby">![Gitter Chat][badge.Gitter]</a>
 
 > Optimized C library for EC operations on curve secp256k1.
 
@@ -49,7 +49,7 @@ Implementation details
 Build steps
 -----------
 ```
-$ git clone https://github.com/bitprim/secp256k1.git
+$ git clone https://github.com/k-nuth/secp256k1.git
 $ cd secp256k1
 $ mkdir build
 $ cd build
@@ -59,7 +59,7 @@ $ sudo make install
 ```
 
 <!-- Links -->
-[badge.Appveyor]: https://ci.appveyor.com/api/projects/status/github/bitprim/secp256k1?svg=true&branch=master
+[badge.Appveyor]: https://ci.appveyor.com/api/projects/status/github/k-nuth/secp256k1?svg=true&branch=master
 [badge.Gitter]: https://img.shields.io/badge/gitter-join%20chat-blue.svg
-[badge.Travis]: https://travis-ci.org/bitprim/secp256k1.svg?branch=master
-[badge.version]: https://badge.fury.io/gh/bitprim%2Fsecp256k1.svg
+[badge.Travis]: https://travis-ci.org/k-nuth/secp256k1.svg?branch=master
+[badge.version]: https://badge.fury.io/gh/k-nuth%2Fsecp256k1.svg

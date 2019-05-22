@@ -1,7 +1,8 @@
 #
 # Copyright (c) 2017-2018 Bitprim Inc.
+# Copyright (c) 2019 Knuth Project.
 #
-# This file is part of Bitprim.
+# This file is part of Knuth Project.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -49,7 +50,7 @@ option(ENABLE_SHARED "" OFF)
 option(ENABLE_POSITION_INDEPENDENT_CODE "Enable POSITION_INDEPENDENT_CODE property" ON)
 
 
-# TODO(Bitprim): This options are not reflected on code... Se old Makefiles
+# TODO(Knuth): This options are not reflected on code... Se old Makefiles
 option(ENABLE_BENCHMARK "Compile benchmark." OFF)
 option(ENABLE_TESTS "Compile tests." ON)
 option(ENABLE_OPENSSL_TESTS "Enable OpenSSL tests, if OpenSSL is available" OFF)
@@ -73,19 +74,19 @@ set(WITH_SCALAR "auto" CACHE STRING "Specify scalar implementation (64bit|32bit|
 set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|mpir|no|auto).")
 
 
-set(BITPRIM_PROJECT_VERSION "-" CACHE STRING "Specify the Bitprim Project Version.")
-# message(${BITPRIM_PROJECT_VERSION})
+set(KNUTH_PROJECT_VERSION "-" CACHE STRING "Specify the Knuth Project Version.")
+# message(${KNUTH_PROJECT_VERSION})
 
 
 set(MICROARCHITECTURE "x86_64" CACHE STRING "Specify the Cryptocurrency (x86_64|...).")
-message( STATUS "Bitprim: Compiling for ${MICROARCHITECTURE}")
-# add_definitions(-DBITPRIM_MICROARCHITECTURE=${MICROARCHITECTURE})
-# add_definitions(-DBITPRIM_MICROARCHITECTURE_STR="${MICROARCHITECTURE}")
+message( STATUS "Knuth: Compiling for ${MICROARCHITECTURE}")
+# add_definitions(-DKNUTH_MICROARCHITECTURE=${MICROARCHITECTURE})
+# add_definitions(-DKNUTH_MICROARCHITECTURE_STR="${MICROARCHITECTURE}")
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/ci_utils/cmake/bitprimbuildinfo.cmake)
-    include(${CMAKE_SOURCE_DIR}/ci_utils/cmake/bitprimbuildinfo.cmake)
+if(EXISTS ${CMAKE_SOURCE_DIR}/ci_utils/cmake/knuthbuildinfo.cmake)
+    include(${CMAKE_SOURCE_DIR}/ci_utils/cmake/knuthbuildinfo.cmake)
 else()
-    message( STATUS "bitprimbuildinfo doent exists")
+    message( STATUS "knuthbuildinfo doent exists")
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -309,7 +310,7 @@ elseif (${WITH_BIGNUM} STREQUAL "no")
   target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_BUILTIN=1)
 endif()
 
-target_compile_definitions(secp256k1 PUBLIC -DBITPRIM_PROJECT_VERSION="\\"${BITPRIM_PROJECT_VERSION}\\"") #TODO(fernando): manage with Conan????
+target_compile_definitions(secp256k1 PUBLIC -DKNUTH_PROJECT_VERSION="\\"${KNUTH_PROJECT_VERSION}\\"") #TODO(fernando): manage with Conan????
 
 
 

@@ -1,7 +1,8 @@
 #
 # Copyright (c) 2017-2018 Bitprim Inc.
+# Copyright (c) 2019 Knuth Project.
 #
-# This file is part of Bitprim.
+# This file is part of Knuth Project.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -21,13 +22,13 @@
 import os
 from conans import CMake
 from ci_utils import option_on_off, get_version, get_conan_req_version, march_conan_manip, pass_march_to_compiler
-from ci_utils import BitprimConanFile
+from ci_utils import KnuthConanFile
 
-class Secp256k1Conan(BitprimConanFile):
+class Secp256k1Conan(KnuthConanFile):
     name = "secp256k1"
     # version = get_version()
     license = "http://www.boost.org/users/license.html"
-    url = "https://github.com/bitprim/secp256k1"
+    url = "https://github.com/k-nuth/secp256k1"
     description = "Optimized C library for EC operations on curve secp256k1"
     settings = "os", "compiler", "build_type", "arch"
 
@@ -128,7 +129,7 @@ class Secp256k1Conan(BitprimConanFile):
 
     def configure(self):
         del self.settings.compiler.libcxx       #Pure-C Library
-        BitprimConanFile.configure(self)
+        KnuthConanFile.configure(self)
 
         if self.settings.arch == "x86_64" and self.options.microarchitecture == "_DUMMY_":
             del self.options.fix_march
@@ -140,7 +141,7 @@ class Secp256k1Conan(BitprimConanFile):
             self.options["*"].microarchitecture = self.options.microarchitecture
 
     def package_id(self):
-        BitprimConanFile.package_id(self)
+        KnuthConanFile.package_id(self)
         self.info.options.with_benchmark = "ANY"
         self.info.options.with_tests = "ANY"
         self.info.options.with_openssl_tests = "ANY"
@@ -187,7 +188,7 @@ class Secp256k1Conan(BitprimConanFile):
 
 
         cmake.definitions["MICROARCHITECTURE"] = self.options.microarchitecture
-        cmake.definitions["BITPRIM_PROJECT_VERSION"] = self.version
+        cmake.definitions["KNUTH_PROJECT_VERSION"] = self.version
 
         if self.settings.os == "Windows":
             if self.settings.compiler == "Visual Studio" and (self.settings.compiler.version != 12):
