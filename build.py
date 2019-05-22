@@ -5,7 +5,7 @@ import platform
 from ci_utils import get_builder, handle_microarchs, copy_env_vars, filter_valid_exts, filter_marchs_tests
 
 if __name__ == "__main__":
-    full_build = os.getenv('BITPRIM_FULL_BUILD', '0') == '1'
+    full_build = os.getenv('KNUTH_FULL_BUILD', '0') == '1'
 
     builder, name = get_builder()
     builder.add_common_builds(shared_option_name="%s:shared" % name, pure_c=True)
@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
             copy_env_vars(env_vars)
 
-            if os.getenv('BITPRIM_RUN_TESTS', 'false') == 'true':
+            if os.getenv('KNUTH_RUN_TESTS', 'false') == 'true':
                 # options["%s:with_benchmark" % name] = "True"
                 options["%s:with_tests" % name] = "True"
                 # options["%s:with_openssl_tests" % name] = "True"

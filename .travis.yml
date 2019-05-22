@@ -130,7 +130,7 @@ jobs:
       services:
         - docker
       env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=conanio/gcc7 
-           BITPRIM_RUN_TESTS=true
+           KNUTH_RUN_TESTS=true
       if: branch =~ /^(release|hotfix|dev|feature).*$/    #Avoid master
 
     - stage: build and upload binaries
@@ -211,7 +211,7 @@ jobs:
       language: generic
       osx_image: xcode10.1
       env: CONAN_APPLE_CLANG_VERSIONS=10.0
-           BITPRIM_RUN_TESTS=true
+           KNUTH_RUN_TESTS=true
       if: branch =~ /^(release|hotfix).+$/    #Just releases
     - stage: build and upload binaries
       os: osx
@@ -226,7 +226,7 @@ jobs:
     #   language: generic
     #   osx_image: xcode9.3
     #   env: CONAN_APPLE_CLANG_VERSIONS=9.1
-    #        BITPRIM_RUN_TESTS=true
+    #        KNUTH_RUN_TESTS=true
     #   if: branch =~ /^(release|hotfix).+$/    #Just releases
     # - stage: build and upload binaries
     #   os: osx
@@ -278,12 +278,12 @@ jobs:
 
         - eval $(python ci_utils/set_envvars_and_files.py)
         #TODO(fernando): configure the remote and user using environment variables
-        - conan remote add bitprim_temp https://api.bintray.com/conan/bitprim/bitprim
+        - conan remote add knuth_temp https://api.bintray.com/conan/knuth/knuth
         - conan user
-        - conan user ${CONAN_LOGIN_USERNAME} -r bitprim_temp -p ${CONAN_PASSWORD}
+        - conan user ${CONAN_LOGIN_USERNAME} -r knuth_temp -p ${CONAN_PASSWORD}
         - conan user
-        - conan alias "${REPO_NAME}/0.X@bitprim/${BITPRIM_CONAN_CHANNEL}" "${REPO_NAME}/${BITPRIM_CONAN_VERSION}@bitprim/${BITPRIM_CONAN_CHANNEL}"
-        - conan upload "${REPO_NAME}/0.X@bitprim/${BITPRIM_CONAN_CHANNEL}" --all -r bitprim_temp
+        - conan alias "${REPO_NAME}/0.X@knuth/${KNUTH_CONAN_CHANNEL}" "${REPO_NAME}/${KNUTH_CONAN_VERSION}@knuth/${KNUTH_CONAN_CHANNEL}"
+        - conan upload "${REPO_NAME}/0.X@knuth/${KNUTH_CONAN_CHANNEL}" --all -r knuth_temp
 
 # Push to repos ------------------------------------------------------
     - stage: push to repos

@@ -4,21 +4,21 @@ echo "Travis branch: ${TRAVIS_BRANCH}"
 echo "Travis tag: ${TRAVIS_TAG}"
 
 if [[ ${TRAVIS_BRANCH} == ${TRAVIS_TAG} ]]; then
-    export BITPRIM_PUSH_BRANCH=master
+    export KNUTH_PUSH_BRANCH=master
 else
-    export BITPRIM_PUSH_BRANCH=${TRAVIS_BRANCH}
+    export KNUTH_PUSH_BRANCH=${TRAVIS_BRANCH}
 fi
-echo "Bitprim branch: ${BITPRIM_PUSH_BRANCH}"
+echo "Knuth branch: ${KNUTH_PUSH_BRANCH}"
 
 
 # TODO(fernando): put in another place
-export BITPRIM_PUSH_ACCOUNT=bitprim
-export BITPRIM_PUSH_PROJECT=bitprim-core
+export KNUTH_PUSH_ACCOUNT=knuth
+export KNUTH_PUSH_PROJECT=knuth-core
 
 # body="{
-#     \"accountName\": \"bitprim\",
-#     \"projectSlug\": \"bitprim-core\",
-#     \"branch\": \"${BITPRIM_PUSH_BRANCH}\",
+#     \"accountName\": \"knuth\",
+#     \"projectSlug\": \"knuth-core\",
+#     \"branch\": \"${KNUTH_PUSH_BRANCH}\",
 #     \"environmentVariables\": {
 #        \"SKIP_NUGET\": \"true\"
 #     }
@@ -26,9 +26,9 @@ export BITPRIM_PUSH_PROJECT=bitprim-core
 
 
 body="{
-    \"accountName\": \"${BITPRIM_PUSH_ACCOUNT}\",
-    \"projectSlug\": \"${BITPRIM_PUSH_PROJECT}\",
-    \"branch\": \"${BITPRIM_PUSH_BRANCH}\"
+    \"accountName\": \"${KNUTH_PUSH_ACCOUNT}\",
+    \"projectSlug\": \"${KNUTH_PUSH_PROJECT}\",
+    \"branch\": \"${KNUTH_PUSH_BRANCH}\"
 }"
 
 curl -s -d "$body" -X POST \
@@ -38,7 +38,7 @@ curl -s -d "$body" -X POST \
 
 body="{
     \"request\": {
-    \"branch\":\"${BITPRIM_PUSH_BRANCH}\",
+    \"branch\":\"${KNUTH_PUSH_BRANCH}\",
     \"message\": \"Force by secp256k1 build: ${TRAVIS_BUILD_NUMBER}\"
 }}"
 
@@ -48,7 +48,7 @@ curl -s -X POST \
    -H "Travis-API-Version: 3" \
    -H "Authorization: token ${TRAVIS_TOKEN}" \
    -d "$body" \
-   https://api.travis-ci.org/repo/${BITPRIM_PUSH_ACCOUNT}%2F${BITPRIM_PUSH_PROJECT}/requests
+   https://api.travis-ci.org/repo/${KNUTH_PUSH_ACCOUNT}%2F${KNUTH_PUSH_PROJECT}/requests
 
 
 

@@ -1,7 +1,8 @@
 #
 # Copyright (c) 2017-2018 Bitprim Inc.
+# Copyright (c) 2019 K-nuth Project
 #
-# This file is part of Bitprim.
+# This file is part of K-nuth.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -65,10 +66,10 @@ test_script:
       $a = python ci_utils/set_envvars_and_files.py
       Write-Host $a
       Invoke-Expression $a
-      conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim
+      conan remote add knuth https://api.bintray.com/conan/knuth/knuth
       python ci_utils/process_conan_reqs.py
       conan remove "*" -f
-      conan remote remove bitprim
+      conan remote remove knuth
 
   - python build.py
 
@@ -82,7 +83,7 @@ for:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       CONAN_VISUAL_VERSIONS: 15
       CONAN_VISUAL_RUNTIMES: MT
-      BITPRIM_RUN_TESTS: true
+      KNUTH_RUN_TESTS: true
       VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
   -
     branches:
@@ -93,12 +94,12 @@ for:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           CONAN_VISUAL_VERSIONS: 15
           CONAN_VISUAL_RUNTIMES: MT
-          BITPRIM_RUN_TESTS: true
+          KNUTH_RUN_TESTS: true
           VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           CONAN_VISUAL_VERSIONS: 15
           CONAN_VISUAL_RUNTIMES: MD
-          BITPRIM_RUN_TESTS: true
+          KNUTH_RUN_TESTS: true
           VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
         # - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
         #   CONAN_VISUAL_VERSIONS: 14
