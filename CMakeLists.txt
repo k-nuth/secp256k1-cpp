@@ -1,6 +1,5 @@
 #
-# Copyright (c) 2017-2018 Bitprim Inc.
-# Copyright (c) 2019 Knuth Project.
+# Copyright (c) 2017-2019 Knuth Project.
 #
 # This file is part of Knuth Project.
 #
