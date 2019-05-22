@@ -70,7 +70,7 @@ test_script:
       conan remove "*" -f
       conan remote remove knuth
 
-  - conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim
+  # - conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim
   - python build.py
 
 
