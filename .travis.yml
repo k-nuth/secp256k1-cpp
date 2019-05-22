@@ -278,7 +278,7 @@ jobs:
 
         - eval $(python ci_utils/set_envvars_and_files.py)
         #TODO(fernando): configure the remote and user using environment variables
-        - conan remote add knuth_temp https://api.bintray.com/conan/knuth/knuth
+        - conan remote add knuth_temp https://api.bintray.com/conan/k-nuth/k-nuth
         - conan user
         - conan user ${CONAN_LOGIN_USERNAME} -r knuth_temp -p ${CONAN_PASSWORD}
         - conan user
