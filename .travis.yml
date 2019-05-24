@@ -282,8 +282,8 @@ jobs:
         - conan user
         - conan user ${CONAN_LOGIN_USERNAME} -r kth_temp -p ${CONAN_PASSWORD}
         - conan user
-        - conan alias "${REPO_NAME}/0.X@knuth/${KNUTH_CONAN_CHANNEL}" "${REPO_NAME}/${KNUTH_CONAN_VERSION}@knuth/${KNUTH_CONAN_CHANNEL}"
-        - conan upload "${REPO_NAME}/0.X@knuth/${KNUTH_CONAN_CHANNEL}" --all -r kth_temp
+        - conan alias "${REPO_NAME}/0.X@kth/${KNUTH_CONAN_CHANNEL}" "${REPO_NAME}/${KNUTH_CONAN_VERSION}@kth/${KNUTH_CONAN_CHANNEL}"
+        - conan upload "${REPO_NAME}/0.X@kth/${KNUTH_CONAN_CHANNEL}" --all -r kth_temp
 
 # Push to repos ------------------------------------------------------
     - stage: push to repos
