@@ -65,10 +65,10 @@ test_script:
       $a = python ci_utils/set_envvars_and_files.py
       Write-Host $a
       Invoke-Expression $a
-      conan remote add knuth https://api.bintray.com/conan/k-nuth/k-nuth
+      conan remote add kth https://api.bintray.com/conan/k-nuth/kth
       python ci_utils/process_conan_reqs.py
       conan remove "*" -f
-      conan remote remove knuth
+      conan remote remove kth
 
   # - conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim
   - python build.py
