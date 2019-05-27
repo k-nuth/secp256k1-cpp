@@ -80,17 +80,30 @@ for:
       only:
         - /(dev|feature).*/    # Just development branches
     environment:
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      CONAN_VISUAL_VERSIONS: 15
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      CONAN_VISUAL_VERSIONS: 16
       CONAN_VISUAL_RUNTIMES: MT
       KNUTH_RUN_TESTS: true
-      VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
+      # APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      # CONAN_VISUAL_VERSIONS: 15
+      # CONAN_VISUAL_RUNTIMES: MT
+      # KNUTH_RUN_TESTS: true
+      # VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
   -
     branches:
       only:
         - /(release|hotfix).+/    #Just releases
     environment:
       matrix:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+          CONAN_VISUAL_VERSIONS: 16
+          CONAN_VISUAL_RUNTIMES: MT
+          KNUTH_RUN_TESTS: true
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+          CONAN_VISUAL_VERSIONS: 16
+          CONAN_VISUAL_RUNTIMES: MD
+          KNUTH_RUN_TESTS: true
+
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           CONAN_VISUAL_VERSIONS: 15
           CONAN_VISUAL_RUNTIMES: MT
