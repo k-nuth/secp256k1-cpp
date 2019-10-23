@@ -99,7 +99,7 @@ jobs:
       python: "3.7"
       services:
         - docker
-      env: CONAN_CLANG_VERSIONS=6.0 CONAN_DOCKER_IMAGE=conanio/clang60
+      env: CONAN_CLANG_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/clang9
       # if: branch =~ /^(release|hotfix).+$/    #Just releases
       if: branch =~ /^(release|hotfix|dev|feature).*$/    #Avoid master
       install: skip
@@ -146,25 +146,25 @@ jobs:
       # if: branch =~ /^(release|hotfix|dev|feature).*$/    #Avoid master
       if: branch =~ /^(release|hotfix).+$/    #Just releases
 
-    - stage: build and upload binaries
-      os: linux
-      sudo: required
-      language: python
-      python: "3.7"
-      services:
-        - docker
-      env: CONAN_GCC_VERSIONS=6 CONAN_DOCKER_IMAGE=conanio/gcc6
-      if: branch =~ /^(release|hotfix).+$/    #Just releases
+    # - stage: build and upload binaries
+    #   os: linux
+    #   sudo: required
+    #   language: python
+    #   python: "3.7"
+    #   services:
+    #     - docker
+    #   env: CONAN_GCC_VERSIONS=6 CONAN_DOCKER_IMAGE=conanio/gcc6
+    #   if: branch =~ /^(release|hotfix).+$/    #Just releases
 
-    - stage: build and upload binaries
-      os: linux
-      sudo: required
-      language: python
-      python: "3.7"
-      services:
-        - docker
-      env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=conanio/gcc5
-      if: branch =~ /^(release|hotfix).+$/    #Just releases
+    # - stage: build and upload binaries
+    #   os: linux
+    #   sudo: required
+    #   language: python
+    #   python: "3.7"
+    #   services:
+    #     - docker
+    #   env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=conanio/gcc5
+    #   if: branch =~ /^(release|hotfix).+$/    #Just releases
 
 
     # - stage: build and upload binaries
@@ -186,8 +186,28 @@ jobs:
       python: "3.7"
       services:
         - docker
-      env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
+      env: CONAN_CLANG_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/clang9
       if: branch =~ /^(release|hotfix|dev|feature).*$/    #Avoid master
+
+    # - stage: build and upload binaries
+    #   os: linux
+    #   sudo: required
+    #   language: python
+    #   python: "3.7"
+    #   services:
+    #     - docker
+    #   env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/clang8
+    #   if: branch =~ /^(release|hotfix|dev|feature).*$/    #Avoid master
+
+    # - stage: build and upload binaries
+    #   os: linux
+    #   sudo: required
+    #   language: python
+    #   python: "3.7"
+    #   services:
+    #     - docker
+    #   env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
+    #   if: branch =~ /^(release|hotfix|dev|feature).*$/    #Avoid master
 
     # - stage: build and upload binaries
     #   os: linux
@@ -229,37 +249,49 @@ jobs:
     #   env: CONAN_CLANG_VERSIONS=3.9 CONAN_DOCKER_IMAGE=conanio/clang39
 
     # macOS, apple-Clang, libc++ -------------------------------------------------
+
     - stage: build and upload binaries
       os: osx
       language: generic
-      osx_image: xcode10.1
-      env: CONAN_APPLE_CLANG_VERSIONS=10.0
+      osx_image: xcode11
+      env: CONAN_APPLE_CLANG_VERSIONS=11.0
            KNUTH_RUN_TESTS=true
       if: branch =~ /^(release|hotfix).+$/    #Just releases
     - stage: build and upload binaries
       os: osx
       language: generic
-      osx_image: xcode10.1
-      env: CONAN_APPLE_CLANG_VERSIONS=10.0
+      osx_image: xcode11
+      env: CONAN_APPLE_CLANG_VERSIONS=11.0
       if: branch =~ /^(feature|dev).*$/    #Just development
+
+    # - stage: build and upload binaries
+    #   os: osx
+    #   language: generic
+    #   osx_image: xcode10.3
+    #   env: CONAN_APPLE_CLANG_VERSIONS=10.0
+    #        KNUTH_RUN_TESTS=true
+    #   if: branch =~ /^(release|hotfix).+$/    #Just releases
+    # - stage: build and upload binaries
+    #   os: osx
+    #   language: generic
+    #   osx_image: xcode10.3
+    #   env: CONAN_APPLE_CLANG_VERSIONS=10.0
+    #   if: branch =~ /^(feature|dev).*$/    #Just development
 
 
     # - stage: build and upload binaries
     #   os: osx
     #   language: generic
-    #   osx_image: xcode9.3
+    #   osx_image: xcode9.4
     #   env: CONAN_APPLE_CLANG_VERSIONS=9.1
     #        KNUTH_RUN_TESTS=true
     #   if: branch =~ /^(release|hotfix).+$/    #Just releases
     # - stage: build and upload binaries
     #   os: osx
     #   language: generic
-    #   osx_image: xcode9.3
+    #   osx_image: xcode9.4
     #   env: CONAN_APPLE_CLANG_VERSIONS=9.1
     #   if: branch =~ /^(feature|dev).*$/    #Just development
-
-
-
 
 
     # - stage: build and upload binaries
