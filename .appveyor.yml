@@ -44,9 +44,10 @@ install:
   - set PATH=%PYTHON%;%PYTHON%/Scripts/;%PATH%;
   - python.exe --version
   - python.exe -m pip install --upgrade pip
-  - pip.exe install conan==1.14.3 > NUL
-  - pip.exe install conan_package_tools==0.25.1 > NUL
+  - pip.exe install conan==1.19.2 > NUL
+  - pip.exe install conan_package_tools==0.29.3 > NUL
   - pip.exe install cpuid --upgrade > NUL
+
 
   # - pip.exe install conan --upgrade > NUL
   # - pip.exe install conan==1.0.0b5 > NUL
