@@ -121,7 +121,8 @@ jobs:
       services:
         - docker
       env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9
-      if: branch =~ /^(release|hotfix).+$/    #Just releases
+      # if: branch =~ /^(release|hotfix).+$/    #Just releases
+      if: branch =~ /^(release|hotfix|dev|feature).*$/    #Avoid master
 
     - stage: build and upload binaries
       os: linux
@@ -131,8 +132,8 @@ jobs:
       services:
         - docker
       env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8
-      # if: branch =~ /^(release|hotfix).+$/    #Just releases
-      if: branch =~ /^(release|hotfix|dev|feature).*$/    #Avoid master
+      if: branch =~ /^(release|hotfix).+$/    #Just releases
+      # if: branch =~ /^(release|hotfix|dev|feature).*$/    #Avoid master
 
     - stage: build and upload binaries
       os: linux
