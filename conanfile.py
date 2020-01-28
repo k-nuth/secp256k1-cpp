@@ -161,7 +161,6 @@ class Secp256k1Conan(KnuthConanFile):
 
     def build(self):
         cmake = self.cmake_basis(pure_c=True)
-
         cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.with_benchmark)
         cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.with_tests)
         cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.with_openssl_tests)
@@ -175,6 +174,8 @@ class Secp256k1Conan(KnuthConanFile):
         cmake.definitions["ENABLE_MODULE_SCHNORR"] = option_on_off(self.options.enable_module_schnorr)
         cmake.definitions["ENABLE_MODULE_RECOVERY"] = option_on_off(self.options.enable_module_recovery)
         cmake.definitions["ENABLE_MODULE_MULTISET"] = option_on_off(self.options.enable_module_multiset)
+
+        self.output.info("Bignum lib selected: %s" % (self.bignum_lib_name,))
         cmake.definitions["WITH_BIGNUM"] = self.bignum_lib_name
         # cmake.definitions["WITH_ASM"] = option_on_off(self.options.with_asm)
         # cmake.definitions["WITH_FIELD"] = option_on_off(self.options.with_field)
@@ -185,6 +186,7 @@ class Secp256k1Conan(KnuthConanFile):
             if self.settings.compiler == "Visual Studio" and (self.settings.compiler.version != 12):
                 cmake.definitions["ENABLE_TESTS"] = option_on_off(False)   #Workaround. test broke MSVC
 
+        cmake.configure(source_dir=self.source_folder)
         cmake.build()
 
         #TODO(fernando): Cmake Tests and Visual Studio doesn't work
