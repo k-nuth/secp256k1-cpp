@@ -75,6 +75,8 @@ test_script:
       $ErrorActionPreference = 'SilentlyContinue'
       conan remove "*" -f
       conan remote remove kth
+      conan remote remove kthbuild_kth_temp_
+      conan remote remove kthbuild_bitprim_temp_
       $ErrorActionPreference = 'Continue'
 
   # - conan remote add bitprim https://api.bintray.com/conan/bitprim/bitprim
