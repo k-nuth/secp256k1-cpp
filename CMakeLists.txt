@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017-2019 Knuth Project.
+# Copyright (c) 2016-2020 Knuth Project.
 #
 # This file is part of Knuth Project.
 #
@@ -73,14 +73,21 @@ set(WITH_SCALAR "auto" CACHE STRING "Specify scalar implementation (64bit|32bit|
 set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|mpir|no|auto).")
 
 
+
 set(KNUTH_PROJECT_VERSION "-" CACHE STRING "Specify the Knuth Project Version.")
-# message(${KNUTH_PROJECT_VERSION})
-
-
-set(MICROARCHITECTURE "x86_64" CACHE STRING "Specify the Cryptocurrency (x86_64|...).")
+message( STATUS "Knuth: Compiling version ${KNUTH_PROJECT_VERSION}")
+set(MICROARCHITECTURE "x86_64" CACHE STRING "Specify the Microarchitecture (x86_64|...).")
 message( STATUS "Knuth: Compiling for ${MICROARCHITECTURE}")
 # add_definitions(-DKNUTH_MICROARCHITECTURE=${MICROARCHITECTURE})
 # add_definitions(-DKNUTH_MICROARCHITECTURE_STR="${MICROARCHITECTURE}")
+set(MARCH_ID "" CACHE STRING "Specify the Microarchitecture ID (x86_64|...).")
+message( STATUS "Knuth: Compiling for Microarchitecture ID ${MARCH_ID}")
+message( STATUS "Knuth: CONAN_CXX_FLAGS ${CONAN_CXX_FLAGS}")
+message( STATUS "Knuth: CONAN_C_FLAGS ${CONAN_C_FLAGS}")
+
+
+
+
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/ci_utils/cmake/knuthbuildinfo.cmake)
     include(${CMAKE_SOURCE_DIR}/ci_utils/cmake/knuthbuildinfo.cmake)
