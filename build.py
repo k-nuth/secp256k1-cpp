@@ -8,7 +8,7 @@ from kthbuild import get_base_march_ids, get_builder, handle_microarchs, copy_en
 if __name__ == "__main__":
     full_build = os.getenv('KNUTH_FULL_BUILD', '0') == '1'
 
-    builder, name = get_builder()
+    builder, name = get_builder(os.path.dirname(os.path.abspath(__file__)))
     builder.add_common_builds(shared_option_name="%s:shared" % name, pure_c=True)
 
     filtered_builds = []
