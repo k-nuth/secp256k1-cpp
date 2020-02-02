@@ -1,25 +1,9 @@
-#
-# Copyright (c) 2016-2020 Knuth Project.
-#
-# This file is part of Knuth Project.
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+# Copyright (c) 2016-2020 Knuth Project developers.
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 import os
 from conans import CMake
-# from ci_utils import option_on_off, get_version, get_conan_req_version, march_conan_manip, pass_march_to_compiler
-# from ci_utils import KnuthConanFile
 from kthbuild import option_on_off, march_conan_manip, pass_march_to_compiler
 from kthbuild import KnuthConanFile
 
@@ -34,8 +18,6 @@ class Secp256k1Conan(KnuthConanFile):
     description = "Optimized C library for EC operations on curve secp256k1"
     settings = "os", "compiler", "build_type", "arch"
 
-    # if Version(conan_version) < Version(get_conan_req_version()):
-    #     raise Exception ("Conan version should be greater or equal than %s. Detected: %s." % (get_conan_req_version(), conan_version))
 
     #TODO(fernando): See what to do with shared/static option... (not supported yet in Cmake)
     
@@ -48,14 +30,18 @@ class Secp256k1Conan(KnuthConanFile):
                "enable_module_schnorr": [True, False],
                "enable_module_recovery": [True, False],
                "enable_module_multiset": [True, False],
-               "with_benchmark": [True, False],
-               "with_tests": [True, False],
-               "with_openssl_tests": [True, False],
-               "with_bignum_lib": [True, False],
+               "benchmark": [True, False],
+               "tests": [True, False],
+               "openssl_tests": [True, False],
+               "bignum_lib": [True, False],
                "microarchitecture": "ANY", #["x86_64", "haswell", "ivybridge", "sandybridge", "bulldozer", ...]
                "fix_march": [True, False],
                "march_id": "ANY",
                "verbose": [True, False],
+               "cxxflags": "ANY",
+               "cflags": "ANY",
+               "cmake_export_compile_commands": [True, False],
+
 
                
             #    "with_bignum": ["conan", "auto", "system", "no"]
@@ -79,14 +65,17 @@ class Secp256k1Conan(KnuthConanFile):
         "enable_module_schnorr=True", \
         "enable_module_recovery=True", \
         "enable_module_multiset=True", \
-        "with_benchmark=False", \
-        "with_tests=False", \
-        "with_openssl_tests=False", \
-        "with_bignum_lib=True", \
+        "benchmark=False", \
+        "tests=False", \
+        "openssl_tests=False", \
+        "bignum_lib=True", \
         "microarchitecture=_DUMMY_",  \
         "fix_march=False", \
         "march_id=_DUMMY_",  \
-        "verbose=False"
+        "verbose=False",  \
+        "cxxflags=_DUMMY_", \
+        "cflags=_DUMMY_", \
+        "cmake_export_compile_commands=False"
 
         # "with_bignum=conan"
         # "with_asm='auto'", \
@@ -99,13 +88,9 @@ class Secp256k1Conan(KnuthConanFile):
     exports_sources = "src/*", "include/*", "CMakeLists.txt", "cmake/*", "secp256k1Config.cmake.in", "contrib/*", "test/*"
     build_policy = "missing"
 
-    # with_benchmark = False
-    # with_tests = True
-    # with_openssl_tests = False
-
     @property
     def bignum_lib_name(self):
-        if self.options.with_bignum_lib:
+        if self.options.bignum_lib:
             if self.settings.os == "Windows":
                 return "mpir"
             else:
@@ -114,7 +99,7 @@ class Secp256k1Conan(KnuthConanFile):
             return "no"
 
     def requirements(self):
-        if self.options.with_bignum_lib:
+        if self.options.bignum_lib:
             if self.settings.os == "Windows":
                 self.requires("mpir/3.0.0@kth/stable")
             else:
@@ -149,24 +134,18 @@ class Secp256k1Conan(KnuthConanFile):
     def package_id(self):
         KnuthConanFile.package_id(self)
 
-        self.info.options.with_benchmark = "ANY"
-        self.info.options.with_tests = "ANY"
-        self.info.options.with_openssl_tests = "ANY"
+        self.info.options.benchmark = "ANY"
+        self.info.options.openssl_tests = "ANY"
 
-        # self.info.options.verbose = "ANY"
-        # self.info.options.fix_march = "ANY"
-
-        # if self.settings.compiler == "Visual Studio":
-        #     self.info.options.microarchitecture = "ANY"
 
     def build(self):
         cmake = self.cmake_basis(pure_c=True)
-        cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.with_benchmark)
-        cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.with_tests)
-        cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.with_openssl_tests)
-        # cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.with_benchmark)
-        # cmake.definitions["ENABLE_TESTS"] = option_on_off(self.with_tests)
-        # cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.with_openssl_tests)
+        cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.benchmark)
+        cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.tests)
+        cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.openssl_tests)
+        # cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.benchmark)
+        # cmake.definitions["ENABLE_TESTS"] = option_on_off(self.tests)
+        # cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.openssl_tests)
         cmake.definitions["ENABLE_EXPERIMENTAL"] = option_on_off(self.options.enable_experimental)
         cmake.definitions["ENABLE_ENDOMORPHISM"] = option_on_off(self.options.enable_endomorphism)
         cmake.definitions["ENABLE_ECMULT_STATIC_PRECOMPUTATION"] = option_on_off(self.options.enable_ecmult_static_precomputation)
@@ -191,73 +170,10 @@ class Secp256k1Conan(KnuthConanFile):
 
         #TODO(fernando): Cmake Tests and Visual Studio doesn't work
         #TODO(fernando): Secp256k1 segfaults al least on Windows
-        # if self.options.with_tests:
+        # if self.options.tests:
         #     cmake.test()
         #     # cmake.test(target="tests")
 
-
-
-    # def build(self):
-        # cmake = CMake(self)
-        # cmake.definitions["USE_CONAN"] = option_on_off(True)
-        # cmake.definitions["NO_CONAN_AT_ALL"] = option_on_off(False)
-        # cmake.verbose = self.options.verbose
-        # cmake.definitions["ENABLE_SHARED"] = option_on_off(self.is_shared)
-        # cmake.definitions["ENABLE_POSITION_INDEPENDENT_CODE"] = option_on_off(self.fPIC_enabled)
-
-        # cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.with_benchmark)
-        # cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.with_tests)
-        # cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.with_openssl_tests)
-        # # cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.with_benchmark)
-        # # cmake.definitions["ENABLE_TESTS"] = option_on_off(self.with_tests)
-        # # cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.with_openssl_tests)
-
-        # cmake.definitions["ENABLE_EXPERIMENTAL"] = option_on_off(self.options.enable_experimental)
-        # cmake.definitions["ENABLE_ENDOMORPHISM"] = option_on_off(self.options.enable_endomorphism)
-        # cmake.definitions["ENABLE_ECMULT_STATIC_PRECOMPUTATION"] = option_on_off(self.options.enable_ecmult_static_precomputation)
-        # cmake.definitions["ENABLE_MODULE_ECDH"] = option_on_off(self.options.enable_module_ecdh)
-        # cmake.definitions["ENABLE_MODULE_SCHNORR"] = option_on_off(self.options.enable_module_schnorr)
-        # cmake.definitions["ENABLE_MODULE_RECOVERY"] = option_on_off(self.options.enable_module_recovery)
-        # cmake.definitions["ENABLE_MODULE_MULTISET"] = option_on_off(self.options.enable_module_multiset)
-
-        # cmake.definitions["WITH_BIGNUM"] = self.bignum_lib_name
-
-        # # cmake.definitions["WITH_ASM"] = option_on_off(self.options.with_asm)
-        # # cmake.definitions["WITH_FIELD"] = option_on_off(self.options.with_field)
-        # # cmake.definitions["WITH_SCALAR"] = option_on_off(self.options.with_scalar)
-        # # cmake.definitions["WITH_BIGNUM"] = option_on_off(self.options.with_bignum)
-
-
-        # cmake.definitions["MICROARCHITECTURE"] = self.options.microarchitecture
-        # cmake.definitions["KNUTH_PROJECT_VERSION"] = self.version
-
-        # if self.settings.os == "Windows":
-        #     if self.settings.compiler == "Visual Studio" and (self.settings.compiler.version != 12):
-        #         cmake.definitions["ENABLE_TESTS"] = option_on_off(False)   #Workaround. test broke MSVC
-
-        # # Pure-C Library, No CXX11 ABI
-        # # if self.settings.compiler == "gcc":
-        # #     if float(str(self.settings.compiler.version)) >= 5:
-        # #         cmake.definitions["NOT_USE_CPP11_ABI"] = option_on_off(False)
-        # #     else:
-        # #         cmake.definitions["NOT_USE_CPP11_ABI"] = option_on_off(True)
-        # # elif self.settings.compiler == "clang":
-        # #     if str(self.settings.compiler.libcxx) == "libstdc++" or str(self.settings.compiler.libcxx) == "libstdc++11":
-        # #         cmake.definitions["NOT_USE_CPP11_ABI"] = option_on_off(False)
-
-
-
-        # pass_march_to_compiler(self, cmake)
-
-        # cmake.configure(source_dir=self.source_folder)
-        # cmake.build()
-
-
-        # #TODO(fernando): Cmake Tests and Visual Studio doesn't work
-        # #TODO(fernando): Secp256k1 segfaults al least on Windows
-        # # if self.options.with_tests:
-        # #     cmake.test()
-        # #     # cmake.test(target="tests")
 
     def package(self):
         self.copy("*.h", dst="include", src="include", keep_path=True)

@@ -56,7 +56,7 @@ static uint32_t secp256k1_rand_int(uint32_t range) {
      * range is to 2**B. The array below (indexed by B) contains a 0 when the
      * first mechanism is to be used, and the number A otherwise.
      */
-    static const int addbits[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0};
+    static int const addbits[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0};
     uint32_t trange, mult;
     int bits = 0;
     if (range <= 1) {

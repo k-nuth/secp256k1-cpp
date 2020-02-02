@@ -249,7 +249,7 @@ void test_exhaustive_sign(const secp256k1_context *ctx, const secp256k1_ge *grou
     for (i = 1; i < order; i++) {  /* message */
         for (j = 1; j < order; j++) {  /* key */
             for (k = 1; k < order; k++) {  /* nonce */
-                const int starting_k = k;
+                int const starting_k = k;
                 secp256k1_ecdsa_signature sig;
                 secp256k1_scalar sk, msg, r, s, expected_r;
                 unsigned char sk32[32], msg32[32];
@@ -295,7 +295,7 @@ void test_exhaustive_recovery_sign(const secp256k1_context *ctx, const secp256k1
     for (i = 1; i < order; i++) {  /* message */
         for (j = 1; j < order; j++) {  /* key */
             for (k = 1; k < order; k++) {  /* nonce */
-                const int starting_k = k;
+                int const starting_k = k;
                 secp256k1_fe r_dot_y_normalized;
                 secp256k1_ecdsa_recoverable_signature rsig;
                 secp256k1_ecdsa_signature sig;

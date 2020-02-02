@@ -45,7 +45,7 @@ static void secp256k1_scalar_cadd_bit(secp256k1_scalar *r, unsigned int bit, int
 }
 
 static void secp256k1_scalar_set_b32(secp256k1_scalar *r, const unsigned char *b32, int *overflow) {
-    const int base = 0x100 % EXHAUSTIVE_TEST_ORDER;
+    int const base = 0x100 % EXHAUSTIVE_TEST_ORDER;
     int i;
     *r = 0;
     for (i = 0; i < 32; i++) {

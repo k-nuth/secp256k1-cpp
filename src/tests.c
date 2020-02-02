@@ -567,7 +567,7 @@ void test_num_jacobi(void) {
     secp256k1_num order, n;
     int i;
     /* squares mod 5 are 1, 4 */
-    const int jacobi5[10] = { 0, 1, -1, -1, 1, 0, 1, -1, -1, 1 };
+    int const jacobi5[10] = { 0, 1, -1, -1, 1, 0, 1, -1, -1, 1 };
 
     /* check some small values with 5 as the order */
     secp256k1_scalar_set_int(&five, 5);
