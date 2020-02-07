@@ -134,11 +134,11 @@ for:
         - /(release|hotfix).+/    #Just releases
     environment:
       matrix:
-        - WAIT_FOR_DEPS: 1
-          APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
           CONAN_VISUAL_VERSIONS: 16
           CONAN_VISUAL_RUNTIMES: MT
           KTH_RUN_TESTS: true
+          WAIT_FOR_DEPS: 1
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
           CONAN_VISUAL_VERSIONS: 16
           CONAN_VISUAL_RUNTIMES: MD
