@@ -82,7 +82,7 @@ conan remote add kth https://api.bintray.com/conan/k-nuth/kth
 conan install secp256k1/0.X@kth/stable 
 ```
 
-In you want to tune the installation for better performance, please refer to [this](https://kth.github.io/docfx/content/user_guide/installation.html#advanced-installation).
+In you want to tune the installation for better performance, please refer to the [documentation](https://kth.github.io/docfx/content/user_guide/installation.html#advanced-installation).
 
 
 <!-- Links -->
