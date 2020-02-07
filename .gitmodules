@@ -1,0 +1,3 @@
+[submodule "ci-utils"]
+	path = ci-utils
+	url = https://github.com/k-nuth/ci-utils
