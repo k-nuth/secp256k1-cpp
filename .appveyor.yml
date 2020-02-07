@@ -34,9 +34,9 @@ install:
   - pip.exe install kthbuild --upgrade > NUL
   - conan user # It creates the conan data directory
 
-  - dir
-  - cd ci_utils
-  - dir
+  # - dir
+  # - cd ci_utils
+  # - dir
 
 test_script:
   - git submodule init
