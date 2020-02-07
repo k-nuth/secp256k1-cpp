@@ -61,47 +61,6 @@ test_script:
   #     gcc --version
   #   )
 
-
-  - ps: |
-      If ($env:WAIT_FOR_DEPS -ne 1) {
-        $a = python ci_utils/set_envvars_and_files.py
-        Write-Host $a
-        Invoke-Expression $a
-
-        $ErrorActionPreference = 'SilentlyContinue'
-        conan remote add kth https://api.bintray.com/conan/k-nuth/kth
-        $ErrorActionPreference = 'Continue'
-
-        # conan info . --only None
-        # conan info . --only None -s compiler=gcc -s compiler.version=5 -s compiler.libcxx=libstdc++
-        python ci_utils/process_conan_reqs.py
-
-        $ErrorActionPreference = 'SilentlyContinue'
-        conan remove "*" -f
-        conan remote remove kth
-        conan remote remove kthbuild_kth_temp_
-        conan remote remove kthbuild_bitprim_temp_
-        $ErrorActionPreference = 'Continue'
-      }
-
-  # - ps: |
-  #     If ($env:WAIT_FOR_DEPS -eq 1) {
-  #       conan user
-
-  #       $ErrorActionPreference = 'SilentlyContinue'
-  #       conan remote add kth_temp https://api.bintray.com/conan/k-nuth/kth
-  #       $ErrorActionPreference = 'Continue'
-
-  #       echo "waiting for infrastructure/0.X@kth/staging ..."
-  #       conan search infrastructure/0.X@kth/staging -r kth_temp > $null
-  #       while($env:lastExitCode -eq 1) {
-  #         Write-Host "."
-  #         Start-Sleep -s 10
-  #         conan search infrastructure/0.X@kth/staging -r kth_temp > $null
-  #       }
-  #       Write-Host "infrastructure/0.X@kth/staging found"
-  #     }
-
   - ps: |
       If ($env:WAIT_FOR_DEPS -eq 1) {
         conan user
@@ -113,6 +72,27 @@ test_script:
         # python ci_utils/wait_for_deps.py domain
         python ci_utils/wait_for_deps.py
       }
+
+  - ps: |
+      $a = python ci_utils/set_envvars_and_files.py
+      Write-Host $a
+      Invoke-Expression $a
+
+      $ErrorActionPreference = 'SilentlyContinue'
+      conan remote add kth https://api.bintray.com/conan/k-nuth/kth
+      $ErrorActionPreference = 'Continue'
+
+      # conan info . --only None
+      # conan info . --only None -s compiler=gcc -s compiler.version=5 -s compiler.libcxx=libstdc++
+      python ci_utils/process_conan_reqs.py
+
+      $ErrorActionPreference = 'SilentlyContinue'
+      conan remove "*" -f
+      conan remote remove kth
+      conan remote remove kthbuild_kth_temp_
+      conan remote remove kthbuild_bitprim_temp_
+      $ErrorActionPreference = 'Continue'
+
 
   #- PowerShell .\.appveyor\build.ps1
   - python build.py
