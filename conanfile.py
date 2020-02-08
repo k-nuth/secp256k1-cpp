@@ -47,7 +47,7 @@ class Secp256k1Conan(KnuthConanFile):
             #    "with_bignum": ["conan", "auto", "system", "no"]
 
             #TODO(fernando): check what to do with with_asm, with_field and with_scalar 
-            # Check CMake files and libbitcoin and bitcoin core makefiles
+            # Check CMake files and Legacy and bitcoin core makefiles
 
             #    "with_asm": ['x86_64', 'arm', 'no', 'auto'],
             #    "with_field": ['64bit', '32bit', 'auto'],
