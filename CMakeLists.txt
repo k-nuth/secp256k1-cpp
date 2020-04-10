@@ -301,8 +301,8 @@ elseif (${WITH_BIGNUM} STREQUAL "no")
   target_compile_definitions(secp256k1 PUBLIC -DUSE_SCALAR_INV_BUILTIN=1)
 endif()
 
-target_compile_definitions(secp256k1 PUBLIC -DKTH_PROJECT_VERSION="\\"${KTH_PROJECT_VERSION}\\"") #TODO(fernando): manage with Conan????
-
+# target_compile_definitions(secp256k1 PUBLIC -DKTH_PROJECT_VERSION="\\"${KTH_PROJECT_VERSION}\\"") #TODO(fernando): manage with Conan????
+target_compile_definitions(secp256k1 PUBLIC -DKTH_PROJECT_VERSION="${KTH_PROJECT_VERSION}") #TODO(fernando): manage with Conan????
 
 
 if (ENABLE_ECMULT_STATIC_PRECOMPUTATION)
