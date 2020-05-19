@@ -22,12 +22,12 @@ if __name__ == "__main__":
                 options["%s:tests" % name] = "True"
                 # options["%s:openssl_tests" % name] = "True"
 
-            opts_no_schnorr = copy.deepcopy(options)
-            opts_no_schnorr["%s:enable_module_schnorr" % name] = "False"
+            # opts_no_schnorr = copy.deepcopy(options)
+            # opts_no_schnorr["%s:enable_module_schnorr" % name] = "False"
 
             march_ids = get_base_march_ids()
             handle_microarchs("%s:march_id" % name, march_ids, filtered_builds, settings, options, env_vars, build_requires)
-            handle_microarchs("%s:march_id" % name, march_ids, filtered_builds, settings, opts_no_schnorr, env_vars, build_requires)
+            # handle_microarchs("%s:march_id" % name, march_ids, filtered_builds, settings, opts_no_schnorr, env_vars, build_requires)
 
             filter_marchs_tests(name, filtered_builds, ["%s:tests" % name])
 
