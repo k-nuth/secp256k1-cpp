@@ -1,6 +1,6 @@
-name: Knuth
+name: Build and Test
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   master:
@@ -140,10 +140,12 @@ jobs:
 
       - name: Settting EnvVars (Windows)
         if: ${{ matrix.config.compiler == 'Visual Studio' }}
-        shell: bash
+        # shell: bash
+        shell: powershell
         run: |
-          echo "CONAN_VISUAL_VERSIONS=${{ matrix.config.version }}" >> $GITHUB_ENV
-          echo "CONAN_VISUAL_RUNTIMES=${{ matrix.config.msvc_runtime }}" >> $GITHUB_ENV
+          echo "CONAN_VISUAL_VERSIONS=${{ matrix.config.version }}" >> $env:$GITHUB_ENV
+          echo "CONAN_VISUAL_RUNTIMES=${{ matrix.config.msvc_runtime }}" >> $env:$GITHUB_ENV
+          # echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $env:GITHUB_ENV
 
       - name: Build (Unix)
         if: ${{ matrix.config.compiler != 'Visual Studio' }}
