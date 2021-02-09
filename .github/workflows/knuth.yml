@@ -182,8 +182,8 @@ jobs:
           # echo %CONAN_STABLE_BRANCH_PATTERN%
           # echo %CONAN_LOGIN_USERNAME%
 
-          Write-Host "CONAN_VISUAL_VERSIONS: ${CONAN_VISUAL_VERSIONS}"
-          Write-Host "CONAN_VISUAL_RUNTIMES: ${CONAN_VISUAL_RUNTIMES}"
+          Write-Host "CONAN_VISUAL_VERSIONS: $Env:CONAN_VISUAL_VERSIONS"
+          Write-Host "CONAN_VISUAL_RUNTIMES: $Env:CONAN_VISUAL_RUNTIMES"
 
           $Env:KTH_BRANCH = "${{ github.ref }}".Split("/")[2]
           Write-Host "My branch name is $Env:KTH_BRANCH"
