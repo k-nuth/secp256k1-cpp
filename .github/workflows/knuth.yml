@@ -164,6 +164,7 @@ jobs:
           CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
           CONAN_STABLE_BRANCH_PATTERN: "master$" #"release/*"
+          CONAN_DOCKER_ENTRY_SCRIPT: "echo '************************************' && conan remote list && echo '************************************'"
         shell: bash
         run: |
           echo ${{ matrix.config.compiler }}
@@ -173,6 +174,7 @@ jobs:
           echo ${CONAN_APPLE_CLANG_VERSIONS}
           echo ${CONAN_DOCKER_IMAGE}
           echo ${CONAN_LOGIN_USERNAME}
+          echo ${CONAN_DOCKER_ENTRY_SCRIPT}
 
           export KTH_BRANCH=$(echo '${{ github.ref }}' | awk -F '/' '{print $3}')
           echo "My branch name is $KTH_BRANCH"
