@@ -203,9 +203,15 @@ jobs:
           Write-Host $a
           Invoke-Expression $a
 
+          conan user
+          conan remote list
+
           $ErrorActionPreference = 'SilentlyContinue'
           conan remote add kth https://knuth.jfrog.io/artifactory/api/conan/knuth
           $ErrorActionPreference = 'Continue'
+
+          conan user
+          conan remote list
 
           # conan info . --only None
           # conan info . --only None -s compiler=gcc -s compiler.version=5 -s compiler.libcxx=libstdc++
