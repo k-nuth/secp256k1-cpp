@@ -101,9 +101,9 @@ class Secp256k1Conan(KnuthConanFile):
     def requirements(self):
         if self.options.bignum_lib:
             if self.settings.os == "Windows":
-                self.requires("mpir/3.0.0@")
+                self.requires("mpir/3.0.0")
             else:
-                self.requires("gmp/6.2.1@")
+                self.requires("gmp/6.2.1")
 
                 # self.requires("mpir/3.0.0@kth/stable")
                 # self.requires("gmp/6.2.1@kth/stable")
