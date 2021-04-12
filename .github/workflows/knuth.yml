@@ -15,7 +15,7 @@ jobs:
 
   wait-for-dependencies:
     name: Wait for dependencies (modules)
-    if: github.ref == 'refs/heads/dev' || 
+    if: github.ref == 'refs/heads/dev' ||
         startsWith(github.ref, 'refs/heads/testci') ||
         startsWith(github.ref, 'refs/heads/release') ||
         startsWith(github.ref, 'refs/heads/hotfix')
@@ -57,7 +57,7 @@ jobs:
         run: |
           conan user
           conan remote list
-          conan remote add kthbuild_kth_temp_ https://api.bintray.com/conan/k-nuth/kth || true
+          conan remote add kthbuild_kth_temp_ https://knuth.jfrog.io/artifactory/api/conan/knuth || true
           conan remote list
           # echo "KTH_REPO_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $1}')" >> $GITHUB_ENV
           export KTH_REPO_NAME=$(echo '${{ github.repository }}')
@@ -91,7 +91,7 @@ jobs:
           echo "::set-output name=matrix::${MATRIX}"
           # JSON=$(cat ./ci_utils/.github/matrix.json)
           # echo "::set-output name=${JSON//'%'/'%25'}"
-          
+
   builds:
     needs: generate-matrix
     runs-on: ${{ matrix.config.os }}
@@ -104,7 +104,7 @@ jobs:
         if: ${{ matrix.config.compiler == 'Visual Studio' }}
         run: |
           git config --global core.autocrlf false
-          git config --global core.eol lf          
+          git config --global core.eol lf
           # git config --global --edit
           # git config --global core.autocrlf true
           # git config --global --edit
@@ -116,7 +116,7 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: "3.8"
-  
+
       - name: Install Dependencies (Unix)
         if: ${{ matrix.config.compiler != 'Visual Studio' }}
         run: |
@@ -204,7 +204,7 @@ jobs:
           Invoke-Expression $a
 
           $ErrorActionPreference = 'SilentlyContinue'
-          conan remote add kth https://api.bintray.com/conan/k-nuth/kth
+          conan remote add kth https://knuth.jfrog.io/artifactory/api/conan/knuth
           $ErrorActionPreference = 'Continue'
 
           # conan info . --only None
@@ -222,9 +222,9 @@ jobs:
   static-checks:
     needs: wait-for-dependencies
     name: Static Checks
-    if: github.ref == 'refs/heads/dev' || 
+    if: github.ref == 'refs/heads/dev' ||
         startsWith(github.ref, 'refs/heads/testci') ||
-        startsWith(github.ref, 'refs/heads/release') || 
+        startsWith(github.ref, 'refs/heads/release') ||
         startsWith(github.ref, 'refs/heads/hotfix')
 
     runs-on: ubuntu-20.04
@@ -237,11 +237,11 @@ jobs:
   upload-aliases:
     name: Upload Aliases
     needs: [builds, static-checks]
-    if: github.ref == 'refs/heads/dev' || 
+    if: github.ref == 'refs/heads/dev' ||
         startsWith(github.ref, 'refs/heads/testci') ||
-        startsWith(github.ref, 'refs/heads/release') || 
+        startsWith(github.ref, 'refs/heads/release') ||
         startsWith(github.ref, 'refs/heads/hotfix') ||
-        startsWith(github.ref, 'refs/heads/feature') 
+        startsWith(github.ref, 'refs/heads/feature')
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -272,14 +272,14 @@ jobs:
           echo "My branch name is $KTH_BRANCH"
 
           eval $(python ci_utils/set_envvars_and_files.py)
-          # conan remote add kthbuild_kth_temp_ https://api.bintray.com/conan/k-nuth/kth
+          # conan remote add kthbuild_kth_temp_ https://knuth.jfrog.io/artifactory/api/conan/knuth
           conan user
           conan user ${CONAN_LOGIN_USERNAME} -r kthbuild_kth_temp_ -p ${CONAN_PASSWORD}
           conan user
           echo "conan alias ${REPO_NAME}/0.X@kth/${KTH_CONAN_CHANNEL} ${REPO_NAME}/${KTH_CONAN_VERSION}@kth/${KTH_CONAN_CHANNEL}"
           conan alias "${REPO_NAME}/0.X@kth/${KTH_CONAN_CHANNEL}" "${REPO_NAME}/${KTH_CONAN_VERSION}@kth/${KTH_CONAN_CHANNEL}"
           echo "conan upload ${REPO_NAME}/0.X@kth/${KTH_CONAN_CHANNEL} --all -r kthbuild_kth_temp_"
-          conan upload "${REPO_NAME}/0.X@kth/${KTH_CONAN_CHANNEL}" --all -r kthbuild_kth_temp_        
+          conan upload "${REPO_NAME}/0.X@kth/${KTH_CONAN_CHANNEL}" --all -r kthbuild_kth_temp_
 
 
 
