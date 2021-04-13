@@ -63,3 +63,4 @@ CMakeSettings.json
 .vscode/
 
 get_branch.py
+.DS_Store
