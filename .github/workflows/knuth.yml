@@ -169,7 +169,6 @@ jobs:
           CONAN_PASSWORD_TAO: ${{ secrets.CONAN_PASSWORD_TAO }}
 
           CONAN_STABLE_BRANCH_PATTERN: "master$" #"release/*"
-          CONAN_DOCKER_ENTRY_SCRIPT: "echo '************************************' && conan remote list && echo '************************************'"
         shell: bash
         run: |
           echo ${{ matrix.config.compiler }}
@@ -217,15 +216,9 @@ jobs:
           Write-Host $a
           Invoke-Expression $a
 
-          conan user
-          conan remote list
-
           $ErrorActionPreference = 'SilentlyContinue'
           conan remote add kth https://knuth.jfrog.io/artifactory/api/conan/knuth
           $ErrorActionPreference = 'Continue'
-
-          conan user
-          conan remote list
 
           # conan info . --only None
           # conan info . --only None -s compiler=gcc -s compiler.version=5 -s compiler.libcxx=libstdc++
