@@ -163,6 +163,8 @@ jobs:
         env:
           CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
+          CONAN_LOGIN_USERNAME_UPLOAD_REPO: ${{ secrets.CONAN_LOGIN_USERNAME_UPLOAD_REPO }}
+          CONAN_PASSWORD_UPLOAD_REPO: ${{ secrets.CONAN_PASSWORD_UPLOAD_REPO }}
           CONAN_LOGIN_USERNAME_TAO: ${{ secrets.CONAN_LOGIN_USERNAME_TAO }}
           CONAN_PASSWORD_TAO: ${{ secrets.CONAN_PASSWORD_TAO }}
 
@@ -177,6 +179,7 @@ jobs:
           echo ${CONAN_APPLE_CLANG_VERSIONS}
           echo ${CONAN_DOCKER_IMAGE}
           echo ${CONAN_LOGIN_USERNAME}
+          echo ${CONAN_LOGIN_USERNAME_UPLOAD_REPO}
           echo ${CONAN_LOGIN_USERNAME_TAO}
           echo ${CONAN_DOCKER_ENTRY_SCRIPT}
 
@@ -191,6 +194,8 @@ jobs:
         env:
           CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
+          CONAN_LOGIN_USERNAME_UPLOAD_REPO: ${{ secrets.CONAN_LOGIN_USERNAME_UPLOAD_REPO }}
+          CONAN_PASSWORD_UPLOAD_REPO: ${{ secrets.CONAN_PASSWORD_UPLOAD_REPO }}
           CONAN_LOGIN_USERNAME_TAO: ${{ secrets.CONAN_LOGIN_USERNAME_TAO }}
           CONAN_PASSWORD_TAO: ${{ secrets.CONAN_PASSWORD_TAO }}
 
@@ -276,6 +281,8 @@ jobs:
         env:
           CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
+          CONAN_LOGIN_USERNAME_UPLOAD_REPO: ${{ secrets.CONAN_LOGIN_USERNAME_UPLOAD_REPO }}
+          CONAN_PASSWORD_UPLOAD_REPO: ${{ secrets.CONAN_PASSWORD_UPLOAD_REPO }}
           CONAN_LOGIN_USERNAME_TAO: ${{ secrets.CONAN_LOGIN_USERNAME_TAO }}
           CONAN_PASSWORD_TAO: ${{ secrets.CONAN_PASSWORD_TAO }}
         shell: bash
