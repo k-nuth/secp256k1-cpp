@@ -105,9 +105,6 @@ class Secp256k1Conan(KnuthConanFile):
             else:
                 self.requires("gmp/6.2.1")
 
-                # self.requires("mpir/3.0.0@kth/stable")
-                # self.requires("gmp/6.2.1@kth/stable")
-
     def config_options(self):
         KnuthConanFile.config_options(self)
 
