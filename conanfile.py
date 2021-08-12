@@ -1,4 +1,4 @@
-# Copyright (c) 2016-2020 Knuth Project developers.
+# Copyright (c) 2016-2021 Knuth Project developers.
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,7 +20,7 @@ class Secp256k1Conan(KnuthConanFile):
 
 
     #TODO(fernando): See what to do with shared/static option... (not supported yet in Cmake)
-    
+
     options = {"shared": [True, False],
                "fPIC": [True, False],
                "enable_experimental": [True, False],
@@ -43,10 +43,10 @@ class Secp256k1Conan(KnuthConanFile):
                "cmake_export_compile_commands": [True, False],
 
 
-               
+
             #    "with_bignum": ["conan", "auto", "system", "no"]
 
-            #TODO(fernando): check what to do with with_asm, with_field and with_scalar 
+            #TODO(fernando): check what to do with with_asm, with_field and with_scalar
             # Check CMake files and Legacy and bitcoin core makefiles
 
             #    "with_asm": ['x86_64', 'arm', 'no', 'auto'],
@@ -101,9 +101,9 @@ class Secp256k1Conan(KnuthConanFile):
     def requirements(self):
         if self.options.bignum_lib:
             if self.settings.os == "Windows":
-                self.requires("mpir/3.0.0@kth/stable")
+                self.requires("mpir/3.0.0")
             else:
-                self.requires("gmp/6.2.0@kth/stable")
+                self.requires("gmp/6.2.1")
 
     def config_options(self):
         KnuthConanFile.config_options(self)
