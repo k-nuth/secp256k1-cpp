@@ -148,7 +148,7 @@ jobs:
         shell: bash
         run: |
           echo "CONAN_APPLE_CLANG_VERSIONS=${{ matrix.config.version }}.0" >> $GITHUB_ENV
-          echo "CONAN_DISABLE_CHECK_COMPILER=1" >> $GITHUB_ENV
+          # echo "CONAN_DISABLE_CHECK_COMPILER=1" >> $GITHUB_ENV
 
       - name: Settting EnvVars (Windows)
         if: ${{ matrix.config.compiler == 'Visual Studio' }}

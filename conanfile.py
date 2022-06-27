@@ -153,6 +153,7 @@ class Secp256k1Conan(KnuthConanFile):
         cmake.definitions["ENABLE_MODULE_SCHNORR"] = option_on_off(self.options.enable_module_schnorr)
         cmake.definitions["ENABLE_MODULE_RECOVERY"] = option_on_off(self.options.enable_module_recovery)
         cmake.definitions["ENABLE_MODULE_MULTISET"] = option_on_off(self.options.enable_module_multiset)
+        cmake.definitions["CONAN_DISABLE_CHECK_COMPILER"] = option_on_off(True)
 
         self.output.info("Bignum lib selected: %s" % (self.bignum_lib_name,))
         cmake.definitions["WITH_BIGNUM"] = self.bignum_lib_name
