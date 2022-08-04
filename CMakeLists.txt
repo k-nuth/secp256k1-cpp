@@ -64,7 +64,7 @@ message( STATUS "Knuth: Compiling version ${KTH_PROJECT_VERSION}")
 set(MICROARCHITECTURE "x86_64" CACHE STRING "Specify the Microarchitecture (x86_64|...).")
 message( STATUS "Knuth: Compiling for ${MICROARCHITECTURE}")
 set(MARCH_ID "" CACHE STRING "Specify the Microarchitecture ID (x86_64|...).")
-message( STATUS "Knuth: Compiling for Microarchitecture ID ${MARCH_ID}")
+message( STATUS "Knuth: Compiling for Microarchitecture ID ${KTH_MARCH_ID}")
 message( STATUS "Knuth: CONAN_CXX_FLAGS ${CONAN_CXX_FLAGS}")
 message( STATUS "Knuth: CONAN_C_FLAGS ${CONAN_C_FLAGS}")
 
@@ -221,8 +221,8 @@ add_library(secp256k1 ${MODE}
   include/secp256k1.h
   src/secp256k1.c)
 
-  
-if (ENABLE_POSITION_INDEPENDENT_CODE) 
+
+if (ENABLE_POSITION_INDEPENDENT_CODE)
   set_property(TARGET secp256k1 PROPERTY POSITION_INDEPENDENT_CODE ON)
 endif(ENABLE_POSITION_INDEPENDENT_CODE)
 
@@ -385,7 +385,7 @@ if (ENABLE_TESTS)
   if (ENABLE_OPENSSL_TESTS)
     target_compile_definitions(tests PRIVATE -DENABLE_OPENSSL_TESTS)
   endif()
-  
+
   target_compile_definitions(tests PRIVATE -DVERIFY)
   target_include_directories(tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR})

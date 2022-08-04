@@ -34,9 +34,10 @@ class Secp256k1Conan(KnuthConanFile):
                "tests": [True, False],
                "openssl_tests": [True, False],
                "bignum_lib": [True, False],
-               "microarchitecture": "ANY", #["x86_64", "haswell", "ivybridge", "sandybridge", "bulldozer", ...]
-               "fix_march": [True, False],
+
                "march_id": "ANY",
+               "march_strategy": ["download_if_possible", "optimized", "download_or_fail"],
+
                "verbose": [True, False],
                "cxxflags": "ANY",
                "cflags": "ANY",
@@ -56,32 +57,35 @@ class Secp256k1Conan(KnuthConanFile):
     }
 
     # default_options = make_default_options_method()
-    default_options = "shared=False", \
-        "fPIC=True", \
-        "enable_experimental=False", \
-        "enable_endomorphism=False", \
-        "enable_ecmult_static_precomputation=False", \
-        "enable_module_ecdh=False", \
-        "enable_module_schnorr=True", \
-        "enable_module_recovery=True", \
-        "enable_module_multiset=True", \
-        "benchmark=False", \
-        "tests=False", \
-        "openssl_tests=False", \
-        "bignum_lib=True", \
-        "microarchitecture=_DUMMY_",  \
-        "fix_march=False", \
-        "march_id=_DUMMY_",  \
-        "verbose=False",  \
-        "cxxflags=_DUMMY_", \
-        "cflags=_DUMMY_", \
-        "cmake_export_compile_commands=False"
+    default_options = {
+        "shared": False,
+        "fPIC": True,
+        "enable_experimental": False,
+        "enable_endomorphism": False,
+        "enable_ecmult_static_precomputation": False,
+        "enable_module_ecdh": False,
+        "enable_module_schnorr": True,
+        "enable_module_recovery": True,
+        "enable_module_multiset": True,
+        "benchmark": False,
+        "tests": False,
+        "openssl_tests": False,
+        "bignum_lib": True,
 
-        # "with_bignum=conan"
-        # "with_asm='auto'", \
-        # "with_field='auto'", \
-        # "with_scalar='auto'"
-        # "with_bignum='auto'"
+        "march_id": "_DUMMY_",
+        "march_strategy": "download_if_possible",
+
+        "verbose": False,
+        "cxxflags": "_DUMMY_",
+        "cflags": "_DUMMY_",
+        "cmake_export_compile_commands": False
+
+        # "with_bignum": conan"
+        # "with_asm": 'auto',
+        # "with_field": 'auto'"
+        # "with_scalar": 'auto'"
+        # "with_bignum": 'auto'"
+    }
 
     generators = "cmake"
     exports = "conan_*", "ci_utils/*"
@@ -105,31 +109,15 @@ class Secp256k1Conan(KnuthConanFile):
             else:
                 self.requires("gmp/6.2.1")
 
+    def validate(self):
+        KnuthConanFile.validate(self)
+
     def config_options(self):
         KnuthConanFile.config_options(self)
-
-        # if self.settings.arch != "x86_64":
-        #     self.output.info("microarchitecture is disabled for architectures other than x86_64, your architecture: %s" % (self.settings.arch,))
-        #     self.options.remove("microarchitecture")
-        #     self.options.remove("fix_march")
-
-        # if self.settings.compiler == "Visual Studio":
-        #     self.options.remove("fPIC")
-        #     if self.options.shared and self.msvc_mt_build:
-        #         self.options.remove("shared")
 
     def configure(self):
         # del self.settings.compiler.libcxx       #Pure-C Library
         KnuthConanFile.configure(self, pure_c=False)
-
-        # if self.settings.arch == "x86_64" and self.options.microarchitecture == "_DUMMY_":
-        #     del self.options.fix_march
-        #     # self.options.remove("fix_march")
-        #     # raise Exception ("fix_march option is for using together with microarchitecture option.")
-
-        # if self.settings.arch == "x86_64":
-        #     march_conan_manip(self)
-        #     self.options["*"].microarchitecture = self.options.microarchitecture
 
     def package_id(self):
         KnuthConanFile.package_id(self)
