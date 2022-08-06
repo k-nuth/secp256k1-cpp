@@ -57,20 +57,14 @@ set(WITH_FIELD "auto" CACHE STRING "Specify Field Implementation (64bit|32bit|au
 set(WITH_SCALAR "auto" CACHE STRING "Specify scalar implementation (64bit|32bit|auto).")
 set(WITH_BIGNUM "auto" CACHE STRING "Specify Bignum Implementation (gmp|mpir|no|auto).")
 
-
-
 set(KTH_PROJECT_VERSION "-" CACHE STRING "Specify the Knuth Project Version.")
 message( STATUS "Knuth: Compiling version ${KTH_PROJECT_VERSION}")
-set(MICROARCHITECTURE "x86_64" CACHE STRING "Specify the Microarchitecture (x86_64|...).")
-message( STATUS "Knuth: Compiling for ${MICROARCHITECTURE}")
+
 set(MARCH_ID "" CACHE STRING "Specify the Microarchitecture ID (x86_64|...).")
-message( STATUS "Knuth: Compiling for Microarchitecture ID ${KTH_MARCH_ID}")
+message( STATUS "Knuth: Compiling for Microarchitecture ID ${MARCH_ID}")
+
 message( STATUS "Knuth: CONAN_CXX_FLAGS ${CONAN_CXX_FLAGS}")
 message( STATUS "Knuth: CONAN_C_FLAGS ${CONAN_C_FLAGS}")
-
-
-
-
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/ci_utils/cmake/knuthbuildinfo.cmake)
     include(${CMAKE_SOURCE_DIR}/ci_utils/cmake/knuthbuildinfo.cmake)
