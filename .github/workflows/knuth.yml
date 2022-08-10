@@ -149,7 +149,6 @@ jobs:
         shell: bash
         run: |
           echo "CONAN_APPLE_CLANG_VERSIONS=${{ matrix.config.version }}.0" >> $GITHUB_ENV
-          # echo "CONAN_DISABLE_CHECK_COMPILER=1" >> $GITHUB_ENV
 
       - name: Settting EnvVars (Windows)
         if: ${{ matrix.config.compiler == 'Visual Studio' }}
@@ -170,7 +169,7 @@ jobs:
           CONAN_LOGIN_USERNAME_TAO: ${{ secrets.CONAN_LOGIN_USERNAME_TAO }}
           CONAN_PASSWORD_TAO: ${{ secrets.CONAN_PASSWORD_TAO }}
           CONAN_STABLE_BRANCH_PATTERN: "master$" #"release/*"
-          CONAN_BUILD_POLICY: "missing"
+          # CONAN_BUILD_POLICY: "missing"
         shell: bash
         run: |
           echo ${{ matrix.config.compiler }}
@@ -183,7 +182,7 @@ jobs:
           echo ${CONAN_LOGIN_USERNAME_UPLOAD_REPO}
           echo ${CONAN_LOGIN_USERNAME_TAO}
           echo ${CONAN_DOCKER_ENTRY_SCRIPT}
-          echo ${CONAN_BUILD_POLICY}
+          # echo ${CONAN_BUILD_POLICY}
 
           export KTH_BRANCH=$(echo '${{ github.ref }}' | awk -F '/' '{print $3}')
           echo "My branch name is $KTH_BRANCH"
@@ -201,7 +200,7 @@ jobs:
           CONAN_LOGIN_USERNAME_TAO: ${{ secrets.CONAN_LOGIN_USERNAME_TAO }}
           CONAN_PASSWORD_TAO: ${{ secrets.CONAN_PASSWORD_TAO }}
           CONAN_STABLE_BRANCH_PATTERN: "master$" #"release/*"
-          CONAN_BUILD_POLICY: "missing"
+          # CONAN_BUILD_POLICY: "missing"
 
         shell: powershell
         run: |
@@ -212,7 +211,7 @@ jobs:
 
           Write-Host "CONAN_VISUAL_VERSIONS: $Env:CONAN_VISUAL_VERSIONS"
           Write-Host "CONAN_VISUAL_RUNTIMES: $Env:CONAN_VISUAL_RUNTIMES"
-          Write-Host "CONAN_BUILD_POLICY: $Env:CONAN_BUILD_POLICY"
+          # Write-Host "CONAN_BUILD_POLICY: $Env:CONAN_BUILD_POLICY"
 
           $Env:KTH_BRANCH = "${{ github.ref }}".Split("/")[2]
           Write-Host "My branch name is $Env:KTH_BRANCH"
