@@ -1,0 +1,11 @@
+# - Config file for the SECP256K1 package
+#
+#  SECP256K1_INCLUDE_DIRS - include directories for SECP256K1
+#  SECP256K1_LIBRARIES    - libraries to link against
+
+get_filename_component(SECP256K1_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(SECP256K1_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
+
+include("${SECP256K1_CMAKE_DIR}/secp256k1Targets.cmake")
+
+set(SECP256K1_LIBRARIES secp256k1)
