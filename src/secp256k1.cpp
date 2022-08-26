@@ -18,6 +18,9 @@
 #include "eckey_impl.h"
 #include "hash_impl.h"
 
+#include <eve/wide.hpp>
+// #include <eve/module/core.hpp>
+
 #define ARG_CHECK(cond) do { \
     if (EXPECT(!(cond), 0)) { \
         secp256k1_callback_call(&ctx->illegal_callback, #cond); \

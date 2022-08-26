@@ -14,7 +14,7 @@
 
 #include <time.h>
 
-#include "secp256k1.c"
+#include "secp256k1.cpp"
 #include "include/secp256k1.h"
 #include "testrand_impl.h"
 
@@ -47,9 +47,9 @@ static secp256k1_context *ctx = NULL;
 
 static void counting_illegal_callback_fn(const char* str, void* data) {
     /* Dummy callback function that just counts. */
-    int32_t *p;
+    int32_t* p;
     (void)str;
-    p = data;
+    p = (int32_t*)data;
     (*p)++;
 }
 
@@ -57,7 +57,7 @@ static void uncounting_illegal_callback_fn(const char* str, void* data) {
     /* Dummy callback function that just counts (backwards). */
     int32_t *p;
     (void)str;
-    p = data;
+    p = (int32_t*)data;
     (*p)--;
 }
 
@@ -1934,7 +1934,7 @@ void test_ge(void) {
 
     /* Compute z inverses. */
     {
-        secp256k1_fe *zs = checked_malloc(&ctx->error_callback, sizeof(secp256k1_fe) * (1 + 4 * runs));
+        secp256k1_fe* zs = (secp256k1_fe*)checked_malloc(&ctx->error_callback, sizeof(secp256k1_fe) * (1 + 4 * runs));
         for (i = 0; i < 4 * runs + 1; i++) {
             if (i == 0) {
                 /* The point at infinity does not have a meaningful z inverse. Any should do. */
@@ -4420,141 +4420,178 @@ void run_ecdsa_openssl(void) {
 # include "modules/schnorr/tests_impl.h"
 #endif
 
+#include <iostream>
+#include <eve/wide.hpp>
+#include <eve/module/core.hpp>
+
 int main(int argc, char **argv) {
-    unsigned char seed16[16] = {0};
-    unsigned char run32[32] = {0};
-    /* find iteration count */
-    if (argc > 1) {
-        count = strtol(argv[1], NULL, 0);
-    }
 
-    /* find random seed */
-    if (argc > 2) {
-        int pos = 0;
-        const char* ch = argv[2];
-        while (pos < 16 && ch[0] != 0 && ch[1] != 0) {
-            unsigned short sh;
-            if (sscanf(ch, "%2hx", &sh)) {
-                seed16[pos] = sh;
-            } else {
-                break;
-            }
-            ch += 2;
-            pos++;
-        }
-    } else {
-        FILE *frand = fopen("/dev/urandom", "r");
-        if ((frand == NULL) || fread(&seed16, sizeof(seed16), 1, frand) != sizeof(seed16)) {
-            uint64_t t = time(NULL) * (uint64_t)1337;
-            seed16[0] ^= t;
-            seed16[1] ^= t >> 8;
-            seed16[2] ^= t >> 16;
-            seed16[3] ^= t >> 24;
-            seed16[4] ^= t >> 32;
-            seed16[5] ^= t >> 40;
-            seed16[6] ^= t >> 48;
-            seed16[7] ^= t >> 56;
-        }
-        if (frand) {
-            fclose(frand);
-        }
-    }
-    secp256k1_rand_seed(seed16);
+    // eve::wide<float> x( [](auto i, auto) { return 1.f+i; } );
+    // std::cout << "x     = " << x << "\n";
+    // std::cout << "2*x   = " << x + x << "\n";
+    // std::cout << "x^0.5 = " << eve::sqrt(x) << "\n";
 
-    printf("test count = %i\n", count);
-    printf("random seed = %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\n", seed16[0], seed16[1], seed16[2], seed16[3], seed16[4], seed16[5], seed16[6], seed16[7], seed16[8], seed16[9], seed16[10], seed16[11], seed16[12], seed16[13], seed16[14], seed16[15]);
 
-    /* initialize */
-    run_context_tests();
-    ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
-    if (secp256k1_rand_bits(1)) {
-        secp256k1_rand256(run32);
-        CHECK(secp256k1_context_randomize(ctx, secp256k1_rand_bits(1) ? run32 : NULL));
-    }
+    using w_t = eve::wide<std::int16_t, eve::fixed<4>>;
+    w_t pi = {3, 2, -32700, 32700}, qi = {4, 1, -100, 100};
+    using wf_t = eve::wide<float, eve::fixed<4>>;
+    wf_t pf = {3, 2.5, -32.7, 1327.43}, qf = {4.2, 1.5, -100.834, 10.02};
 
-    run_rand_bits();
-    run_rand_int();
+    std::cout << "---- simd" << '\n'
+                << " <- pi          = " << pi << '\n'
+                << " <- qi          = " << qi << '\n'
+                << " -> add(pi, qi) = " << eve::add(pi, qi) << '\n'
+                << " -> pi + qi                 = " << pi + qi << '\n'
+                <<  " -> saturated(add)(pi, qi) = " << eve::saturated(eve::add)(pi, qi) << '\n'
+                << " -> pf + qf                 = " << pf + qf << '\n';
 
-    run_sha256_tests();
-    run_hmac_sha256_tests();
-    run_rfc6979_hmac_sha256_tests();
+    std::int16_t xi = 100, yi = 32700;
 
-#ifndef USE_NUM_NONE
-    /* num tests */
-    run_num_smalltests();
-#endif
+    std::cout << "---- scalar" << '\n'
+                << " <- xi          = " << xi << '\n'
+                << " <- yi          = " << yi << '\n'
+                << " -> add(xi, yi) = " << eve::add(xi, yi) << '\n'
+                << " -> xi + yi     = " << xi + yi << '\n'; // C++ promotion to int
 
-    /* scalar tests */
-    run_scalar_tests();
+    std::cout << "---- multi parameters" << '\n'
+                << " -> add(pi,pi,pi,1)                     = " << eve::add(pi, pi, pi, 1) << '\n'
+                << " -> saturated(add)(pi,12,pi,pi)         = " << eve::saturated(eve::add)(pi, 12, pi,pi) << '\n';
+    return 0;
 
-    /* field tests */
-    run_field_inv();
-    run_field_inv_var();
-    run_field_inv_all_var();
-    run_field_misc();
-    run_field_convert();
-    run_sqr();
-    run_sqrt();
+//     unsigned char seed16[16] = {0};
+//     unsigned char run32[32] = {0};
+//     /* find iteration count */
+//     if (argc > 1) {
+//         count = strtol(argv[1], NULL, 0);
+//     }
 
-    /* group tests */
-    run_ge();
-    run_group_decompress();
+//     /* find random seed */
+//     if (argc > 2) {
+//         int pos = 0;
+//         const char* ch = argv[2];
+//         while (pos < 16 && ch[0] != 0 && ch[1] != 0) {
+//             unsigned short sh;
+//             if (sscanf(ch, "%2hx", &sh)) {
+//                 seed16[pos] = sh;
+//             } else {
+//                 break;
+//             }
+//             ch += 2;
+//             pos++;
+//         }
+//     } else {
+//         FILE *frand = fopen("/dev/urandom", "r");
+//         if ((frand == NULL) || fread(&seed16, sizeof(seed16), 1, frand) != sizeof(seed16)) {
+//             uint64_t t = time(NULL) * (uint64_t)1337;
+//             seed16[0] ^= t;
+//             seed16[1] ^= t >> 8;
+//             seed16[2] ^= t >> 16;
+//             seed16[3] ^= t >> 24;
+//             seed16[4] ^= t >> 32;
+//             seed16[5] ^= t >> 40;
+//             seed16[6] ^= t >> 48;
+//             seed16[7] ^= t >> 56;
+//         }
+//         if (frand) {
+//             fclose(frand);
+//         }
+//     }
+//     secp256k1_rand_seed(seed16);
 
-    /* ecmult tests */
-    run_wnaf();
-    run_point_times_order();
-    run_ecmult_chain();
-    run_ecmult_constants();
-    run_ecmult_gen_blind();
-    run_ecmult_const_tests();
-    run_ec_combine();
+//     printf("test count = %i\n", count);
+//     printf("random seed = %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\n", seed16[0], seed16[1], seed16[2], seed16[3], seed16[4], seed16[5], seed16[6], seed16[7], seed16[8], seed16[9], seed16[10], seed16[11], seed16[12], seed16[13], seed16[14], seed16[15]);
 
-    /* endomorphism tests */
-#ifdef USE_ENDOMORPHISM
-    run_endomorphism_tests();
-#endif
+//     /* initialize */
+//     run_context_tests();
+//     ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+//     if (secp256k1_rand_bits(1)) {
+//         secp256k1_rand256(run32);
+//         CHECK(secp256k1_context_randomize(ctx, secp256k1_rand_bits(1) ? run32 : NULL));
+//     }
 
-    /* EC point parser test */
-    run_ec_pubkey_parse_test();
+//     run_rand_bits();
+//     run_rand_int();
 
-    /* EC key edge cases */
-    run_eckey_edge_case_test();
+//     run_sha256_tests();
+//     run_hmac_sha256_tests();
+//     run_rfc6979_hmac_sha256_tests();
 
-#ifdef ENABLE_MODULE_ECDH
-    /* ecdh tests */
-    run_ecdh_tests();
-#endif
+// #ifndef USE_NUM_NONE
+//     /* num tests */
+//     run_num_smalltests();
+// #endif
 
-    /* ecdsa tests */
-    run_random_pubkeys();
-    run_ecdsa_der_parse();
-    run_ecdsa_sign_verify();
-    run_ecdsa_end_to_end();
-    run_ecdsa_edge_cases();
-#ifdef ENABLE_OPENSSL_TESTS
-    run_ecdsa_openssl();
-#endif
+//     /* scalar tests */
+//     run_scalar_tests();
 
-#ifdef ENABLE_MODULE_MULTISET
-    run_multiset_tests();
-#endif
+//     /* field tests */
+//     run_field_inv();
+//     run_field_inv_var();
+//     run_field_inv_all_var();
+//     run_field_misc();
+//     run_field_convert();
+//     run_sqr();
+//     run_sqrt();
 
-#ifdef ENABLE_MODULE_RECOVERY
-    /* ECDSA pubkey recovery tests */
-    run_recovery_tests();
-#endif
+//     /* group tests */
+//     run_ge();
+//     run_group_decompress();
 
-#ifdef ENABLE_MODULE_SCHNORR
-    /* Schnorr signature tests */
-    run_schnorr_tests();
-#endif
+//     /* ecmult tests */
+//     run_wnaf();
+//     run_point_times_order();
+//     run_ecmult_chain();
+//     run_ecmult_constants();
+//     run_ecmult_gen_blind();
+//     run_ecmult_const_tests();
+//     run_ec_combine();
 
-    secp256k1_rand256(run32);
-    printf("random run = %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\n", run32[0], run32[1], run32[2], run32[3], run32[4], run32[5], run32[6], run32[7], run32[8], run32[9], run32[10], run32[11], run32[12], run32[13], run32[14], run32[15]);
+//     /* endomorphism tests */
+// #ifdef USE_ENDOMORPHISM
+//     run_endomorphism_tests();
+// #endif
 
-    /* shutdown */
-    secp256k1_context_destroy(ctx);
+//     /* EC point parser test */
+//     run_ec_pubkey_parse_test();
 
-    printf("no problems found\n");
+//     /* EC key edge cases */
+//     run_eckey_edge_case_test();
+
+// #ifdef ENABLE_MODULE_ECDH
+//     /* ecdh tests */
+//     run_ecdh_tests();
+// #endif
+
+//     /* ecdsa tests */
+//     run_random_pubkeys();
+//     run_ecdsa_der_parse();
+//     run_ecdsa_sign_verify();
+//     run_ecdsa_end_to_end();
+//     run_ecdsa_edge_cases();
+// #ifdef ENABLE_OPENSSL_TESTS
+//     run_ecdsa_openssl();
+// #endif
+
+// #ifdef ENABLE_MODULE_MULTISET
+//     run_multiset_tests();
+// #endif
+
+// #ifdef ENABLE_MODULE_RECOVERY
+//     /* ECDSA pubkey recovery tests */
+//     run_recovery_tests();
+// #endif
+
+// #ifdef ENABLE_MODULE_SCHNORR
+//     /* Schnorr signature tests */
+//     run_schnorr_tests();
+// #endif
+
+//     secp256k1_rand256(run32);
+//     printf("random run = %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\n", run32[0], run32[1], run32[2], run32[3], run32[4], run32[5], run32[6], run32[7], run32[8], run32[9], run32[10], run32[11], run32[12], run32[13], run32[14], run32[15]);
+
+//     /* shutdown */
+//     secp256k1_context_destroy(ctx);
+
+//     printf("no problems found\n");
     return 0;
 }

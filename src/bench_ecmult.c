@@ -15,7 +15,7 @@
 #include "scalar_impl.h"
 #include "ecmult_impl.h"
 #include "bench.h"
-#include "secp256k1.c"
+#include "secp256k1.cpp"
 
 #define POINTS 32768
 #define ITERS 10000
