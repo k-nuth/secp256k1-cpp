@@ -4421,42 +4421,55 @@ void run_ecdsa_openssl(void) {
 #endif
 
 #include <iostream>
-#include <eve/wide.hpp>
-#include <eve/module/core.hpp>
+// #include <eve/wide.hpp>
+// #include <eve/module/core.hpp>
 
 int main(int argc, char **argv) {
+
+    uint8_t x = -1;
+    uint8_t y = -1;
+
+    std::cout << "x: " << x << '\n';
+    std::cout << "y: " << y << '\n';
+    return 0;
+
+
+    // -----------------------------------------------------------------
 
     // eve::wide<float> x( [](auto i, auto) { return 1.f+i; } );
     // std::cout << "x     = " << x << "\n";
     // std::cout << "2*x   = " << x + x << "\n";
     // std::cout << "x^0.5 = " << eve::sqrt(x) << "\n";
 
+    // -----------------------------------------------------------------
 
-    using w_t = eve::wide<std::int16_t, eve::fixed<4>>;
-    w_t pi = {3, 2, -32700, 32700}, qi = {4, 1, -100, 100};
-    using wf_t = eve::wide<float, eve::fixed<4>>;
-    wf_t pf = {3, 2.5, -32.7, 1327.43}, qf = {4.2, 1.5, -100.834, 10.02};
+    // using w_t = eve::wide<std::int16_t, eve::fixed<4>>;
+    // w_t pi = {3, 2, -32700, 32700}, qi = {4, 1, -100, 100};
+    // using wf_t = eve::wide<float, eve::fixed<4>>;
+    // wf_t pf = {3, 2.5, -32.7, 1327.43}, qf = {4.2, 1.5, -100.834, 10.02};
 
-    std::cout << "---- simd" << '\n'
-                << " <- pi          = " << pi << '\n'
-                << " <- qi          = " << qi << '\n'
-                << " -> add(pi, qi) = " << eve::add(pi, qi) << '\n'
-                << " -> pi + qi                 = " << pi + qi << '\n'
-                <<  " -> saturated(add)(pi, qi) = " << eve::saturated(eve::add)(pi, qi) << '\n'
-                << " -> pf + qf                 = " << pf + qf << '\n';
+    // std::cout << "---- simd" << '\n'
+    //             << " <- pi          = " << pi << '\n'
+    //             << " <- qi          = " << qi << '\n'
+    //             << " -> add(pi, qi) = " << eve::add(pi, qi) << '\n'
+    //             << " -> pi + qi                 = " << pi + qi << '\n'
+    //             <<  " -> saturated(add)(pi, qi) = " << eve::saturated(eve::add)(pi, qi) << '\n'
+    //             << " -> pf + qf                 = " << pf + qf << '\n';
 
-    std::int16_t xi = 100, yi = 32700;
+    // std::int16_t xi = 100, yi = 32700;
 
-    std::cout << "---- scalar" << '\n'
-                << " <- xi          = " << xi << '\n'
-                << " <- yi          = " << yi << '\n'
-                << " -> add(xi, yi) = " << eve::add(xi, yi) << '\n'
-                << " -> xi + yi     = " << xi + yi << '\n'; // C++ promotion to int
+    // std::cout << "---- scalar" << '\n'
+    //             << " <- xi          = " << xi << '\n'
+    //             << " <- yi          = " << yi << '\n'
+    //             << " -> add(xi, yi) = " << eve::add(xi, yi) << '\n'
+    //             << " -> xi + yi     = " << xi + yi << '\n'; // C++ promotion to int
 
-    std::cout << "---- multi parameters" << '\n'
-                << " -> add(pi,pi,pi,1)                     = " << eve::add(pi, pi, pi, 1) << '\n'
-                << " -> saturated(add)(pi,12,pi,pi)         = " << eve::saturated(eve::add)(pi, 12, pi,pi) << '\n';
-    return 0;
+    // std::cout << "---- multi parameters" << '\n'
+    //             << " -> add(pi,pi,pi,1)                     = " << eve::add(pi, pi, pi, 1) << '\n'
+    //             << " -> saturated(add)(pi,12,pi,pi)         = " << eve::saturated(eve::add)(pi, 12, pi,pi) << '\n';
+    // return 0;
+
+    // -----------------------------------------------------------------
 
 //     unsigned char seed16[16] = {0};
 //     unsigned char run32[32] = {0};

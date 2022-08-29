@@ -102,7 +102,7 @@ class Secp256k1Conan(KnuthConanFile):
             return "no"
 
     def requirements(self):
-        self.requires("jfalcou-eve/v2022.03.0")
+        # self.requires("jfalcou-eve/v2022.03.0")
         if self.options.bignum_lib:
             if self.settings.os == "Windows":
                 self.requires("mpir/3.0.0")

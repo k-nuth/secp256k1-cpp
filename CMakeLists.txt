@@ -261,7 +261,11 @@ endif()
 # message(WITH_ASM)
 # message(WITH_FIELD)
 # message(WITH_SCALAR)
-# message(${WITH_BIGNUM})
+# message("${WITH_SCALAR}")
+
+message( STATUS "WITH_ASM:    ${WITH_ASM}")
+message( STATUS "WITH_FIELD:  ${WITH_FIELD}")
+message( STATUS "WITH_SCALAR: ${WITH_SCALAR}")
 
 # if (${WITH_BIGNUM} STREQUAL "auto")
 #   message("fer WITH_BIGNUM auto")
