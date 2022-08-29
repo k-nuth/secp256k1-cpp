@@ -11,11 +11,10 @@ class Secp256k1Conan(KnuthConanFile):
     def recipe_dir(self):
         return os.path.dirname(os.path.abspath(__file__))
 
-    name = "secp256k1"
-    # version = get_version()
+    name = "secp256k1-cpp"
     license = "http://www.boost.org/users/license.html"
-    url = "https://github.com/k-nuth/secp256k1"
-    description = "Optimized C library for EC operations on curve secp256k1"
+    url = "https://github.com/k-nuth/secp256k1-cpp"
+    description = "Optimized C++ library for EC operations on curve secp256k1"
     settings = "os", "compiler", "build_type", "arch"
 
 
@@ -103,6 +102,7 @@ class Secp256k1Conan(KnuthConanFile):
             return "no"
 
     def requirements(self):
+        # self.requires("jfalcou-eve/v2022.03.0")
         if self.options.bignum_lib:
             if self.settings.os == "Windows":
                 self.requires("mpir/3.0.0")
@@ -116,8 +116,7 @@ class Secp256k1Conan(KnuthConanFile):
         KnuthConanFile.config_options(self)
 
     def configure(self):
-        # del self.settings.compiler.libcxx       #Pure-C Library
-        KnuthConanFile.configure(self, pure_c=False)
+        KnuthConanFile.configure(self)
 
     def package_id(self):
         KnuthConanFile.package_id(self)
@@ -127,7 +126,7 @@ class Secp256k1Conan(KnuthConanFile):
 
 
     def build(self):
-        cmake = self.cmake_basis(pure_c=True)
+        cmake = self.cmake_basis()
         cmake.definitions["ENABLE_BENCHMARK"] = option_on_off(self.options.benchmark)
         cmake.definitions["ENABLE_TESTS"] = option_on_off(self.options.tests)
         cmake.definitions["ENABLE_OPENSSL_TESTS"] = option_on_off(self.options.openssl_tests)
@@ -159,9 +158,9 @@ class Secp256k1Conan(KnuthConanFile):
 
         #TODO(fernando): Cmake Tests and Visual Studio doesn't work
         #TODO(fernando): Secp256k1 segfaults al least on Windows
-        # if self.options.tests:
-        #     cmake.test()
-        #     # cmake.test(target="tests")
+        if self.options.tests:
+            cmake.test()
+            # cmake.test(target="tests")
 
 
     def package(self):
@@ -173,7 +172,7 @@ class Secp256k1Conan(KnuthConanFile):
         self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = ["secp256k1"]
+        self.cpp_info.libs = ["secp256k1-cpp"]
         if self.package_folder:
             self.env_info.CPATH = os.path.join(self.package_folder, "include")
             self.env_info.C_INCLUDE_PATH = os.path.join(self.package_folder, "include")

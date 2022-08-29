@@ -1,11 +1,11 @@
 <!-- <a target="_blank" href="http://semver.org">![Version][badge.version]</a> -->
-<!-- <a target="_blank" href="https://cirrus-ci.com/github/k-nuth/secp256k1">![Build Status][badge.Cirrus]</a> -->
+<!-- <a target="_blank" href="https://cirrus-ci.com/github/k-nuth/secp256k1-cpp">![Build Status][badge.Cirrus]</a> -->
 
-# secp256k1 <a target="_blank" href="https://github.com/k-nuth/secp256k1/releases">![Github Releases][badge.release]</a> <a target="_blank" href="https://travis-ci.org/k-nuth/secp256k1">![Build status][badge.Travis]</a> <a target="_blank" href="https://ci.appveyor.com/projects/k-nuth/secp256k1">![Build Status][badge.Appveyor]</a> <a target="_blank" href="https://t.me/knuth_cash">![Telegram][badge.telegram]</a> <a target="_blank" href="https://k-nuth.slack.com/">![Slack][badge.slack]</a>
+# secp256k1-cpp <a target="_blank" href="https://github.com/k-nuth/secp256k1-cpp/releases">![Github Releases][badge.release]</a> <a target="_blank" href="https://travis-ci.org/k-nuth/secp256k1-cpp">![Build status][badge.Travis]</a> <a target="_blank" href="https://ci.appveyor.com/projects/k-nuth/secp256k1-cpp">![Build Status][badge.Appveyor]</a> <a target="_blank" href="https://t.me/knuth_cash">![Telegram][badge.telegram]</a> <a target="_blank" href="https://k-nuth.slack.com/">![Slack][badge.slack]</a>
 
-> Optimized C library for EC operations on curve secp256k1.
+> Optimized C++ library for EC operations on curve secp256k1.
 
-Optimized C library for ECDSA signatures and secret/public key operations on curve secp256k1.
+Optimized C++ library for ECDSA signatures and secret/public key operations on curve secp256k1.
 
 This library is intended to be the highest quality publicly available library for cryptography on the secp256k1 curve. However, the primary focus of its development has been for usage in the Bitcoin system and usage unlike Bitcoin's may be less well tested, verified, or suffer from a less well thought out interface. Correct usage requires some care and consideration that the library is fit for your application's purpose.
 
@@ -74,7 +74,7 @@ $ conan remote add kth https://knuth.jfrog.io/artifactory/api/conan/knuth
 2. Install the appropriate library:
 
 ```
-$ conan install secp256k1/0.X@kth/stable
+$ conan install secp256k1-cpp/0.X@kth/stable
 ```
 
 For more more detailed instructions, please refer to our [documentation](https://kth.cash/docs/).
@@ -88,11 +88,11 @@ This library can be used stand-alone, but it is probably convenient for you to u
 Each of our modules has its own Github repository, but in case you want to create an issue, please do so in our [main repository](https://github.com/k-nuth/kth/issues).
 
 <!-- Links -->
-[badge.Travis]: https://travis-ci.org/k-nuth/secp256k1.svg?branch=master
-[badge.Appveyor]: https://ci.appveyor.com/api/projects/status/github/k-nuth/secp256k1?svg=true&branch=master
-[badge.Cirrus]: https://api.cirrus-ci.com/github/k-nuth/secp256k1.svg?branch=master
-[badge.version]: https://badge.fury.io/gh/k-nuth%2Fsecp256k1.svg
-[badge.release]: https://img.shields.io/github/release/k-nuth/secp256k1.svg
+[badge.Travis]: https://travis-ci.org/k-nuth/secp256k1-cpp.svg?branch=master
+[badge.Appveyor]: https://ci.appveyor.com/api/projects/status/github/k-nuth/secp256k1-cpp?svg=true&branch=master
+[badge.Cirrus]: https://api.cirrus-ci.com/github/k-nuth/secp256k1-cpp.svg?branch=master
+[badge.version]: https://badge.fury.io/gh/k-nuth%2Fsecp256k1-cpp.svg
+[badge.release]: https://img.shields.io/github/release/k-nuth/secp256k1-cpp.svg
 
 [badge.telegram]: https://img.shields.io/badge/telegram-badge-blue.svg?logo=telegram
 [badge.slack]: https://img.shields.io/badge/slack-badge-orange.svg?logo=slack
